@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <unistd.h>
 #include <sys/time.h>
 
@@ -16,16 +17,89 @@ class Displayable {
 		virtual void paint(Display* display, Pixmap buffer, GC gc) const = 0;
 };
 
+class Ball: public Displayable {
+	const int startingXPosition;
+	const int startingYPosition;
+	int xPosition;
+	int yPosition;
+	int xDirection;
+	int yDirection;
+	const int ballSize;
+public:
+	Ball(int xPos, int yPos, int ballSize, int ballSpeed): 
+				xPosition(xPos), yPosition(yPos), ballSize(ballSize),
+				xDirection(ballSpeed), yDirection(-ballSpeed),
+				startingXPosition(xPos), startingYPosition(yPos) {}
+	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
+		XFillArc( display, buffer, gc,
+        			xPosition - ballSize/2,
+        			yPosition - ballSize/2,
+        			ballSize, ballSize,
+        			0, 360*64);
+	}
+	int xPos() const {
+		return xPosition;
+	}
+	int yPos() const {
+		return yPosition;
+	}
+	int xDir() const {
+		return xDirection;
+	}
+	int yDir() const {
+		return yDirection;	
+	}
+	void updatePos() {
+		xPosition += xDirection;
+		yPosition += yDirection;
+	}
+	void invertXDir() {
+		xDirection = -xDirection;
+	}
+	void invertYDir() {
+		yDirection = -yDirection;
+	}
+	int size() const {
+		return ballSize;
+	}
+	int reset() {
+		xPosition = startingXPosition;
+		yPosition = startingYPosition;
+	}
+};
+
 class Block: public Displayable {
 	int x;
 	int y;
+	int currentHealth;
+	const int maxHealth;
+	const int widthDimension = 105;
+	const int heightDimension = 50;
 public:
-	Block(int x, int y) : x(x), y(y) {}
+	Block(int x, int y, int health = 1): x(x), y(y), currentHealth(health), maxHealth(health) {}
 	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
-		int xOffset = -15;
-		int yOffset = 20;
-
-		XDrawRectangle(display, buffer, gc, x + xOffset, y + yOffset, 105, 50);
+		XDrawRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
+	}
+	int xPos() const {
+		return x;
+	}
+	int yPos() const {
+		return y;
+	}
+	int width() const {
+		return widthDimension;
+	}
+	int height() const {
+		return heightDimension;
+	}
+	void onHit() {
+		--currentHealth;
+	}
+	bool isDestroyed() const {
+		return currentHealth == 0;
+	}
+	void reset() {
+		currentHealth = maxHealth;
 	}
 
 };
@@ -33,13 +107,44 @@ public:
 class Paddle: public Displayable {
 	int x;
 	int y;
+	const int widthDimension = 150;
+	const int heightDimension = 30;
 public:
-	Paddle(int x, int y): x(x), y(y){}
+	Paddle(int x, int y): x(x), y(y) {}
 	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
-		XDrawRectangle(display, buffer, gc, x, y, 150, 30);
+		XDrawRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 	}
-	void changeXPos(int offset) {
+	void moveXPos(int offset) {
 		x += offset;
+	}
+	int xPos() const {
+		return x;
+	}
+	int yPos() const {
+		return y;
+	}
+	int width() const {
+		return widthDimension;
+	}
+	int height() const {
+		return heightDimension;
+	}
+};
+
+class Text: public Displayable {
+	int x;
+	int y;
+	string text;
+public:
+	Text(int x, int y, string text): x(x), y(y), text(text) {}
+	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
+		XDrawString(display, buffer, gc, x, y, text.c_str(), text.length());
+	}
+	void update(string newText) {
+		text = newText;
+	}
+	string getValue() const {
+		return text;
 	}
 };
 
@@ -56,7 +161,7 @@ int ballSpeed = 3;
 
 // window size configuration
 int windowWidth = 1280;
-int windowHeight = 800;
+int windowHeight = 700;
 
 // get current time
 unsigned long now() {
@@ -66,7 +171,9 @@ unsigned long now() {
 }
 
 void handleInvalidCmdArgs() {
-	cerr << "Invalid Arguements! Usage: ./breakout [FPS] [Ball Speed]" << endl;
+	cerr << "Invalid Arguements!" << endl
+			 <<	"Usage: './breakout [FPS] [BallSpeed]' where " 
+			 << "10 <= FPS <= 60 and 1 <= BallSpeed <= 10" << endl;
 	exit( EXIT_FAILURE );
 }
 
@@ -74,8 +181,14 @@ void handleInvalidCmdArgs() {
 int main( int argc, char *argv[] ) {
 	if (argc == 3) {
 		try {
-			FPS = stoi(argv[1]);
-			ballSpeed = stoi(argv[2]);
+			int inputFPS = stoi(argv[1]);
+			int inputBallSpeed = stoi(argv[2]);
+			if (inputFPS > 60 || inputFPS < 10 || inputBallSpeed > 10 || inputBallSpeed < 1) {
+				throw 1;
+			}
+
+			FPS = inputFPS;
+			ballSpeed = inputBallSpeed;
 		} catch (...) {
 			handleInvalidCmdArgs();		
 		}
@@ -110,27 +223,28 @@ int main( int argc, char *argv[] ) {
 	XMapRaised(display, window);
 	XFlush(display);
 
-	// ball postition, size, and velocity
-	XPoint ballPos;
-	ballPos.x = 50;
-	ballPos.y = 50;
-	int ballSize = 50;
-
-	XPoint ballDir;
-	ballDir.x = ballSpeed;
-	ballDir.y = ballSpeed;
-
-	// block position
-	vector<Block> blocks;
-	for (int i = 1; i <= 5; ++i) {
+	// initialize ball
+	Ball ball(windowWidth / 2, windowHeight * 0.75, 35, ballSpeed);
+	//Ball ball (40,40,30,0);
+	// initialize blocks
+	typedef struct {
+		Block block;
+		bool a;
+		bool b;
+		bool c;
+		bool d;
+	} BlockInfo;
+	vector<BlockInfo> blocks;
+	for (int i = 0; i < 5; ++i) {
 		for (int j = 1; j <= 10; ++j) {
 			Block block(j * 110, i * 55);
-			blocks.emplace_back(block);
+			BlockInfo info{block, false, false, false, false};
+			blocks.emplace_back(info);
 		}
 	}
 
 	
-	Paddle paddle(windowWidth / 2, windowHeight - 100);
+	Paddle paddle((windowWidth / 2) - 75, windowHeight - 100);
 
 	// create gc for drawing
 	GC gc = XCreateGC(display, window, 0, 0);
@@ -146,6 +260,14 @@ int main( int argc, char *argv[] ) {
 
 	// event handle for current event
 	XEvent event;
+
+	// track hit score
+	Text currentScore(1000, 500, "0");
+	//int currentScore = 0;
+	bool preva = false;
+	bool prevb = false;
+	bool prevc = false;
+	bool prevd = false;
 
 	// event loop
 	while ( true ) {
@@ -168,12 +290,12 @@ int main( int argc, char *argv[] ) {
 
 					// move right
 					if ( i == 1 && text[0] == 'd' ) {
-						paddle.changeXPos(10);
+						paddle.moveXPos(10);
 					}
 
 					// move left
 					if ( i == 1 && text[0] == 'a' ) {
-						paddle.changeXPos(-10);
+						paddle.moveXPos(-10);
 					}
 
 					// quit game
@@ -200,28 +322,80 @@ int main( int argc, char *argv[] ) {
 			paddle.paint(display, buffer, gc);
 
 			// draw blocks
-			for (auto &block : blocks) {
-				block.paint(display, buffer, gc);
+			for (auto &blockinfo : blocks) {
+				if (!blockinfo.block.isDestroyed()) {
+					blockinfo.block.paint(display, buffer, gc);
+				}
 			}
 
 			// draw ball from centre
-			XFillArc(display, buffer, gc, 
-				ballPos.x - ballSize/2, 
-				ballPos.y - ballSize/2, 
-				ballSize, ballSize,
-				0, 360*64);
+			ball.paint(display, buffer, gc);
 
 			// update ball position
-			ballPos.x += ballDir.x;
-			ballPos.y += ballDir.y;
+			ball.updatePos();
 
-			// bounce ball
-			if (ballPos.x + ballSize/2 > w.width ||
-				ballPos.x - ballSize/2 < 0)
-				ballDir.x = -ballDir.x;
-			if (ballPos.y + ballSize/2 > w.height ||
-				ballPos.y - ballSize/2 < 0)
-				ballDir.y = -ballDir.y;
+			// check ball collision with wall
+			if (ball.xPos() + ball.size()/2 > w.width ||
+					ball.xPos() - ball.size()/2 < 0) {
+				ball.invertXDir();
+			}
+			
+			if (ball.yPos() + ball.size()/2 > w.height ||
+					ball.yPos() - ball.size()/2 < 0) {
+				ball.invertYDir();
+			}
+			
+			// check ball collision with paddle
+      bool paddleHit = ((ball.yPos() + ball.size()/2 > paddle.yPos()) &&
+                        ((ball.xPos() - ball.size()/2 >= paddle.xPos()) &&
+                         (ball.xPos() + ball.size()/2 <= paddle.xPos() + paddle.width())));			
+
+			if (paddleHit) { // FIX THISSSSSSSSSSSSSSSSSSSSS
+				if (ball.xPos() <= paddle.xPos() + paddle.width()/2) {
+					if (ball.xDir() > 0) ball.invertXDir();
+				} else {
+					if (ball.xDir() < 0) ball.invertXDir();
+				}
+				ball.invertYDir();
+			}
+			for (auto &blockinfo: blocks) {
+				Block *block = &(blockinfo.block);
+
+				if (block->isDestroyed()) continue;
+
+				bool a = ball.xPos() - ball.size()/2 < block->xPos() + block->width();
+				bool b = ball.xPos() + ball.size()/2 > block->xPos();
+				bool c = ball.yPos() - ball.size()/2 < block->yPos() + block->height();
+				bool d = ball.yPos() + ball.size()/2 > block->yPos();
+
+				if (a && b && c && d) {
+					if (!blockinfo.a || !blockinfo.b) {
+          	ball.invertXDir();
+					} else {
+          	ball.invertYDir();
+					}
+					block->onHit();
+					currentScore.update(to_string(stoi(currentScore.getValue()) + 1));
+					break;
+				}
+				blockinfo.a = a;
+				blockinfo.b = b;
+				blockinfo.c = c;
+				blockinfo.d = d;
+			}
+
+			// show score
+			currentScore.paint(display, buffer, gc);
+
+			// reset game state
+			if (stoi(currentScore.getValue()) == 50) {
+        for (auto &blockinfo : blocks) {
+          blockinfo.block.reset();
+        }
+				ball.reset();
+        currentScore.update("0");
+      }
+
 
 			// copy buffer to window
       XCopyArea(display, buffer, window, gc,
