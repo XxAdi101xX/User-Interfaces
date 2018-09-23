@@ -1,10 +1,8 @@
 // CS 349 Fall 2018
-// A1: Breakout code sample
-// You may use any or all of this code in your assignment!
-// See makefile for compiling instructions
 
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include <unistd.h>
 #include <sys/time.h>
 
@@ -15,7 +13,7 @@ using namespace std;
 
 class Displayable {
 	public:
-		virtual void paint() = 0;
+		virtual void paint(Display* display, Pixmap buffer, GC gc) const = 0;
 };
 
 class Block: public Displayable {
@@ -23,7 +21,12 @@ class Block: public Displayable {
 	int y;
 public:
 	Block(int x, int y) : x(x), y(y) {}
-	virtual void paint() {}
+	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
+		int xOffset = -15;
+		int yOffset = 20;
+
+		XDrawRectangle(display, buffer, gc, x + xOffset, y + yOffset, 105, 50);
+	}
 
 };
 
@@ -32,6 +35,12 @@ class Paddle: public Displayable {
 	int y;
 public:
 	Paddle(int x, int y): x(x), y(y){}
+	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
+		XDrawRectangle(display, buffer, gc, x, y, 150, 30);
+	}
+	void changeXPos(int offset) {
+		x += offset;
+	}
 };
 
 // X11 structures
@@ -41,6 +50,9 @@ Pixmap buffer;
 
 // fixed frames per second animation
 int FPS = 60;
+
+// ball speed
+int ballSpeed = 3;
 
 // window size configuration
 int windowWidth = 1280;
@@ -53,8 +65,25 @@ unsigned long now() {
 	return tv.tv_sec * 1000000 + tv.tv_usec;
 }
 
+void handleInvalidCmdArgs() {
+	cerr << "Invalid Arguements! Usage: ./breakout [FPS] [Ball Speed]" << endl;
+	exit( EXIT_FAILURE );
+}
+
 // entry point
 int main( int argc, char *argv[] ) {
+	if (argc == 3) {
+		try {
+			FPS = stoi(argv[1]);
+			ballSpeed = stoi(argv[2]);
+		} catch (...) {
+			handleInvalidCmdArgs();		
+		}
+	} else if (argc == 1) {
+		cout << "Your game will start with a preset FPS of 60 and ball speed of 3. Have fun!!!" << endl;
+	} else {
+		handleInvalidCmdArgs();
+	}
 
 	// create window
 	display = XOpenDisplay("");
@@ -66,13 +95,15 @@ int main( int argc, char *argv[] ) {
                             10, 10, windowWidth, windowHeight, 2, foreground, background);
 
 	// make window unresizable
-	/*XSizeHints *hints = XAllocSizeHints();
+	XSizeHints *hints = XAllocSizeHints();
 	hints->min_width = windowWidth;
 	hints->min_height = windowHeight;
 	hints->max_width = windowWidth;
 	hints->max_height = windowHeight;
+	hints->width_inc = 0;
+	hints->height_inc = 0;
 	hints->flags = PAllHints;	
-	XSetWMNormalHints(display, window, hints);*/
+	XSetWMNormalHints(display, window, hints);
 
 	// set events to monitor and display window
 	XSelectInput(display, window, ButtonPressMask | KeyPressMask);
@@ -86,13 +117,20 @@ int main( int argc, char *argv[] ) {
 	int ballSize = 50;
 
 	XPoint ballDir;
-	ballDir.x = 3;
-	ballDir.y = 3;
+	ballDir.x = ballSpeed;
+	ballDir.y = ballSpeed;
 
-	// block position, size
-	XPoint rectPos;
-	rectPos.x = 225;
-	rectPos.y = 400;
+	// block position
+	vector<Block> blocks;
+	for (int i = 1; i <= 5; ++i) {
+		for (int j = 1; j <= 10; ++j) {
+			Block block(j * 110, i * 55);
+			blocks.emplace_back(block);
+		}
+	}
+
+	
+	Paddle paddle(windowWidth / 2, windowHeight - 100);
 
 	// create gc for drawing
 	GC gc = XCreateGC(display, window, 0, 0);
@@ -130,12 +168,12 @@ int main( int argc, char *argv[] ) {
 
 					// move right
 					if ( i == 1 && text[0] == 'd' ) {
-						rectPos.x += 10;
+						paddle.changeXPos(10);
 					}
 
 					// move left
 					if ( i == 1 && text[0] == 'a' ) {
-						rectPos.x -= 10;
+						paddle.changeXPos(-10);
 					}
 
 					// quit game
@@ -157,9 +195,14 @@ int main( int argc, char *argv[] ) {
       XFillRectangle(display, buffer, gc,
                      0, 0, w.width, w.height);
 
-			// draw rectangle
+			// draw paddle
 			XSetForeground(display, gc, BlackPixel(display, DefaultScreen(display)));
-			XDrawRectangle(display, buffer, gc, rectPos.x, rectPos.y, 50, 50);
+			paddle.paint(display, buffer, gc);
+
+			// draw blocks
+			for (auto &block : blocks) {
+				block.paint(display, buffer, gc);
+			}
 
 			// draw ball from centre
 			XFillArc(display, buffer, gc, 
