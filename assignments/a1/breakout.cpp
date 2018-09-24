@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <unistd.h>
 #include <sys/time.h>
 
@@ -161,7 +162,7 @@ int ballSpeed = 3;
 
 // window size configuration
 int windowWidth = 1280;
-int windowHeight = 700;
+int windowHeight = 800;
 
 // get current time
 unsigned long now() {
@@ -183,12 +184,17 @@ int main( int argc, char *argv[] ) {
 		try {
 			int inputFPS = stoi(argv[1]);
 			int inputBallSpeed = stoi(argv[2]);
+			int scalingRatio = 60 / inputFPS;
+
 			if (inputFPS > 60 || inputFPS < 10 || inputBallSpeed > 10 || inputBallSpeed < 1) {
 				throw 1;
 			}
 
+			// maintain ball speed regardless of FPS
+			inputBallSpeed = inputBallSpeed * scalingRatio;
+
 			FPS = inputFPS;
-			ballSpeed = inputBallSpeed;
+			ballSpeed = max(0.7 * inputBallSpeed, 1.0);
 		} catch (...) {
 			handleInvalidCmdArgs();		
 		}
@@ -225,14 +231,14 @@ int main( int argc, char *argv[] ) {
 
 	// initialize ball
 	Ball ball(windowWidth / 2, windowHeight * 0.75, 35, ballSpeed);
-	//Ball ball (40,40,30,0);
+
 	// initialize blocks
 	typedef struct {
 		Block block;
-		bool a;
-		bool b;
-		bool c;
-		bool d;
+		bool ballLeftOfEntity;
+		bool ballRightOfEntity;
+		bool ballAboveEntity;
+		bool ballBelowEntity;
 	} BlockInfo;
 	vector<BlockInfo> blocks;
 	for (int i = 0; i < 5; ++i) {
@@ -263,11 +269,6 @@ int main( int argc, char *argv[] ) {
 
 	// track hit score
 	Text currentScore(1000, 500, "0");
-	//int currentScore = 0;
-	bool preva = false;
-	bool prevb = false;
-	bool prevc = false;
-	bool prevd = false;
 
 	// event loop
 	while ( true ) {
@@ -358,18 +359,20 @@ int main( int argc, char *argv[] ) {
 				}
 				ball.invertYDir();
 			}
+
+			// check ball collision with with blocks
 			for (auto &blockinfo: blocks) {
 				Block *block = &(blockinfo.block);
 
 				if (block->isDestroyed()) continue;
 
-				bool a = ball.xPos() - ball.size()/2 < block->xPos() + block->width();
-				bool b = ball.xPos() + ball.size()/2 > block->xPos();
-				bool c = ball.yPos() - ball.size()/2 < block->yPos() + block->height();
-				bool d = ball.yPos() + ball.size()/2 > block->yPos();
+				bool ballLeftOfBlock = ball.xPos() - ball.size()/2 < block->xPos() + block->width();
+				bool ballRightOfBlock = ball.xPos() + ball.size()/2 > block->xPos();
+				bool ballAboveBlock = ball.yPos() - ball.size()/2 < block->yPos() + block->height();
+				bool ballBelowBlock = ball.yPos() + ball.size()/2 > block->yPos();
 
-				if (a && b && c && d) {
-					if (!blockinfo.a || !blockinfo.b) {
+				if (ballLeftOfBlock && ballRightOfBlock && ballAboveBlock && ballBelowBlock) {
+					if (!blockinfo.ballLeftOfEntity || !blockinfo.ballRightOfEntity) {
           	ball.invertXDir();
 					} else {
           	ball.invertYDir();
@@ -378,10 +381,10 @@ int main( int argc, char *argv[] ) {
 					currentScore.update(to_string(stoi(currentScore.getValue()) + 1));
 					break;
 				}
-				blockinfo.a = a;
-				blockinfo.b = b;
-				blockinfo.c = c;
-				blockinfo.d = d;
+				blockinfo.ballLeftOfEntity = ballLeftOfBlock;
+				blockinfo.ballRightOfEntity = ballRightOfBlock;
+				blockinfo.ballAboveEntity = ballAboveBlock;
+				blockinfo.ballBelowEntity = ballBelowBlock;
 			}
 
 			// show score
