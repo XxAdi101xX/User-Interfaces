@@ -19,16 +19,16 @@ class Displayable {
 };
 
 class Ball: public Displayable {
-	const int startingXPosition;
-	const int startingYPosition;
-	int xPosition;
-	int yPosition;
-	int xDirection;
-	int yDirection;
+	const double startingXPosition;
+	const double startingYPosition;
+	double xPosition;
+	double yPosition;
+	double xDirection;
+	double yDirection;
 	const int ballSize;
 	GC gc;
 public:
-	Ball(int xPos, int yPos, GC gc, int ballSize, int ballSpeed): 
+	Ball(double xPos, double yPos, GC gc, int ballSize, double ballSpeed): 
 				xPosition(xPos), yPosition(yPos), gc(gc), ballSize(ballSize),
 				xDirection(ballSpeed), yDirection(-ballSpeed),
 				startingXPosition(xPos), startingYPosition(yPos) {}
@@ -39,16 +39,16 @@ public:
         			ballSize, ballSize,
         			0, 360*64);
 	}
-	int xPos() const {
+	double xPos() const {
 		return xPosition;
 	}
-	int yPos() const {
+	double yPos() const {
 		return yPosition;
 	}
-	int xDir() const {
+	double xDir() const {
 		return xDirection;
 	}
-	int yDir() const {
+	double yDir() const {
 		return yDirection;	
 	}
 	void updatePos() {
@@ -64,7 +64,7 @@ public:
 	int size() const {
 		return ballSize;
 	}
-	int reset() {
+	void reset() {
 		xPosition = startingXPosition;
 		yPosition = startingYPosition;
 		xDirection = abs(xDirection);
@@ -84,9 +84,6 @@ public:
 	Block(int x, int y, GC gc, int health = 1): x(x), y(y), gc(gc),
 																							currentHealth(health), maxHealth(health) {}
 	virtual void paint(Display* display, Pixmap buffer) const {
-	/*XColor red, brown, blue, yellow, green;
- 	XSetFillStyle(display, gc, FillSolid);
-  XSetForeground(display, gc, red.pixel);*/
 		XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 	}
 	int xPos() const {
@@ -155,12 +152,15 @@ class Text: public Displayable {
 public:
 	Text(int x, int y, GC gc, string text): x(x), y(y), gc(gc), text(text) {}
 	virtual void paint(Display* display, Pixmap buffer) const {
+		//char *fontname = "-misc-fixed-medium-r-semicondensed--0-0-75-75-c-0-iso8859-1";
+		//auto font = XLoadQueryFont(display, fontname);
+		//XSetFont(display, gc, font->fid);
 		XDrawString(display, buffer, gc, x, y, text.c_str(), text.length());
 	}
 	void update(string newText) {
 		text = newText;
 	}
-	string getValue() const {
+	string getText() const {
 		return text;
 	}
 };
@@ -182,7 +182,7 @@ Pixmap buffer;
 int FPS = 60;
 
 // ball speed
-int ballSpeed = 4;
+double ballSpeed = 3.0;
 
 // window size configuration
 int windowWidth = 1280;
@@ -224,18 +224,19 @@ int main( int argc, char *argv[] ) {
 	if (argc == 3) {
 		try {
 			int inputFPS = stoi(argv[1]);
-			int inputBallSpeed = stoi(argv[2]);
-			int scalingRatio = 60 / inputFPS;
+			double inputBallSpeed = stoi(argv[2]);
+			double scalingRatio = 60.0 / inputFPS;
 
 			if (inputFPS > 60 || inputFPS < 10 || inputBallSpeed > 10 || inputBallSpeed < 1) {
 				throw 1;
 			}
 
-			// maintain ball speed regardless of FPS
+			// scale ballspeed according to inputFPS
 			inputBallSpeed = inputBallSpeed * scalingRatio;
 
 			FPS = inputFPS;
-			ballSpeed = max(0.5 * inputBallSpeed, 1.0);
+			ballSpeed = max(0.6 * inputBallSpeed, 1.0);
+			cout << ballSpeed << endl;
 		} catch (...) {
 			handleInvalidCmdArgs();		
 		}
@@ -327,35 +328,46 @@ int main( int argc, char *argv[] ) {
 	XEvent event;
 
 	// track hit score
-	Text currentScore(1000, 500, gcBlack, "0");
+	Text scoreTitle(1150, 775, gcRed, "Current Score: ");
+	Text currentScore(1250, 775, gcRed, "0");
 
-eventLoop:
+	// intro text
+	string msg0 = "Welcome to Breakout!";
+	string msg1 = "This game is created by Adithya Venkatarao (ID: a32venka && Student#: 20606942)";
+	string msg2 = "To play this game, use the 'a' and 'd' buttons to move the paddle left and right respectively.";
+	string msg3 = "You can press 'q' at anytime to quit the game. Press 'r' to start playing!!!";
+	
+	Text introMessage0(w.width / 2 - 120, 250, gcWhite, msg0);
+	Text introMessage1(w.width / 4, 300, gcWhite, msg1);
+	Text introMessage2(w.width / 4, 350, gcWhite, msg2);
+	Text introMessage3(w.width / 4, 400, gcWhite, msg3);
+
+	// end game text
+	Text endGameMessage(w.width / 3, 525, gcRed, "");
+
+	//bool firstEntry = true;
+	bool intro = true;
+	bool gameInPlay = false;
+
 	// event loop
 	while ( true ) {
-
 		// process if we have any events
 		if (XPending(display) > 0) { 
 			XNextEvent( display, &event ); 
 
 			switch ( event.type ) {
-
-				// mouse button press
-				case ButtonPress:
-					cout << "CLICK" << endl;
-					break;
-
 				case KeyPress: // any keypress
 					KeySym key;
 					char text[10];
 					int i = XLookupString( (XKeyEvent*)&event, text, 10, &key, 0 );
 
 					// move right
-					if ( i == 1 && text[0] == 'd' ) {
+					if ( i == 1 && text[0] == 'd' && gameInPlay ) {
 						paddle.moveXPos(15);
 					}
 
 					// move left
-					if ( i == 1 && text[0] == 'a' ) {
+					if ( i == 1 && text[0] == 'a' && gameInPlay ) {
 						paddle.moveXPos(-15);
 					}
 
@@ -364,6 +376,13 @@ eventLoop:
 						XCloseDisplay(display);
 						exit(0);
 					}
+
+					// reset game
+          if ( i == 1 && text[0] == 'r' && !gameInPlay ) {
+						resetGameState(blocks, ball, paddle, currentScore);
+						gameInPlay = true;
+						intro = false;
+          }
 					break;
 				}
 		}
@@ -371,27 +390,42 @@ eventLoop:
 		unsigned long end = now();	// get current time in microsecond
 
 		if (end - lastRepaint > 1000000 / FPS) {
+			if (intro) {
+				introMessage0.paint(display, buffer);
+				introMessage1.paint(display, buffer);
+				introMessage2.paint(display, buffer);
+				introMessage3.paint(display, buffer);
+			}
 			// draw to buffer to take advantage of double buffering
-
-			// clear background
-      XFillRectangle(display, buffer, gcWhite,
-                     0, 0, w.width, w.height);
-
-			// draw paddle
-			paddle.paint(display, buffer);
-
-			// draw blocks
-			for (auto &blockinfo : blocks) {
-				if (!blockinfo.block.isDestroyed()) {
-					blockinfo.block.paint(display, buffer);
-				}
+			if (!gameInPlay) {
+				endGameMessage.paint(display, buffer);
 			}
 
-			// draw ball from centre
-			ball.paint(display, buffer);
+			if (gameInPlay) {
+				// clear background
+      	XFillRectangle(display, buffer, gcWhite,
+                     	0, 0, w.width, w.height);
 
-			// update ball position
-			ball.updatePos();
+				// draw paddle
+				paddle.paint(display, buffer);
+
+				// draw blocks
+				for (auto &blockinfo : blocks) {
+					if (!blockinfo.block.isDestroyed()) {
+						blockinfo.block.paint(display, buffer);
+					}
+				}
+
+				// draw ball from centre
+				ball.paint(display, buffer);
+
+				// show score
+				scoreTitle.paint(display, buffer);
+      	currentScore.paint(display, buffer);
+
+				// update ball position
+				ball.updatePos();
+			} // if gameInPlay
 
 			// check ball collision with wall
 			if (ball.xPos() + ball.size()/2 > w.width ||
@@ -401,7 +435,10 @@ eventLoop:
 				ball.invertYDir();
 			} else if (ball.yPos() + ball.size()/2 > w.height) {
 				// quit game
-				goto endGame;
+				string endGameText = "You have lost with a total score of " + currentScore.getText() +
+        				             "! Press 'r' to play again or 'q' to quit.";
+				endGameMessage.update(endGameText);
+				gameInPlay = false;
 			}
 			
 			// check ball collision with paddle
@@ -445,7 +482,7 @@ eventLoop:
           	ball.invertYDir();
 					}
 					block->onHit();
-					currentScore.update(to_string(stoi(currentScore.getValue()) + 1));
+					currentScore.update(to_string(stoi(currentScore.getText()) + 1));
 					break;
 				}
 				blockinfo.ballLeftOfBlock = ballLeftOfBlockNow;
@@ -454,11 +491,9 @@ eventLoop:
 				blockinfo.ballBelowBlock = ballBelowBlockNow;
 			}
 
-			// show score
-			currentScore.paint(display, buffer);
-
 			// reset game state
-			if (stoi(currentScore.getValue()) == 50) {
+			int score = stoi(currentScore.getText());
+			if (score > 0 && score % 50 == 0) {
         resetGameState(blocks, ball, paddle, currentScore);
       }
 
@@ -477,26 +512,5 @@ eventLoop:
 			usleep(1000000 / FPS - (now() - lastRepaint));
 		}
 	}
-endGame:
-	while (true) {
-		//if (XPending(display) > 0) {
-      XNextEvent( display, &event );
-      if (event.type == KeyPress) {
-        KeySym key;
-        char text[10];
-        int i = XLookupString( (XKeyEvent*)&event, text, 10, &key, 0 );
-
-        // move left
-        if ( i == 1 && text[0] == 'r' ) {
-          resetGameState(blocks, ball, paddle, currentScore);
-					goto eventLoop;
-        }
-        // quit game
-        if ( i == 1 && text[0] == 'q' ) {
-          XCloseDisplay(display);
-          exit(0);
-        }
-			}
-		//}
-	}
+	XCloseDisplay(display);
 }
