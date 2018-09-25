@@ -15,7 +15,7 @@ using namespace std;
 
 class Displayable {
 	public:
-		virtual void paint(Display* display, Pixmap buffer, GC gc) const = 0;
+		virtual void paint(Display* display, Pixmap buffer) const = 0;
 };
 
 class Ball: public Displayable {
@@ -26,12 +26,13 @@ class Ball: public Displayable {
 	int xDirection;
 	int yDirection;
 	const int ballSize;
+	GC gc;
 public:
-	Ball(int xPos, int yPos, int ballSize, int ballSpeed): 
-				xPosition(xPos), yPosition(yPos), ballSize(ballSize),
+	Ball(int xPos, int yPos, GC gc, int ballSize, int ballSpeed): 
+				xPosition(xPos), yPosition(yPos), gc(gc), ballSize(ballSize),
 				xDirection(ballSpeed), yDirection(-ballSpeed),
 				startingXPosition(xPos), startingYPosition(yPos) {}
-	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
+	virtual void paint(Display* display, Pixmap buffer) const {
 		XFillArc( display, buffer, gc,
         			xPosition - ballSize/2,
         			yPosition - ballSize/2,
@@ -74,14 +75,19 @@ public:
 class Block: public Displayable {
 	int x;
 	int y;
+	GC gc;
 	int currentHealth;
 	const int maxHealth;
 	const int widthDimension = 105;
 	const int heightDimension = 50;
 public:
-	Block(int x, int y, int health = 1): x(x), y(y), currentHealth(health), maxHealth(health) {}
-	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
-		XDrawRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
+	Block(int x, int y, GC gc, int health = 1): x(x), y(y), gc(gc),
+																							currentHealth(health), maxHealth(health) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
+	/*XColor red, brown, blue, yellow, green;
+ 	XSetFillStyle(display, gc, FillSolid);
+  XSetForeground(display, gc, red.pixel);*/
+		XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 	}
 	int xPos() const {
 		return x;
@@ -108,14 +114,17 @@ public:
 };
 
 class Paddle: public Displayable {
+  const int startingXPosition;
+  const int startingYPosition;
 	int x;
 	int y;
+	GC gc;
 	const int widthDimension = 150;
 	const int heightDimension = 30;
 public:
-	Paddle(int x, int y): x(x), y(y) {}
-	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
-		XDrawRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
+	Paddle(int x, int y, GC gc): x(x), y(y), startingXPosition(x), startingYPosition(y), gc(gc) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
+		XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 	}
 	void moveXPos(int offset) {
 		x += offset;
@@ -132,15 +141,20 @@ public:
 	int height() const {
 		return heightDimension;
 	}
+	void reset() {
+		x = startingXPosition;
+		y = startingYPosition;
+	}
 };
 
 class Text: public Displayable {
 	int x;
 	int y;
+	GC gc;
 	string text;
 public:
-	Text(int x, int y, string text): x(x), y(y), text(text) {}
-	virtual void paint(Display* display, Pixmap buffer, GC gc) const {
+	Text(int x, int y, GC gc, string text): x(x), y(y), gc(gc), text(text) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
 		XDrawString(display, buffer, gc, x, y, text.c_str(), text.length());
 	}
 	void update(string newText) {
@@ -168,7 +182,7 @@ Pixmap buffer;
 int FPS = 60;
 
 // ball speed
-int ballSpeed = 3;
+int ballSpeed = 4;
 
 // window size configuration
 int windowWidth = 1280;
@@ -188,12 +202,21 @@ void handleInvalidCmdArgs() {
 	exit( EXIT_FAILURE );
 }
 
-void resetGameState(vector<BlockInfo> &blocks, Ball &ball, Text &currentScore) {
+void resetGameState(vector<BlockInfo> &blocks, Ball &ball, Paddle &paddle, Text &currentScore) {
 	for (auto &blockinfo : blocks) {
   	blockinfo.block.reset();
   }
   ball.reset();
+	paddle.reset();
   currentScore.update("0");
+}
+
+GC createGC(XColor colour) {
+	GC gc = XCreateGC(display, window, 0, 0);
+
+  XSetFillStyle(display, gc, FillSolid);
+  XSetForeground(display, gc, colour.pixel);
+	return gc;
 }
 
 // entry point
@@ -212,12 +235,12 @@ int main( int argc, char *argv[] ) {
 			inputBallSpeed = inputBallSpeed * scalingRatio;
 
 			FPS = inputFPS;
-			ballSpeed = max(0.7 * inputBallSpeed, 1.0);
+			ballSpeed = max(0.5 * inputBallSpeed, 1.0);
 		} catch (...) {
 			handleInvalidCmdArgs();		
 		}
 	} else if (argc == 1) {
-		cout << "Your game will start with a preset FPS of 60 and ball speed of 3. Have fun!!!" << endl;
+		cout << "Your game will start with a preset FPS of 60 and regular ballspeed. Have fun!!!" << endl;
 	} else {
 		handleInvalidCmdArgs();
 	}
@@ -247,28 +270,49 @@ int main( int argc, char *argv[] ) {
 	XMapRaised(display, window);
 	XFlush(display);
 
+	// Allocate colours
+	Colormap screen_colormap = DefaultColormap(display, DefaultScreen(display));
+  XColor red, brown, blue, yellow, green, black, white;
+
+  XAllocNamedColor(display, screen_colormap, "red", &red, &red);
+  XAllocNamedColor(display, screen_colormap, "brown", &brown, &brown);
+  XAllocNamedColor(display, screen_colormap, "blue", &blue, &blue);
+  XAllocNamedColor(display, screen_colormap, "yellow", &yellow, &yellow);
+  XAllocNamedColor(display, screen_colormap, "green", &green, &green);
+	XAllocNamedColor(display, screen_colormap, "black", &black, &black);
+	XAllocNamedColor(display, screen_colormap, "white", &white, &white);
+
+	// create gc for drawing
+  GC gcBlack = createGC(black);
+	GC gcWhite = createGC(white);
+	GC gcRed = createGC(red);
+	GC gcBrown = createGC(brown);
+	GC gcBlue = createGC(blue);
+	GC gcYellow = createGC(yellow);
+	GC gcGreen = createGC(green);	
+
 	// initialize ball
-	Ball ball(windowWidth / 2, windowHeight * 0.75, 35, ballSpeed);
+	Ball ball(windowWidth / 2, windowHeight * 0.75, gcBlack, 35, ballSpeed);
 
 	// initialize blocks
+	vector<GC> gcs {gcRed, gcBrown, gcBlue, gcYellow, gcGreen};
 	vector<BlockInfo> blocks;
 	for (int i = 0; i < 5; ++i) {
 		for (int j = 1; j <= 10; ++j) {
-			Block block(j * 110, i * 55);
+			Block block(j * 110, i * 55, gcs[i], 1);
 			BlockInfo info{block, false, false, false, false};
 			blocks.emplace_back(info);
 		}
 	}
 
 	// initialize	paddle
-	Paddle paddle((windowWidth / 2) - 75, windowHeight - 100);
+	Paddle paddle((windowWidth / 2) - 75, windowHeight - 100, gcBlack);
 	bool ballLeftOfPaddle = false;
   bool ballRightOfPaddle = false;
   bool ballAbovePaddle = false;
   bool ballBelowPaddle = false;
 
-	// create gc for drawing
-	GC gc = XCreateGC(display, window, 0, 0);
+	// get window attributes
 	XWindowAttributes w;
 	XGetWindowAttributes(display, window, &w);
 
@@ -283,7 +327,7 @@ int main( int argc, char *argv[] ) {
 	XEvent event;
 
 	// track hit score
-	Text currentScore(1000, 500, "0");
+	Text currentScore(1000, 500, gcBlack, "0");
 
 eventLoop:
 	// event loop
@@ -330,23 +374,21 @@ eventLoop:
 			// draw to buffer to take advantage of double buffering
 
 			// clear background
-      XSetForeground(display, gc, WhitePixel(display, DefaultScreen(display)));
-      XFillRectangle(display, buffer, gc,
+      XFillRectangle(display, buffer, gcWhite,
                      0, 0, w.width, w.height);
 
 			// draw paddle
-			XSetForeground(display, gc, BlackPixel(display, DefaultScreen(display)));
-			paddle.paint(display, buffer, gc);
+			paddle.paint(display, buffer);
 
 			// draw blocks
 			for (auto &blockinfo : blocks) {
 				if (!blockinfo.block.isDestroyed()) {
-					blockinfo.block.paint(display, buffer, gc);
+					blockinfo.block.paint(display, buffer);
 				}
 			}
 
 			// draw ball from centre
-			ball.paint(display, buffer, gc);
+			ball.paint(display, buffer);
 
 			// update ball position
 			ball.updatePos();
@@ -413,15 +455,15 @@ eventLoop:
 			}
 
 			// show score
-			currentScore.paint(display, buffer, gc);
+			currentScore.paint(display, buffer);
 
 			// reset game state
 			if (stoi(currentScore.getValue()) == 50) {
-        resetGameState(blocks, ball, currentScore);
+        resetGameState(blocks, ball, paddle, currentScore);
       }
 
 			// copy buffer to window
-      XCopyArea(display, buffer, window, gc,
+      XCopyArea(display, buffer, window, gcBlack,
                 0, 0, w.width, w.height,  // region of pixmap to copy
                 0, 0); // position to put top left corner of pixmap in window
 
@@ -446,7 +488,7 @@ endGame:
 
         // move left
         if ( i == 1 && text[0] == 'r' ) {
-          resetGameState(blocks, ball, currentScore);
+          resetGameState(blocks, ball, paddle, currentScore);
 					goto eventLoop;
         }
         // quit game
