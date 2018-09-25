@@ -66,6 +66,8 @@ public:
 	int reset() {
 		xPosition = startingXPosition;
 		yPosition = startingYPosition;
+		xDirection = abs(xDirection);
+		yDirection = yDirection > 0 ? -yDirection : yDirection;
 	}
 };
 
@@ -149,6 +151,14 @@ public:
 	}
 };
 
+typedef struct {
+  Block block;
+  bool ballLeftOfBlock;
+  bool ballRightOfBlock;
+  bool ballAboveBlock;
+  bool ballBelowBlock;
+} BlockInfo;
+
 // X11 structures
 Display* display;
 Window window;
@@ -176,6 +186,14 @@ void handleInvalidCmdArgs() {
 			 <<	"Usage: './breakout [FPS] [BallSpeed]' where " 
 			 << "10 <= FPS <= 60 and 1 <= BallSpeed <= 10" << endl;
 	exit( EXIT_FAILURE );
+}
+
+void resetGameState(vector<BlockInfo> &blocks, Ball &ball, Text &currentScore) {
+	for (auto &blockinfo : blocks) {
+  	blockinfo.block.reset();
+  }
+  ball.reset();
+  currentScore.update("0");
 }
 
 // entry point
@@ -233,13 +251,6 @@ int main( int argc, char *argv[] ) {
 	Ball ball(windowWidth / 2, windowHeight * 0.75, 35, ballSpeed);
 
 	// initialize blocks
-	typedef struct {
-		Block block;
-		bool ballLeftOfEntity;
-		bool ballRightOfEntity;
-		bool ballAboveEntity;
-		bool ballBelowEntity;
-	} BlockInfo;
 	vector<BlockInfo> blocks;
 	for (int i = 0; i < 5; ++i) {
 		for (int j = 1; j <= 10; ++j) {
@@ -249,8 +260,12 @@ int main( int argc, char *argv[] ) {
 		}
 	}
 
-	
+	// initialize	paddle
 	Paddle paddle((windowWidth / 2) - 75, windowHeight - 100);
+	bool ballLeftOfPaddle = false;
+  bool ballRightOfPaddle = false;
+  bool ballAbovePaddle = false;
+  bool ballBelowPaddle = false;
 
 	// create gc for drawing
 	GC gc = XCreateGC(display, window, 0, 0);
@@ -270,6 +285,7 @@ int main( int argc, char *argv[] ) {
 	// track hit score
 	Text currentScore(1000, 500, "0");
 
+eventLoop:
 	// event loop
 	while ( true ) {
 
@@ -291,12 +307,12 @@ int main( int argc, char *argv[] ) {
 
 					// move right
 					if ( i == 1 && text[0] == 'd' ) {
-						paddle.moveXPos(10);
+						paddle.moveXPos(15);
 					}
 
 					// move left
 					if ( i == 1 && text[0] == 'a' ) {
-						paddle.moveXPos(-10);
+						paddle.moveXPos(-15);
 					}
 
 					// quit game
@@ -339,40 +355,49 @@ int main( int argc, char *argv[] ) {
 			if (ball.xPos() + ball.size()/2 > w.width ||
 					ball.xPos() - ball.size()/2 < 0) {
 				ball.invertXDir();
-			}
-			
-			if (ball.yPos() + ball.size()/2 > w.height ||
-					ball.yPos() - ball.size()/2 < 0) {
+			} else if (ball.yPos() - ball.size()/2 < 0) {
 				ball.invertYDir();
+			} else if (ball.yPos() + ball.size()/2 > w.height) {
+				// quit game
+				goto endGame;
 			}
 			
 			// check ball collision with paddle
-      bool paddleHit = ((ball.yPos() + ball.size()/2 > paddle.yPos()) &&
-                        ((ball.xPos() - ball.size()/2 >= paddle.xPos()) &&
-                         (ball.xPos() + ball.size()/2 <= paddle.xPos() + paddle.width())));			
+			bool ballLeftOfPaddleNow = ball.xPos() - ball.size()/2 < paddle.xPos() + paddle.width();
+      bool ballRightOfPaddleNow = ball.xPos() + ball.size()/2 > paddle.xPos();
+      bool ballAbovePaddleNow = ball.yPos() - ball.size()/2 < paddle.yPos() + paddle.height();
+      bool ballBelowPaddleNow = ball.yPos() + ball.size()/2 > paddle.yPos();
 
-			if (paddleHit) { // FIX THISSSSSSSSSSSSSSSSSSSSS
-				if (ball.xPos() <= paddle.xPos() + paddle.width()/2) {
-					if (ball.xDir() > 0) ball.invertXDir();
-				} else {
-					if (ball.xDir() < 0) ball.invertXDir();
-				}
-				ball.invertYDir();
-			}
-
+      if (ballLeftOfPaddleNow && ballRightOfPaddleNow && ballAbovePaddleNow && ballBelowPaddleNow) {
+        if (!ballLeftOfPaddle || !ballRightOfPaddle) {
+     	  	ball.invertXDir();
+        } else if (!ballBelowPaddle) { // don't interact with hit detection from below paddle
+          ball.invertYDir();
+					if (ball.xPos() > paddle.xPos() + paddle.width()/2) {
+						if (ball.xDir() < 0) ball.invertXDir();
+					} else {
+						if (ball.xDir() > 0) ball.invertXDir();
+					}
+        }
+      }
+      ballLeftOfPaddle = ballLeftOfPaddleNow;
+      ballRightOfPaddle = ballRightOfPaddleNow;
+      ballAbovePaddle = ballAbovePaddleNow;
+      ballBelowPaddle = ballBelowPaddleNow;
+			
 			// check ball collision with with blocks
 			for (auto &blockinfo: blocks) {
 				Block *block = &(blockinfo.block);
 
 				if (block->isDestroyed()) continue;
 
-				bool ballLeftOfBlock = ball.xPos() - ball.size()/2 < block->xPos() + block->width();
-				bool ballRightOfBlock = ball.xPos() + ball.size()/2 > block->xPos();
-				bool ballAboveBlock = ball.yPos() - ball.size()/2 < block->yPos() + block->height();
-				bool ballBelowBlock = ball.yPos() + ball.size()/2 > block->yPos();
+				bool ballLeftOfBlockNow = ball.xPos() - ball.size()/2 < block->xPos() + block->width();
+				bool ballRightOfBlockNow = ball.xPos() + ball.size()/2 > block->xPos();
+				bool ballAboveBlockNow = ball.yPos() - ball.size()/2 < block->yPos() + block->height();
+				bool ballBelowBlockNow = ball.yPos() + ball.size()/2 > block->yPos();
 
-				if (ballLeftOfBlock && ballRightOfBlock && ballAboveBlock && ballBelowBlock) {
-					if (!blockinfo.ballLeftOfEntity || !blockinfo.ballRightOfEntity) {
+				if (ballLeftOfBlockNow && ballRightOfBlockNow && ballAboveBlockNow && ballBelowBlockNow) {
+					if (!blockinfo.ballLeftOfBlock || !blockinfo.ballRightOfBlock) {
           	ball.invertXDir();
 					} else {
           	ball.invertYDir();
@@ -381,10 +406,10 @@ int main( int argc, char *argv[] ) {
 					currentScore.update(to_string(stoi(currentScore.getValue()) + 1));
 					break;
 				}
-				blockinfo.ballLeftOfEntity = ballLeftOfBlock;
-				blockinfo.ballRightOfEntity = ballRightOfBlock;
-				blockinfo.ballAboveEntity = ballAboveBlock;
-				blockinfo.ballBelowEntity = ballBelowBlock;
+				blockinfo.ballLeftOfBlock = ballLeftOfBlockNow;
+				blockinfo.ballRightOfBlock = ballRightOfBlockNow;
+				blockinfo.ballAboveBlock = ballAboveBlockNow;
+				blockinfo.ballBelowBlock = ballBelowBlockNow;
 			}
 
 			// show score
@@ -392,13 +417,8 @@ int main( int argc, char *argv[] ) {
 
 			// reset game state
 			if (stoi(currentScore.getValue()) == 50) {
-        for (auto &blockinfo : blocks) {
-          blockinfo.block.reset();
-        }
-				ball.reset();
-        currentScore.update("0");
+        resetGameState(blocks, ball, currentScore);
       }
-
 
 			// copy buffer to window
       XCopyArea(display, buffer, window, gc,
@@ -415,5 +435,26 @@ int main( int argc, char *argv[] ) {
 			usleep(1000000 / FPS - (now() - lastRepaint));
 		}
 	}
-	XCloseDisplay(display);
+endGame:
+	while (true) {
+		//if (XPending(display) > 0) {
+      XNextEvent( display, &event );
+      if (event.type == KeyPress) {
+        KeySym key;
+        char text[10];
+        int i = XLookupString( (XKeyEvent*)&event, text, 10, &key, 0 );
+
+        // move left
+        if ( i == 1 && text[0] == 'r' ) {
+          resetGameState(blocks, ball, currentScore);
+					goto eventLoop;
+        }
+        // quit game
+        if ( i == 1 && text[0] == 'q' ) {
+          XCloseDisplay(display);
+          exit(0);
+        }
+			}
+		//}
+	}
 }
