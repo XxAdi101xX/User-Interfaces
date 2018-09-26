@@ -1,11 +1,15 @@
 #include <string>
+#include <algorithm>
 #include "components.h"
 
+using namespace std;
+
+/* Ball Class Definitions */
 Ball::Ball(double xPos, double yPos, GC gc, int ballSize, double ballSpeed): 
             xPosition(xPos), yPosition(yPos), gc(gc), ballSize(ballSize),
             xDirection(ballSpeed), yDirection(-ballSpeed),
             startingXPosition(xPos), startingYPosition(yPos) {}
-virtual void Ball::paint(Display* display, Pixmap buffer) const {
+void Ball::paint(Display* display, Pixmap buffer) const {
     XFillArc( display, buffer, gc,
                 xPosition - ballSize/2,
                 yPosition - ballSize/2,
@@ -37,6 +41,9 @@ void Ball::invertYDir() {
 int Ball::size() const {
     return ballSize;
 }
+void Ball::replaceGC(GC newGC) {
+	gc = newGC;
+}
 void Ball::reset() {
     xPosition = startingXPosition;
     yPosition = startingYPosition;
@@ -44,39 +51,37 @@ void Ball::reset() {
     yDirection = yDirection > 0 ? -yDirection : yDirection;
 }
 
-/****************************************************************/
+/* Block Class Definitions */
 
-Block::Block(int x, int y, GC gc, int health = 1): x(x), y(y), gc(gc),
-                                                                                        currentHealth(health), maxHealth(health) {}
-virtual void Block::paint(Display* display, Pixmap buffer) const {
+Block::Block(int x, int y, GC gc, int health): x(x), y(y), gc(gc),                                                                                        currentHealth(health), maxHealth(health) {}
+void Block::paint(Display* display, Pixmap buffer) const {
     XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 }
-int xPos() const {
+int Block::xPos() const {
     return x;
 }
-int yPos() const {
+int Block::yPos() const {
     return y;
 }
-int width() const {
+int Block::width() const {
     return widthDimension;
 }
-int height() const {
+int Block::height() const {
     return heightDimension;
 }
-void onHit() {
+void Block::onHit() {
     --currentHealth;
 }
-bool isDestroyed() const {
+bool Block::isDestroyed() const {
     return currentHealth == 0;
 }
-void reset() {
+void Block::reset() {
     currentHealth = maxHealth;
 }
 
-/**************************************************************/
-
+/* Paddle Class Defintions */
 Paddle::Paddle(int x, int y, GC gc): x(x), y(y), startingXPosition(x), startingYPosition(y), gc(gc) {}
-virtual void paint(Display* display, Pixmap buffer) const {
+void Paddle::paint(Display* display, Pixmap buffer) const {
     XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 }
 void Paddle::moveXPos(int offset) {
@@ -99,10 +104,9 @@ void Paddle::reset() {
     y = startingYPosition;
 }
 
-/**********************************************************************/
-
+/* Text Class Definitions */
 Text::Text(int x, int y, GC gc, string text): x(x), y(y), gc(gc), text(text) {}
-virtual void Text::paint(Display* display, Pixmap buffer) const {
+void Text::paint(Display* display, Pixmap buffer) const {
     XDrawString(display, buffer, gc, x, y, text.c_str(), text.length());
 }
 void Text::update(string newText) {

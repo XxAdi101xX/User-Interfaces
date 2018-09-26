@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <unistd.h>
 #include <sys/time.h>
 
@@ -13,6 +14,155 @@
 #include "components.h"
 
 using namespace std;
+/*
+class Displayable {
+	public:
+		virtual void paint(Display* display, Pixmap buffer) const = 0;
+};
+
+class Ball: public Displayable {
+	const double startingXPosition;
+	const double startingYPosition;
+	double xPosition;
+	double yPosition;
+	double xDirection;
+	double yDirection;
+	const int ballSize;
+	GC gc;
+public:
+	Ball(double xPos, double yPos, GC gc, int ballSize, double ballSpeed): 
+				xPosition(xPos), yPosition(yPos), gc(gc), ballSize(ballSize),
+				xDirection(ballSpeed), yDirection(-ballSpeed),
+				startingXPosition(xPos), startingYPosition(yPos) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
+		XFillArc( display, buffer, gc,
+        			xPosition - ballSize/2,
+        			yPosition - ballSize/2,
+        			ballSize, ballSize,
+        			0, 360*64);
+	}
+	double xPos() const {
+		return xPosition;
+	}
+	double yPos() const {
+		return yPosition;
+	}
+	double xDir() const {
+		return xDirection;
+	}
+	double yDir() const {
+		return yDirection;	
+	}
+	void updatePos() {
+		xPosition += xDirection;
+		yPosition += yDirection;
+	}
+	void invertXDir() {
+		xDirection = -xDirection;
+	}
+	void invertYDir() {
+		yDirection = -yDirection;
+	}
+	int size() const {
+		return ballSize;
+	}
+	void reset() {
+		xPosition = startingXPosition;
+		yPosition = startingYPosition;
+		xDirection = abs(xDirection);
+		yDirection = yDirection > 0 ? -yDirection : yDirection;
+	}
+};
+
+class Block: public Displayable {
+	int x;
+	int y;
+	GC gc;
+	int currentHealth;
+	const int maxHealth;
+	const int widthDimension = 105;
+	const int heightDimension = 50;
+public:
+	Block(int x, int y, GC gc, int health = 1): x(x), y(y), gc(gc),
+																							currentHealth(health), maxHealth(health) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
+		XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
+	}
+	int xPos() const {
+		return x;
+	}
+	int yPos() const {
+		return y;
+	}
+	int width() const {
+		return widthDimension;
+	}
+	int height() const {
+		return heightDimension;
+	}
+	void onHit() {
+		--currentHealth;
+	}
+	bool isDestroyed() const {
+		return currentHealth == 0;
+	}
+	void reset() {
+		currentHealth = maxHealth;
+	}
+
+};
+
+class Paddle: public Displayable {
+  const int startingXPosition;
+  const int startingYPosition;
+	int x;
+	int y;
+	GC gc;
+	const int widthDimension = 150;
+	const int heightDimension = 30;
+public:
+	Paddle(int x, int y, GC gc): x(x), y(y), startingXPosition(x), startingYPosition(y), gc(gc) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
+		XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
+	}
+	void moveXPos(int offset) {
+		x += offset;
+	}
+	int xPos() const {
+		return x;
+	}
+	int yPos() const {
+		return y;
+	}
+	int width() const {
+		return widthDimension;
+	}
+	int height() const {
+		return heightDimension;
+	}
+	void reset() {
+		x = startingXPosition;
+		y = startingYPosition;
+	}
+};
+
+class Text: public Displayable {
+	int x;
+	int y;
+	GC gc;
+	string text;
+public:
+	Text(int x, int y, GC gc, string text): x(x), y(y), gc(gc), text(text) {}
+	virtual void paint(Display* display, Pixmap buffer) const {
+		XDrawString(display, buffer, gc, x, y, text.c_str(), text.length());
+	}
+	void update(string newText) {
+		text = newText;
+	}
+	string getText() const {
+		return text;
+	}
+};
 
 typedef struct {
   Block block;
@@ -21,8 +171,8 @@ typedef struct {
   bool ballAboveBlock;
   bool ballBelowBlock;
 } BlockInfo;
-
-// X11 main structures
+*/
+// X11 structures
 Display* display;
 Window window;
 Pixmap buffer;
@@ -34,8 +184,8 @@ int FPS = 60;
 double ballSpeed = 4.0;
 
 // window size configuration
-const int windowWidth = 1280;
-const int windowHeight = 800;
+int windowWidth = 1280;
+int windowHeight = 800;
 
 // get current time
 unsigned long now() {
@@ -93,7 +243,7 @@ int main( int argc, char *argv[] ) {
 			handleInvalidCmdArgs();		
 		}
 	} else if (argc == 1) {
-		cout << "Your game will start with a preset FPS of 60 and enjoyable ballspeed. Have fun!!!" << endl;
+		cout << "Your game will start with a preset FPS of 60 and regular ballspeed. Have fun!!!" << endl;
 	} else {
 		handleInvalidCmdArgs();
 	}
@@ -198,7 +348,7 @@ int main( int argc, char *argv[] ) {
 	bool intro = true;
 	bool gameInPlay = false;
 
-	// our main event loop
+	// event loop
 	while ( true ) {
 		// process if we have any events
 		if (XPending(display) > 0) { 
@@ -226,7 +376,7 @@ int main( int argc, char *argv[] ) {
 						exit(0);
 					}
 
-					// start game
+					// reset game
           if ( i == 1 && text[0] == 'r' && !gameInPlay ) {
 						resetGameState(blocks, ball, paddle, currentScore);
 						gameInPlay = true;
@@ -245,10 +395,12 @@ int main( int argc, char *argv[] ) {
 				introMessage2.paint(display, buffer);
 				introMessage3.paint(display, buffer);
 			}
-			
+			// draw to buffer to take advantage of double buffering
 			if (!gameInPlay) {
 				endGameMessage.paint(display, buffer);
-			} else {
+			}
+
+			if (gameInPlay) {
 				// clear background
       	XFillRectangle(display, buffer, gcWhite,
                      	0, 0, windowWidth, windowHeight);
@@ -299,8 +451,6 @@ int main( int argc, char *argv[] ) {
      	  	ball.invertXDir();
         } else if (!ballBelowPaddle) { // don't interact with hit detection from below paddle
           ball.invertYDir();
-
-					// hit ball to the left if it hits the left half of the paddle, else hit it to the right
 					if (ball.xPos() > paddle.xPos() + paddle.width()/2) {
 						if (ball.xDir() < 0) ball.invertXDir();
 					} else {
@@ -331,8 +481,6 @@ int main( int argc, char *argv[] ) {
           	ball.invertYDir();
 					}
 					block->onHit();
-					// semi-randomly select colour for ball
-					ball.replaceGC(gcs[rand() % gcs.size()]);
 					currentScore.update(to_string(stoi(currentScore.getText()) + 1));
 					break;
 				}
@@ -344,7 +492,7 @@ int main( int argc, char *argv[] ) {
 
 			// reset game state
 			int score = stoi(currentScore.getText());
-			if (score > 0 && score % 50 == 0) { // hey marker, change 50 to a low number to replicate reset
+			if (score > 0 && score % 50 == 0) {
         resetGameState(blocks, ball, paddle, currentScore);
       }
 

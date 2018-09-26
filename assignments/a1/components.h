@@ -1,6 +1,10 @@
 #ifndef __COMPONENTS_H__
 #define __COMPONENTS_H__
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <string>
+
 class Displayable {
 	public:
 		virtual void paint(Display* display, Pixmap buffer) const = 0;
@@ -22,12 +26,14 @@ public:
 	double yPos() const;
 	double xDir() const;
 	double yDir() const;
+	int size() const;
 	void updatePos();
 	void invertXDir();
 	void invertYDir();
-	int size() const;
+	void replaceGC(GC newGC);
 	void reset();
 };
+
 
 class Block: public Displayable {
 	int x;
@@ -44,27 +50,28 @@ public:
 	int yPos() const;
 	int width() const;
 	int height() const;
+	bool isDestroyed() const;
 	void onHit();
-	bool isDestroyed();
 	void reset();
 };
 
+
 class Paddle: public Displayable {
+  const int widthDimension = 150;
+  const int heightDimension = 30;
   const int startingXPosition;
   const int startingYPosition;
 	int x;
 	int y;
 	GC gc;
-	const int widthDimension = 150;
-	const int heightDimension = 30;
 public:
 	Paddle(int x, int y, GC gc);
 	virtual void paint(Display* display, Pixmap buffer) const;
-	void moveXPos(int offset);
 	int xPos() const;
 	int yPos() const;
 	int width() const;
 	int height() const;
+	void moveXPos(int offset);
 	void reset();
 };
 
@@ -72,20 +79,12 @@ class Text: public Displayable {
 	int x;
 	int y;
 	GC gc;
-	string text;
+	std::string text;
 public:
-	Text(int x, int y, GC gc, string text);
+	Text(int x, int y, GC gc, std::string text);
 	virtual void paint(Display* display, Pixmap buffer) const;
-	void update(string newText);
-	string getText() const;
+	void update(std::string newText);
+	std::string getText() const;
 };
-
-typedef struct {
-  Block block;
-  bool ballLeftOfBlock;
-  bool ballRightOfBlock;
-  bool ballAboveBlock;
-  bool ballBelowBlock;
-} BlockInfo;
 
 #endif
