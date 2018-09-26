@@ -73,6 +73,7 @@ GC createGC(XColor colour) {
 
 // entry point
 int main( int argc, char *argv[] ) {
+	// handle command line arguemetns
 	if (argc == 3) {
 		try {
 			int inputFPS = stoi(argv[1]);
@@ -198,10 +199,9 @@ int main( int argc, char *argv[] ) {
 	bool intro = true;
 	bool gameInPlay = false;
 
-	// our main event loop
+	// our main event loop!
 	while ( true ) {
-		// process if we have any events
-		if (XPending(display) > 0) { 
+		if (XPending(display) > 0) { // if we have any events to handle
 			XNextEvent( display, &event ); 
 
 			switch ( event.type ) {
@@ -239,6 +239,7 @@ int main( int argc, char *argv[] ) {
 		unsigned long end = now();	// get current time in microsecond
 
 		if (end - lastRepaint > 1000000 / FPS) {
+			// check if we have first loaded the game
 			if (intro) {
 				introMessage0.paint(display, buffer);
 				introMessage1.paint(display, buffer);
@@ -246,6 +247,7 @@ int main( int argc, char *argv[] ) {
 				introMessage3.paint(display, buffer);
 			}
 			
+			// drawing our components depending on whether the game is active
 			if (!gameInPlay) {
 				endGameMessage.paint(display, buffer);
 			} else {
@@ -272,7 +274,7 @@ int main( int argc, char *argv[] ) {
 
 				// update ball position
 				ball.updatePos();
-			} // drawing block
+			}
 
 			// check ball collision with wall
 			if (ball.xPos() + ball.size()/2 > windowWidth ||
@@ -281,7 +283,7 @@ int main( int argc, char *argv[] ) {
 			} else if (ball.yPos() - ball.size()/2 < 0) {
 				ball.invertYDir();
 			} else if (ball.yPos() + ball.size()/2 > windowHeight) {
-				// quit game
+				// hit bottom of screen hence user lost the game
 				string endGameText = "You have lost with a total score of " + currentScore.getText() +
         				             "! Press 'r' to play again or 'q' to quit.";
 				endGameMessage.update(endGameText);
@@ -308,6 +310,7 @@ int main( int argc, char *argv[] ) {
 					}
         }
       }
+			// save flags to detect the side of the block that was hit on collision
       ballLeftOfPaddle = ballLeftOfPaddleNow;
       ballRightOfPaddle = ballRightOfPaddleNow;
       ballAbovePaddle = ballAbovePaddleNow;
@@ -336,6 +339,7 @@ int main( int argc, char *argv[] ) {
 					currentScore.update(to_string(stoi(currentScore.getText()) + 1));
 					break;
 				}
+				// save flags to detect the side of the block that was hit on collision
 				blockinfo.ballLeftOfBlock = ballLeftOfBlockNow;
 				blockinfo.ballRightOfBlock = ballRightOfBlockNow;
 				blockinfo.ballAboveBlock = ballAboveBlockNow;
