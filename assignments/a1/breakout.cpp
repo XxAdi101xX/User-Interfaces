@@ -152,9 +152,6 @@ class Text: public Displayable {
 public:
 	Text(int x, int y, GC gc, string text): x(x), y(y), gc(gc), text(text) {}
 	virtual void paint(Display* display, Pixmap buffer) const {
-		//char *fontname = "-misc-fixed-medium-r-semicondensed--0-0-75-75-c-0-iso8859-1";
-		//auto font = XLoadQueryFont(display, fontname);
-		//XSetFont(display, gc, font->fid);
 		XDrawString(display, buffer, gc, x, y, text.c_str(), text.length());
 	}
 	void update(string newText) {
@@ -182,7 +179,7 @@ Pixmap buffer;
 int FPS = 60;
 
 // ball speed
-double ballSpeed = 3.0;
+double ballSpeed = 4.0;
 
 // window size configuration
 int windowWidth = 1280;
@@ -195,6 +192,7 @@ unsigned long now() {
 	return tv.tv_sec * 1000000 + tv.tv_usec;
 }
 
+// handle bad command line args
 void handleInvalidCmdArgs() {
 	cerr << "Invalid Arguements!" << endl
 			 <<	"Usage: './breakout [FPS] [BallSpeed]' where " 
@@ -202,6 +200,7 @@ void handleInvalidCmdArgs() {
 	exit( EXIT_FAILURE );
 }
 
+// reset the game state
 void resetGameState(vector<BlockInfo> &blocks, Ball &ball, Paddle &paddle, Text &currentScore) {
 	for (auto &blockinfo : blocks) {
   	blockinfo.block.reset();
@@ -211,6 +210,7 @@ void resetGameState(vector<BlockInfo> &blocks, Ball &ball, Paddle &paddle, Text 
   currentScore.update("0");
 }
 
+// create gcs with some preset properties
 GC createGC(XColor colour) {
 	GC gc = XCreateGC(display, window, 0, 0);
 
@@ -271,7 +271,7 @@ int main( int argc, char *argv[] ) {
 	XMapRaised(display, window);
 	XFlush(display);
 
-	// Allocate colours
+	// allocate colours
 	Colormap screen_colormap = DefaultColormap(display, DefaultScreen(display));
   XColor red, brown, blue, yellow, green, black, white;
 
@@ -283,7 +283,7 @@ int main( int argc, char *argv[] ) {
 	XAllocNamedColor(display, screen_colormap, "black", &black, &black);
 	XAllocNamedColor(display, screen_colormap, "white", &white, &white);
 
-	// create gc for drawing
+	// create gcs for images
   GC gcBlack = createGC(black);
 	GC gcWhite = createGC(white);
 	GC gcRed = createGC(red);
@@ -298,9 +298,10 @@ int main( int argc, char *argv[] ) {
 	// initialize blocks
 	vector<GC> gcs {gcRed, gcBrown, gcBlue, gcYellow, gcGreen};
 	vector<BlockInfo> blocks;
+	int offSet = 35;
 	for (int i = 0; i < 5; ++i) {
-		for (int j = 1; j <= 10; ++j) {
-			Block block(j * 110, i * 55, gcs[i], 1);
+		for (int j = 0; j < 11; ++j) {
+			Block block(j * 110 + offSet, i * 55, gcs[i], 1);
 			BlockInfo info{block, false, false, false, false};
 			blocks.emplace_back(info);
 		}
@@ -313,13 +314,9 @@ int main( int argc, char *argv[] ) {
   bool ballAbovePaddle = false;
   bool ballBelowPaddle = false;
 
-	// get window attributes
-	XWindowAttributes w;
-	XGetWindowAttributes(display, window, &w);
-
 	// create buffer for double buffering
   int depth = DefaultDepth(display, DefaultScreen(display));
-  buffer = XCreatePixmap(display, window, w.width, w.height, depth);
+  buffer = XCreatePixmap(display, window, windowWidth, windowHeight, depth);
 
 	// save time of last window paint
 	unsigned long lastRepaint = 0;
@@ -337,13 +334,13 @@ int main( int argc, char *argv[] ) {
 	string msg2 = "To play this game, use the 'a' and 'd' buttons to move the paddle left and right respectively.";
 	string msg3 = "You can press 'q' at anytime to quit the game. Press 'r' to start playing!!!";
 	
-	Text introMessage0(w.width / 2 - 120, 250, gcWhite, msg0);
-	Text introMessage1(w.width / 4, 300, gcWhite, msg1);
-	Text introMessage2(w.width / 4, 350, gcWhite, msg2);
-	Text introMessage3(w.width / 4, 400, gcWhite, msg3);
+	Text introMessage0(windowWidth / 2 - 120, 250, gcWhite, msg0);
+	Text introMessage1(windowWidth / 4, 300, gcWhite, msg1);
+	Text introMessage2(windowWidth / 4, 350, gcWhite, msg2);
+	Text introMessage3(windowWidth / 4, 400, gcWhite, msg3);
 
 	// end game text
-	Text endGameMessage(w.width / 3, 525, gcRed, "");
+	Text endGameMessage(windowWidth / 3, 525, gcRed, "");
 
 	//bool firstEntry = true;
 	bool intro = true;
@@ -404,7 +401,7 @@ int main( int argc, char *argv[] ) {
 			if (gameInPlay) {
 				// clear background
       	XFillRectangle(display, buffer, gcWhite,
-                     	0, 0, w.width, w.height);
+                     	0, 0, windowWidth, windowHeight);
 
 				// draw paddle
 				paddle.paint(display, buffer);
@@ -425,15 +422,15 @@ int main( int argc, char *argv[] ) {
 
 				// update ball position
 				ball.updatePos();
-			} // if gameInPlay
+			} // drawing block
 
 			// check ball collision with wall
-			if (ball.xPos() + ball.size()/2 > w.width ||
+			if (ball.xPos() + ball.size()/2 > windowWidth ||
 					ball.xPos() - ball.size()/2 < 0) {
 				ball.invertXDir();
 			} else if (ball.yPos() - ball.size()/2 < 0) {
 				ball.invertYDir();
-			} else if (ball.yPos() + ball.size()/2 > w.height) {
+			} else if (ball.yPos() + ball.size()/2 > windowHeight) {
 				// quit game
 				string endGameText = "You have lost with a total score of " + currentScore.getText() +
         				             "! Press 'r' to play again or 'q' to quit.";
@@ -499,7 +496,7 @@ int main( int argc, char *argv[] ) {
 
 			// copy buffer to window
       XCopyArea(display, buffer, window, gcBlack,
-                0, 0, w.width, w.height,  // region of pixmap to copy
+                0, 0, windowWidth, windowHeight,  // region of pixmap to copy
                 0, 0); // position to put top left corner of pixmap in window
 
 			XFlush( display );
