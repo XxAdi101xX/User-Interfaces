@@ -23,7 +23,7 @@ typedef struct {
 } BlockInfo;
 
 // X11 main structures
-Display* display;
+Display *display;
 Window window;
 Pixmap buffer;
 
