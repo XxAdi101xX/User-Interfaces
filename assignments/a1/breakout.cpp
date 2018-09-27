@@ -54,7 +54,7 @@ void handleInvalidCmdArgs() {
 
 // reset the game state
 void resetGameComponents(vector<BlockInfo> &blocks, Ball &ball, Paddle &paddle,
-                    Text &currentScore) {
+                         Text &currentScore) {
   for (auto &blockinfo : blocks) {
     blockinfo.block.reset();
   }
@@ -184,7 +184,8 @@ int main(int argc, char *argv[]) {
   Text scoreTitle(1150, 775, gcRed, "Current Score: ");
   Text currentScore(1250, 775, gcRed, "0");
 
-	int levelScore = 0; // used to check when to respawn all the blocks when the user wins the game
+  int levelScore = 0;  // used to check when to respawn all the blocks when the
+                       // user wins the game
 
   // intro text
   string msg0 = "Welcome to Breakout!";
@@ -239,7 +240,7 @@ int main(int argc, char *argv[]) {
 
           // start game
           if (i == 1 && text[0] == 'r' && !gameInPlay) {
-						currentScore.update("0");
+            currentScore.update("0");
             resetGameComponents(blocks, ball, paddle, currentScore);
             gameInPlay = true;
             intro = false;
@@ -358,7 +359,7 @@ int main(int argc, char *argv[]) {
           block->onHit();
           // semi-randomly select colour for ball
           ball.replaceGC(gcs[rand() % gcs.size()]);
-					++levelScore;
+          ++levelScore;
           currentScore.update(to_string(stoi(currentScore.getText()) + 1));
           break;
         }
@@ -372,7 +373,7 @@ int main(int argc, char *argv[]) {
       // reset game state
       int score = stoi(currentScore.getText());
       if (levelScore == blocks.size()) {  // user cleared all the blocks
-				levelScore = 0;
+        levelScore = 0;
         resetGameComponents(blocks, ball, paddle, currentScore);
       }
 
