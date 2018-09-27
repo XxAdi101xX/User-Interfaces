@@ -88,8 +88,7 @@ int main( int argc, char *argv[] ) {
 			inputBallSpeed = inputBallSpeed * scalingRatio;
 
 			FPS = inputFPS;
-			ballSpeed = max(0.6 * inputBallSpeed, 1.0);
-			cout << ballSpeed << endl;
+			ballSpeed = max(0.75 * inputBallSpeed, 1.0);
 		} catch (...) {
 			handleInvalidCmdArgs();		
 		}
@@ -212,12 +211,12 @@ int main( int argc, char *argv[] ) {
 
 					// move right
 					if ( i == 1 && text[0] == 'd' && gameInPlay ) {
-						paddle.moveXPos(15);
+						paddle.moveXPos(20, windowWidth);
 					}
 
 					// move left
 					if ( i == 1 && text[0] == 'a' && gameInPlay ) {
-						paddle.moveXPos(-15);
+						paddle.moveXPos(-20, windowWidth);
 					}
 
 					// quit game

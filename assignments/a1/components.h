@@ -71,7 +71,7 @@ public:
 	int yPos() const;
 	int width() const;
 	int height() const;
-	void moveXPos(int offset);
+	void moveXPos(int offset, int windowWidth);
 	void reset();
 };
 

@@ -84,8 +84,11 @@ Paddle::Paddle(int x, int y, GC gc): x(x), y(y), startingXPosition(x), startingY
 void Paddle::paint(Display* display, Pixmap buffer) const {
     XFillRectangle(display, buffer, gc, x, y, widthDimension, heightDimension);
 }
-void Paddle::moveXPos(int offset) {
-    x += offset;
+void Paddle::moveXPos(int offset, int windowWidth) {
+		int newPosition = x + offset;
+		if (newPosition >= 0 && newPosition + widthDimension <= windowWidth) {
+			x = newPosition;
+		}
 }
 int Paddle::xPos() const {
     return x;
