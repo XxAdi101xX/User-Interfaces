@@ -9,7 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.*;
 
-class LineWidthPalette extends JPanel  {
+public class LineWidthPalette extends JPanel  {
 
 	// the view's main user interface
 	private JButton button;

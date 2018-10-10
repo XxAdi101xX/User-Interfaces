@@ -3,31 +3,50 @@
 // inspired by code by Joseph Mack, http://www.austintek.com/mvc/
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.tools.Tool;
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.*;
 
-class ToolPalette extends JPanel  {
+import java.net.URL;
 
-	// the view's main user interface
-	private JButton button;
-
-	// the model that this view is showing
+public class ToolPalette extends JPanel  {
 	private Model model;
-
+	private IconButton selectedTool;
 
 	public ToolPalette(Model model) {
 		
+
+		this.setLayout (new GridLayout(3, 2));
+		this.setBackground(Color.BLACK);
+		
 		// create the view UI
-		button = new JButton("?");
+		IconButton cursor = new IconButton("cursor2.png");
+		IconButton eraser = new IconButton("eraser.png");
+		IconButton line = new IconButton("line.png");
+		IconButton circle = new IconButton("circle.png");
+		IconButton rectangle = new IconButton("rectangle.png");
+		IconButton fill = new IconButton("fill.png");
+
+		selectedTool = cursor;
+		selectedTool.addAsSelected();
+
+		this.add(cursor);
+		this.add(eraser);
+		this.add(line);
+		this.add(circle);
+		this.add(rectangle);
+		this.add(fill);
 		//button.setMaximumSize(new Dimension(200, 200));
 		//button.setPreferredSize(new Dimension(200, 200));
-		// a GridBagLayout with default constraints centres
-		// the widget in the window
-		this.setLayout(new GridBagLayout());
-		this.add(button, new GridBagConstraints());
 
 		// set the model
 		this.model = model;
@@ -36,18 +55,61 @@ class ToolPalette extends JPanel  {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("ColourPalette: updateView");
-				button.setText(Integer.toString(model.getCounterValue()));
+				// button.setText(Integer.toString(model.getCounterValue()));
 			}
 		});
 
 
 		// setup the event to go to the "controller"
 		// (this anonymous class is essentially the controller)
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.incrementCounter();
-			}
-		});
+		// button.addActionListener(new ActionListener() {
+		// 	public void actionPerformed(ActionEvent e) {
+		// 		model.incrementCounter();
+		// 	}
+		// });
+	}
+
+	class IconButton extends JButton {
+		private ImageIcon icon;
+	
+		// Taken from docs.oracle.com
+		IconButton(String location) {
+			URL url = getClass().getResource(location);
+			icon = new ImageIcon(url);
+			//Image scaledIcon = originalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			//icon = new ImageIcon(scaledIcon);
+			setIcon(icon);
+			
+			// set button properties
+			setBackground(Color.WHITE);			// setMargin(new Insets(15, 15, 15, 15));
+			setPreferredSize(new Dimension(100,100));
+			setBorder(new LineBorder(Color.BLACK, 1));
+			setFocusPainted(false);
+	
+			addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent e) {
+					if (e.getButton() == MouseEvent.BUTTON1) { // left click
+						System.out.println("111");
+						ToolPalette.this.model.getCounterValue();
+						addAsSelected();
+					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
+						System.out.println("333");
+					}
+				}
+			});
+		}
+
+		public void addAsSelected() {
+			selectedTool.removeAsSelected();
+			setBorder(new LineBorder(Color.GRAY, 5));
+			selectedTool = this;
+
+		}
+		
+		public void removeAsSelected() {
+			System.out.println("resettt");
+			setBorder(new LineBorder(Color.BLACK, 1));
+		}
 	}
 
 

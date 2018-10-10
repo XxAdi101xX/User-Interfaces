@@ -19,6 +19,7 @@ public class Model {
 	}
 	
 	public int getCounterValue() {
+		System.out.println("yaaaaaaaaaaay");
 		return counter;
 	}
 	
