@@ -9,7 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.*;
 
-class View extends JPanel  {
+class ToolPalette extends JPanel  {
 
 	// the view's main user interface
 	private JButton button;
@@ -18,12 +18,12 @@ class View extends JPanel  {
 	private Model model;
 
 
-	public View(Model model) {
+	public ToolPalette(Model model) {
 		
 		// create the view UI
 		button = new JButton("?");
-		button.setMaximumSize(new Dimension(100, 50));
-		button.setPreferredSize(new Dimension(100, 50));
+		//button.setMaximumSize(new Dimension(200, 200));
+		//button.setPreferredSize(new Dimension(200, 200));
 		// a GridBagLayout with default constraints centres
 		// the widget in the window
 		this.setLayout(new GridBagLayout());
@@ -35,7 +35,7 @@ class View extends JPanel  {
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("View: updateView");
+				System.out.println("ColourPalette: updateView");
 				button.setText(Integer.toString(model.getCounterValue()));
 			}
 		});
