@@ -3,7 +3,7 @@
 // inspired by code by Joseph Mack, http://www.austintek.com/mvc/
 
 import javax.swing.*;
-import java.awt.*;;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 

@@ -20,6 +20,8 @@ class ColourPalette extends JPanel  {
 
 
 	public ColourPalette(Model model) {
+		// set the model
+		this.model = model;
 		ColourPanel a = new ColourPanel(Color.RED);
 		ColourPanel b = new ColourPanel(Color.GREEN);
 		ColourPanel c = new ColourPanel(Color.BLUE);
@@ -36,10 +38,8 @@ class ColourPalette extends JPanel  {
 		this.add(f);
 
 		selectedColour = a;
-		selectedColour.addAsSelected();
-
-		// set the model
-		this.model = model;
+		selectedColour.setAsSelected();
+		this.model.updateColour(selectedColour.getColour(), false);
 
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
@@ -51,8 +51,10 @@ class ColourPalette extends JPanel  {
 	}
 
 	class ColourPanel extends JButton {
-		public ColourPanel(Color color) {	
-			setBackground(color);
+		private Color colour;
+		public ColourPanel(Color colour) {	
+			this.colour = colour;
+			setBackground(colour);
 			setBorder(new LineBorder(Color.BLACK, 1));
 			setFocusPainted(false);
 
@@ -60,7 +62,8 @@ class ColourPalette extends JPanel  {
 				public void mouseReleased(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) { // left click
 						System.out.println("111");
-						addAsSelected();
+						ColourPalette.this.model.updateColour(colour, false);
+						setAsSelected();
 					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
 						System.out.println("333");
 					}
@@ -68,7 +71,11 @@ class ColourPalette extends JPanel  {
 			});
 		}
 
-		public void addAsSelected() {
+		public Color getColour() {
+			return colour;
+		}
+
+		public void setAsSelected() {
 			selectedColour.removeAsSelected();
 			setBorder(new LineBorder(Color.GRAY, 5));
 			selectedColour = this;

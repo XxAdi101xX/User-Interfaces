@@ -29,12 +29,12 @@ public class ToolPalette extends JPanel  {
 		this.setBackground(Color.BLACK);
 		
 		// create the view UI
-		IconButton cursor = new IconButton("cursor2.png");
-		IconButton eraser = new IconButton("eraser.png");
-		IconButton line = new IconButton("line.png");
-		IconButton circle = new IconButton("circle.png");
-		IconButton rectangle = new IconButton("rectangle.png");
-		IconButton fill = new IconButton("fill.png");
+		IconButton cursor = new IconButton("icons/cursor2.png");
+		IconButton eraser = new IconButton("icons/eraser.png");
+		IconButton line = new IconButton("icons/line.png");
+		IconButton circle = new IconButton("icons/circle.png");
+		IconButton rectangle = new IconButton("icons/rectangle.png");
+		IconButton fill = new IconButton("icons/fill.png");
 
 		selectedTool = cursor;
 		selectedTool.addAsSelected();

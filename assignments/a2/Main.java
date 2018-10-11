@@ -16,6 +16,7 @@ public class Main {
 		ToolPalette toolPalette = new ToolPalette(model);
 		ColourPalette colourPalette = new ColourPalette(model);
 		LineWidthPalette lineWidthPalette = new LineWidthPalette(model);
+		ColourPicker colourPicker = new ColourPicker(model);
 		Canvas canvas = new Canvas(model);
 		// Menu DO I NEED THE FINAL KEYWORD
 		MenuBar menuBar = new MenuBar(model);
@@ -25,10 +26,19 @@ public class Main {
 		//palettePanel.setPreferredSize(new Dimension(300, palettePanel.getHeight()));
 		palettePanel.add(toolPalette);
 		palettePanel.add(colourPalette);
-		palettePanel.add(lineWidthPalette);
+		// palettePanel.add(lineWidthPalette);
+
+		JButton button = new JButton("5465");
+		JPanel bottomPalette = new JPanel(new BorderLayout());
+		bottomPalette.add(colourPicker, BorderLayout.NORTH);
+		bottomPalette.add(lineWidthPalette);
+
+		palettePanel.add(bottomPalette);
+		// button.setMaximumSize(new Dimension(200, 200));
+		// button.setPreferredSize(new Dimension(200, 200));
 
 		toolPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		colourPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+		// colourPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		
 		// create a layout panel to hold the two views
 		JPanel windowPanel = new JPanel(new BorderLayout());

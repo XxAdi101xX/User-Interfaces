@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 
 // HelloMVC: a simple MVC example
@@ -7,7 +8,9 @@ import java.util.ArrayList;
 public class Model {	
 	
 	// the data in the model, just a counter
-	private int counter;	
+	private int counter = 1;	
+	private Color colour;
+	private Boolean isCustomColour = false;
 	// all views of this model
 	private ArrayList<IView> views = new ArrayList<IView>();
 
@@ -29,7 +32,18 @@ public class Model {
 			System.out.println("Model: increment counter to " + counter);
 			notifyObservers();
 		}
-	} 	
+	} 
+	
+	// my stuff
+	public void updateColour(Color newColour, Boolean usingCustomColour) {
+		colour = newColour;
+		isCustomColour = usingCustomColour;
+		notifyObservers();
+	}
+
+	public Boolean isUsingCustomColour() {
+		return isCustomColour;
+	}
 	
 	// notify the IView observer
 	private void notifyObservers() {
