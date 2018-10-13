@@ -22,12 +22,13 @@ class ColourPalette extends JPanel  {
 	public ColourPalette(Model model) {
 		// set the model
 		this.model = model;
+
 		ColourPanel a = new ColourPanel(Color.RED);
 		ColourPanel b = new ColourPanel(Color.GREEN);
 		ColourPanel c = new ColourPanel(Color.BLUE);
 		ColourPanel d = new ColourPanel(Color.ORANGE);
-		ColourPanel e = new ColourPanel(Color.BLACK);
-		ColourPanel f = new ColourPanel(Color.WHITE);
+		ColourPanel e = new ColourPanel(Color.PINK);
+		ColourPanel f = new ColourPanel(Color.YELLOW);
 
 		this.setLayout (new GridLayout(3, 2));
 		this.add(a);
@@ -39,7 +40,7 @@ class ColourPalette extends JPanel  {
 
 		selectedColour = a;
 		selectedColour.setAsSelected();
-		this.model.updateColour(selectedColour.getColour(), false);
+		this.model.setColour(selectedColour.getColour(), false);
 
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
@@ -62,7 +63,7 @@ class ColourPalette extends JPanel  {
 				public void mouseReleased(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) { // left click
 						System.out.println("111");
-						ColourPalette.this.model.updateColour(colour, false);
+						ColourPalette.this.model.setColour(colour, false);
 						setAsSelected();
 					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
 						System.out.println("333");

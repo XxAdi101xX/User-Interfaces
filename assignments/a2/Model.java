@@ -10,6 +10,7 @@ public class Model {
 	// the data in the model, just a counter
 	private int counter = 1;	
 	private Color colour;
+	private int lineWidth;
 	private Boolean isCustomColour = false;
 	// all views of this model
 	private ArrayList<IView> views = new ArrayList<IView>();
@@ -35,15 +36,28 @@ public class Model {
 	} 
 	
 	// my stuff
-	public void updateColour(Color newColour, Boolean usingCustomColour) {
+	public void setColour(Color newColour, Boolean usingCustomColour) {
 		colour = newColour;
 		isCustomColour = usingCustomColour;
 		notifyObservers();
+	}
+	
+	public Color getColour() {
+		return colour;
 	}
 
 	public Boolean isUsingCustomColour() {
 		return isCustomColour;
 	}
+
+	public void setLineWidth(int newWidth) {
+		lineWidth = newWidth;
+		notifyObservers();
+	}
+	public int getLineWidth() {
+		return lineWidth;
+	}
+
 	
 	// notify the IView observer
 	private void notifyObservers() {

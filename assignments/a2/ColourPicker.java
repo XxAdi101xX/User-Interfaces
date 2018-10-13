@@ -14,9 +14,8 @@ class ColourPicker extends JPanel {
 
     public ColourPicker(Model model) {
         this.model = model;
-        // setBorder(new LineBorder(Color.BLACK, 1));
+
         button = new JButton("Colour Picker");
-        button.setBorder(new LineBorder(Color.BLACK, 1));
         button.setPreferredSize(new Dimension(200,60));
 
         this.setLayout(new GridBagLayout());
@@ -27,7 +26,7 @@ class ColourPicker extends JPanel {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     Color chosenColour = colourChooser.showDialog(new JPanel(), "Colour Picker", Color.ORANGE);
                     if (chosenColour != null) {
-                        model.updateColour(chosenColour, true);
+                        model.setColour(chosenColour, true);
                         setAsSelected(chosenColour);
                     }
                 }
@@ -48,10 +47,11 @@ class ColourPicker extends JPanel {
     public void setAsSelected(Color colour) {
         setBorder(new LineBorder(colour, 5));
 
+        // button.setForeground(Color.RED);
     }
     
     public void removeAsSelected() {
         System.out.println("resettt");
-        setBorder(new LineBorder(Color.BLACK, 1));
+        setBorder(new LineBorder(Color.BLACK, 5));
     }
 }
