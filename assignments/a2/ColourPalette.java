@@ -1,26 +1,15 @@
-// HelloMVC: a simple MVC example
-// the model is just a counter
-// inspired by code by Joseph Mack, http://www.austintek.com/mvc/
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.event.*;
 
 class ColourPalette extends JPanel  {
-
-	// the view's main user interface
-	private JButton button;
-
-	// the model that this view is showing
 	private Model model;
-
 	private ColourPanel selectedColour;
 
-
 	public ColourPalette(Model model) {
-		// set the model
 		this.model = model;
 
 		ColourPanel a = new ColourPanel(Color.RED);
@@ -46,13 +35,13 @@ class ColourPalette extends JPanel  {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("ToolPalette: updateView");
-				// button.setText(Integer.toString(model.getCounterValue()));
 			}
 		});
 	}
 
 	class ColourPanel extends JButton {
 		private Color colour;
+
 		public ColourPanel(Color colour) {	
 			this.colour = colour;
 			setBackground(colour);
@@ -66,7 +55,7 @@ class ColourPalette extends JPanel  {
 						ColourPalette.this.model.setColour(colour, false);
 						setAsSelected();
 					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
-						System.out.println("333");
+						System.out.println("TODO MAYBE TO RECONFIGURE THE PANEL");
 					}
 				}
 			});

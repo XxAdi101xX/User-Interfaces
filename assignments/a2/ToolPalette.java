@@ -1,7 +1,3 @@
-// HelloMVC: a simple MVC example
-// the model is just a counter
-// inspired by code by Joseph Mack, http://www.austintek.com/mvc/
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -23,39 +19,36 @@ public class ToolPalette extends JPanel  {
 	private IconButton selectedTool;
 
 	public ToolPalette(Model model) {
+		// set the model
+		this.model = model;		
 		
-
-		this.setLayout (new GridLayout(3, 2));
-		this.setBackground(Color.BLACK);
-		
-		// create the view UI
+		// Instantiate the various tool options
 		IconButton cursor = new IconButton("icons/cursor2.png");
 		IconButton eraser = new IconButton("icons/eraser.png");
 		IconButton line = new IconButton("icons/line.png");
 		IconButton circle = new IconButton("icons/circle.png");
 		IconButton rectangle = new IconButton("icons/rectangle.png");
 		IconButton fill = new IconButton("icons/fill.png");
-
-		selectedTool = cursor;
-		selectedTool.addAsSelected();
-
+		
+		// Add tool options to layout
+		this.setLayout (new GridLayout(3, 2));
 		this.add(cursor);
 		this.add(eraser);
 		this.add(line);
 		this.add(circle);
 		this.add(rectangle);
 		this.add(fill);
-		//button.setMaximumSize(new Dimension(200, 200));
-		//button.setPreferredSize(new Dimension(200, 200));
-
-		// set the model
-		this.model = model;
-
+		
+		// Set default tool
+		selectedTool = cursor;
+		selectedTool.addAsSelected();
+		
+		this.setBackground(Color.BLACK);
+		
 		// anonymous class acts as model listener
-		this.model.addView(new IView() {
+		this.model.addView(new IView() { // NECESSARY?
 			public void updateView() {
 				System.out.println("ColourPalette: updateView");
-				// button.setText(Integer.toString(model.getCounterValue()));
 			}
 		});
 
@@ -72,7 +65,6 @@ public class ToolPalette extends JPanel  {
 	class IconButton extends JButton {
 		private ImageIcon icon;
 	
-		// Taken from docs.oracle.com
 		IconButton(String location) {
 			URL url = getClass().getResource(location);
 			icon = new ImageIcon(url);
@@ -89,11 +81,7 @@ public class ToolPalette extends JPanel  {
 			addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) { // left click
-						System.out.println("111");
-						ToolPalette.this.model.getCounterValue();
 						addAsSelected();
-					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
-						System.out.println("333");
 					}
 				}
 			});
@@ -107,7 +95,6 @@ public class ToolPalette extends JPanel  {
 		}
 		
 		public void removeAsSelected() {
-			System.out.println("resettt");
 			setBorder(new LineBorder(Color.BLACK, 1));
 		}
 	}

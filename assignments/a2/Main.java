@@ -1,3 +1,6 @@
+// NOTE: the following layout of the general architecture was the code was taken from the class examples shown in the HelloMVC repository
+// hence, using the transitive property, this was inspired by code from Joseph Mack, http://www.austintek.com/mvc/
+
 import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -28,7 +31,6 @@ public class Main {
 		palettePanel.add(colourPalette);
 		// palettePanel.add(lineWidthPalette);
 
-		JButton button = new JButton("5465");
 		JPanel bottomPalette = new JPanel(new BorderLayout());
 		bottomPalette.add(colourPicker, BorderLayout.NORTH);
 		bottomPalette.add(lineWidthPalette);

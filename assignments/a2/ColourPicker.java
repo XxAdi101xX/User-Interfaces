@@ -20,10 +20,10 @@ class ColourPicker extends JPanel {
 
         this.setLayout(new GridBagLayout());
 		this.add(button, new GridBagConstraints());
-        // Show colour picker
         button.addMouseListener(new MouseAdapter() {
             public void mouseReleased (MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
+                    // Show colour picker
                     Color chosenColour = colourChooser.showDialog(new JPanel(), "Colour Picker", Color.ORANGE);
                     if (chosenColour != null) {
                         model.setColour(chosenColour, true);
@@ -39,7 +39,6 @@ class ColourPicker extends JPanel {
                 if (!model.isUsingCustomColour()) {
                     removeAsSelected();
                 }
-				// button.setText(Integer.toString(model.getCounterValue()));
 			}
 		});
     }

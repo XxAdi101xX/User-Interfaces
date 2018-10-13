@@ -1,7 +1,3 @@
-// HelloMVC: a simple MVC example
-// the model is just a counter
-// inspired by code by Joseph Mack, http://www.austintek.com/mvc/
-
 import javax.swing.*;
 
 import java.awt.BasicStroke;
@@ -16,23 +12,14 @@ import java.awt.GridLayout;
 import java.awt.event.*;
 
 public class LineWidthPalette extends JPanel  {
-
-	// the view's main user interface
-	private JButton button;
-
+	private Model model;
 	private Color defaultColour = Color.BLACK;
-
 	private Line selectedLine;
 
-	// the model that this view is showing
-	private Model model;
-
-
 	public LineWidthPalette(Model model) {
-		// set the model
 		this.model = model;
-		
-		// create the view UI
+
+		// Setup the class layout
 		this.setLayout(new GridLayout(3, 1));
 
 		Line thinLine = new Line(5, defaultColour);
@@ -46,7 +33,7 @@ public class LineWidthPalette extends JPanel  {
 		selectedLine = mediumLine;
 		this.model.setLineWidth(mediumLine.getLineWidth());
 
-		button = new JButton("?");
+		// button = new JButton("?");
 		// button.setMaximumSize(new Dimension(200, 200));
 		// button.setPreferredSize(new Dimension(200, 200));
 		// a GridBagLayout with default constraints centres
@@ -66,11 +53,11 @@ public class LineWidthPalette extends JPanel  {
 
 		// setup the event to go to the "controller"
 		// (this anonymous class is essentially the controller)
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				model.incrementCounter();
-			}
-		});
+		// button.addActionListener(new ActionListener() {
+		// 	public void actionPerformed(ActionEvent e) {
+		// 		model.incrementCounter();
+		// 	}
+		// });
 	}
 
 	class Line extends JComponent {
