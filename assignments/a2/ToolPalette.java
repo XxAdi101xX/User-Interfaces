@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.tools.Tool;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,19 +15,19 @@ import java.net.URL;
 
 public class ToolPalette extends JPanel  {
 	private Model model;
-	private IconButton selectedTool;
+	private ToolPanel selectedToolPanel;	
 
 	public ToolPalette(Model model) {
 		// set the model
 		this.model = model;		
 		
 		// Instantiate the various tool options
-		IconButton cursor = new IconButton("icons/cursor2.png");
-		IconButton eraser = new IconButton("icons/eraser.png");
-		IconButton line = new IconButton("icons/line.png");
-		IconButton circle = new IconButton("icons/circle.png");
-		IconButton rectangle = new IconButton("icons/rectangle.png");
-		IconButton fill = new IconButton("icons/fill.png");
+		ToolPanel cursor = new ToolPanel(Tool.CURSOR, "icons/cursor2.png");
+		ToolPanel eraser = new ToolPanel(Tool.ERASER, "icons/eraser.png");
+		ToolPanel line = new ToolPanel(Tool.LINE, "icons/line.png");
+		ToolPanel circle = new ToolPanel(Tool.CIRCLE, "icons/circle.png");
+		ToolPanel rectangle = new ToolPanel(Tool.RECTANGLE, "icons/rectangle.png");
+		ToolPanel fill = new ToolPanel(Tool.FILL, "icons/fill.png");
 		
 		// Add tool options to layout
 		this.setLayout (new GridLayout(3, 2));
@@ -40,8 +39,9 @@ public class ToolPalette extends JPanel  {
 		this.add(fill);
 		
 		// Set default tool
-		selectedTool = cursor;
-		selectedTool.addAsSelected();
+		this.model.setTool(Tool.CURSOR);
+		selectedToolPanel = cursor;
+		selectedToolPanel.addAsSelected();
 		
 		this.setBackground(Color.BLACK);
 		
@@ -62,10 +62,12 @@ public class ToolPalette extends JPanel  {
 		// });
 	}
 
-	class IconButton extends JButton {
+	class ToolPanel extends JButton {
+		private Tool tool;
 		private ImageIcon icon;
 	
-		IconButton(String location) {
+		ToolPanel(Tool toolType, String location) {
+			tool = toolType;
 			URL url = getClass().getResource(location);
 			icon = new ImageIcon(url);
 			//Image scaledIcon = originalIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
@@ -88,9 +90,10 @@ public class ToolPalette extends JPanel  {
 		}
 
 		public void addAsSelected() {
-			selectedTool.removeAsSelected();
+			ToolPalette.this.model.setTool(tool);
+			selectedToolPanel.removeAsSelected();
+			selectedToolPanel = this;
 			setBorder(new LineBorder(Color.GRAY, 5));
-			selectedTool = this;
 
 		}
 		

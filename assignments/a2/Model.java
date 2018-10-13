@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Model {
 	// application specific data
+	private Tool tool;
 	private Color colour;
 	private Boolean isCustomColour = false;
 	private int lineWidth;
@@ -15,8 +16,18 @@ public class Model {
 		views.add(view);
 		view.updateView(); // update the view to current state of the model
 	}
+
+	// set the current tool
+	public void setTool(Tool newTool) {
+		tool = newTool;
+		notifyObservers();
+	}
+
+	public Tool getTool() {
+		return tool;
+	}
 	
-	// set the colour
+	// set the current colour
 	public void setColour(Color newColour, Boolean usingCustomColour) {
 		colour = newColour;
 		isCustomColour = usingCustomColour;

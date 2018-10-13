@@ -35,6 +35,9 @@ class ColourPalette extends JPanel  {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("ToolPalette: updateView");
+				if (model.isUsingCustomColour()) {
+					selectedColour.removeAsSelected();
+				}
 			}
 		});
 	}
