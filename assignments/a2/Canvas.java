@@ -142,7 +142,7 @@ public class Canvas extends JPanel {
 
 				switch(s.getShape()) {
 					case LINE: {
-						Line2D line = new Line2D.Double(startPoint, endPoint);
+						Line2D line = s.getLineObject();
 						if (isSelected) {
 							// draw outline to show that this is selected
 							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
@@ -155,8 +155,7 @@ public class Canvas extends JPanel {
 						break;
 					}
 					case RECTANGLE: {
-						Rectangle rectangle= new Rectangle(startPoint);
-						rectangle.add(endPoint);
+						Rectangle rectangle = s.getRectangleObject();
 						
 						if (isSelected) {
 							// draw outline to show that this is selected
@@ -175,23 +174,7 @@ public class Canvas extends JPanel {
 						break;
 					}
 					case CIRCLE: {
-						int width = Math.abs(endPoint.x - startPoint.x); 
-						int height = Math.abs(endPoint.y - startPoint.y);
-						Ellipse2D.Double circle = new Ellipse2D.Double(startPoint.x, startPoint.y, width, height);
-
-						if (startPoint.y < endPoint.y) {
-							if (startPoint.x < endPoint.x) {
-								circle = new Ellipse2D.Double(startPoint.x, startPoint.y, width, height);
-							} else {
-								circle = new Ellipse2D.Double(startPoint.x - width, startPoint.y, width, height);
-							}
-						} else {
-							if (startPoint.x < endPoint.x) {
-								circle = new Ellipse2D.Double(startPoint.x, startPoint.y - height, width, height);
-							} else {
-								circle = new Ellipse2D.Double(startPoint.x - width, startPoint.y - height, width, height);
-							}
-						}
+						Ellipse2D.Double circle = s.getEllipsesObject();
 
 						if (isSelected) {
 							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));

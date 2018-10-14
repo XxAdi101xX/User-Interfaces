@@ -1,5 +1,8 @@
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.lang.*;
 
 public class Shape {
@@ -70,17 +73,49 @@ public class Shape {
     }
 
     public Boolean hasIntersected(Point intersectionPoint) {
-        System.out.println(intersectionPoint.x + " " + intersectionPoint.y);
-        System.out.println(startPoint.x + " " + startPoint.y);
-        System.out.println(endPoint.x + " " + endPoint.y);
         if (shape == Tool.LINE) {
             double m = (double)(endPoint.y - startPoint.y) / (double)(endPoint.x - startPoint.x);
             double b = startPoint.y - (m * startPoint.x);
             double remainder = intersectionPoint.y - (m * intersectionPoint.x + b);
             return Math.abs(remainder) <= lineWidth;
         } else if (shape == Tool.RECTANGLE) {
-            return false;
+            return getRectangleObject().contains(intersectionPoint.x, intersectionPoint.y);
+        } else if (shape == Tool.CIRCLE) {
+            return getEllipsesObject().contains(intersectionPoint.x, intersectionPoint.y);
         }
-        return false; // shoudln't reach here
+        return false; // should never return here
+    }
+
+    public Rectangle getRectangleObject() {
+        Rectangle rectangle= new Rectangle(startPoint);
+        rectangle.add(endPoint);
+        return rectangle;
+    }
+
+    public Ellipse2D.Double getEllipsesObject() {
+        Ellipse2D.Double ellipses;
+        int width = Math.abs(endPoint.x - startPoint.x); 
+        int height = Math.abs(endPoint.y - startPoint.y);
+
+        if (startPoint.y < endPoint.y) {
+            if (startPoint.x < endPoint.x) {
+                ellipses = new Ellipse2D.Double(startPoint.x, startPoint.y, width, height);
+            } else {
+                ellipses = new Ellipse2D.Double(startPoint.x - width, startPoint.y, width, height);
+            }
+        } else {
+            if (startPoint.x < endPoint.x) {
+                ellipses = new Ellipse2D.Double(startPoint.x, startPoint.y - height, width, height);
+            } else {
+                ellipses = new Ellipse2D.Double(startPoint.x - width, startPoint.y - height, width, height);
+            }
+        }
+
+        return ellipses;
+    }
+
+    public Line2D.Double getLineObject() {
+        Line2D.Double line = new Line2D.Double(startPoint, endPoint);
+        return line;
     }
 }
