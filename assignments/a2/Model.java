@@ -7,14 +7,19 @@ public class Model {
 	private Color colour;
 	private Boolean isCustomColour = false;
 	private int lineWidth;
-
-	// all views of this model
-	private ArrayList<IView> views = new ArrayList<IView>();
+	private Shape currentShape;
+	private ArrayList<Shape> shapes = new ArrayList<Shape>(); // all the shapes
+	private ArrayList<IView> views = new ArrayList<IView>(); // all the views of this model
 
 	// set the view observer
 	public void addView(IView view) {
 		views.add(view);
 		view.updateView(); // update the view to current state of the model
+	}
+
+	// get the current tool
+	public Tool getTool() {
+		return tool;
 	}
 
 	// set the current tool
@@ -23,12 +28,14 @@ public class Model {
 		notifyObservers();
 	}
 
-	public Tool getTool() {
-		return tool;
-	}
-
+	// check if the current tool is an circle, line or rectangle
 	public Boolean isDrawingTool() {
 		return tool == Tool.LINE || tool == Tool.RECTANGLE || tool == Tool.CIRCLE;
+	}
+
+	// get the colour
+	public Color getColour() {
+		return colour;
 	}
 	
 	// set the current colour
@@ -38,14 +45,15 @@ public class Model {
 		notifyObservers();
 	}
 	
-	// get the colour
-	public Color getColour() {
-		return colour;
-	}
 
 	// return whether a custom colour is being used
 	public Boolean isUsingCustomColour() {
 		return isCustomColour;
+	}
+
+	// get the line width
+	public int getLineWidth() {
+		return lineWidth;
 	}
 
 	// set the line width
@@ -54,9 +62,38 @@ public class Model {
 		notifyObservers();
 	}
 
-	// get the line width
-	public int getLineWidth() {
-		return lineWidth;
+	// get the current shape
+	public Shape getCurrentShape() {
+		return currentShape;
+	}
+
+	// set the current shape
+	public void setCurrentShape(Shape shape) {
+		currentShape = shape;
+		notifyObservers();
+	}
+
+	public ArrayList<Shape> getShapeList() {
+		return shapes;
+	}
+
+	public int getShapeListSize() {
+		return shapes.size();
+	}
+
+	// add a shape to the shape list
+	public void addShape (Shape shape) {
+		shapes.add(shape);
+	}
+
+	// get shape by index
+	public Shape getShapeByIndex(int index) {
+		return shapes.get(index);
+	}
+
+	// remove shape by index
+	public void removeShapeByIndex(int index) {
+		shapes.remove(index);
 	}
 	
 	// notify the IView observer

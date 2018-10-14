@@ -59,11 +59,12 @@ public class Canvas extends JPanel {
 	}
 
 	class PaintShapes extends JComponent {
-		Shape currentShape;
-		ArrayList<Shape> shapes = new ArrayList<Shape>();
+		// Shape currentShape;
+		// ArrayList<Shape> shapes = new ArrayList<Shape>();
 
 		PaintShapes() {
-			currentShape = null;
+			// currentShape = null;
+			Canvas.this.model.setCurrentShape(null);
 
 			addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
@@ -75,29 +76,36 @@ public class Canvas extends JPanel {
 							e.getX(), e.getY(), 
 							e.getX(), e.getY()
 						);
-						shapes.add(newShape);
-						currentShape = newShape;
+						// shapes.add(newShape);
+						// currentShape = newShape;
+						Canvas.this.model.addShape(newShape);
+						Canvas.this.model.setCurrentShape(newShape);
 					} else {
-						for (int i = shapes.size() - 1; i >= 0; i--) {
-							if (shapes.get(i).hasIntersected(new Point(e.getX(), e.getY()))) {
+						for (int i = Canvas.this.model.getShapeListSize() - 1; i >= 0; i--) {
+							if (Canvas.this.model.getShapeByIndex(i).hasIntersected(new Point(e.getX(), e.getY()))) {
 								// remove shape from arraylist temporarily
-								currentShape = shapes.get(i);
-								shapes.remove(i);
+								// currentShape = shapes.get(i);
+								// shapes.remove(i);
+								Canvas.this.model.setCurrentShape(Canvas.this.model.getShapeByIndex(i));
+								Canvas.this.model.removeShapeByIndex(i);
 								
 								// handle behaviour based on selected utility tool
 								switch (Canvas.this.model.getTool()) {
 									case CURSOR:
 										System.out.println("yoooooooooooooooooo");
 
-										shapes.add(currentShape); // add shape back to front of array for increased priority
+										// shapes.add(currentShape); // add shape back to front of array for increased priority
+										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());
 										break;
 									case ERASER:
-										currentShape = null; // delete shape
+										// currentShape = null; // delete shape
+										Canvas.this.model.setCurrentShape(null);
 										break;
 									case FILL:
-										currentShape.setFilled();
-										currentShape.setBackgroundCOlour(Canvas.this.model.getColour());
-										shapes.add(currentShape); // add shape back to front of array for increased priority
+										Canvas.this.model.getCurrentShape().setFilled();
+										Canvas.this.model.getCurrentShape().setBackgroundCOlour(Canvas.this.model.getColour());
+										// shapes.add(currentShape); // add shape back to front of array for increased priority
+										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());										
 										break;
 									default:
 										System.out.println("ERROR: hasIntersected has failed spectacularily for some reason");
@@ -112,7 +120,8 @@ public class Canvas extends JPanel {
 		
 				public void mouseReleased(MouseEvent e) {
 					if (Canvas.this.model.isDrawingTool()) {
-						currentShape = null; // reset to indicate that nothing is really selected when drawing a shape
+						// currentShape = null; // reset to indicate that nothing is really selected when drawing a shape
+						Canvas.this.model.setCurrentShape(null);
 					}
 				  	repaint();
 				}
@@ -121,7 +130,7 @@ public class Canvas extends JPanel {
 			addMouseMotionListener(new MouseMotionAdapter() {
 				public void mouseDragged(MouseEvent e) {
 					if (Canvas.this.model.isDrawingTool()) {
-						currentShape.setEndPoints(e.getX(), e.getY());
+						Canvas.this.model.getCurrentShape().setEndPoints(e.getX(), e.getY());
 						repaint();
 					}
 				}
@@ -134,11 +143,11 @@ public class Canvas extends JPanel {
 			Graphics2D g2d = (Graphics2D) g.create();
 			// System.out.println(getWidth()/4 + " " + getHeight()/2 + " " + (int) (getWidth() * (0.75)) + " " + getHeight()/2);
 
-			for (Shape s : shapes) {
+			for (Shape s : Canvas.this.model.getShapeList()) {
 				Point startPoint = s.getStartPoints();
 				Point endPoint = s.getEndPoints();
 				// indicatator that a specific shape is "selected" by the cursor
-				Boolean isSelected = currentShape == s && Canvas.this.model.getTool() == Tool.CURSOR; 
+				Boolean isSelected = Canvas.this.model.getCurrentShape() == s && Canvas.this.model.getTool() == Tool.CURSOR; 
 
 				switch(s.getShape()) {
 					case LINE: {
