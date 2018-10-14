@@ -26,6 +26,10 @@ public class Model {
 	public Tool getTool() {
 		return tool;
 	}
+
+	public Boolean isDrawingTool() {
+		return tool == Tool.LINE || tool == Tool.RECTANGLE || tool == Tool.CIRCLE;
+	}
 	
 	// set the current colour
 	public void setColour(Color newColour, Boolean usingCustomColour) {

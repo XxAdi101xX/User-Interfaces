@@ -83,7 +83,6 @@ public class LineWidthPalette extends JPanel  {
 			Graphics2D g2d = (Graphics2D) g.create();
 			g2d.setColor(colour);
 			g2d.setStroke(new BasicStroke(width));
-			System.out.println(getWidth() +"    "+getHeight());
 			g2d.drawLine(getWidth()/4, getHeight()/2, (int) (getWidth() * (0.75)), getHeight()/2);
 			g2d.dispose();
 		}
@@ -91,6 +90,7 @@ public class LineWidthPalette extends JPanel  {
 		public void setAsSelected() {
 			selectedLine.removeAsSelected();
 			selectedLine = this;
+			LineWidthPalette.this.model.setLineWidth(width);
 			updateColour(LineWidthPalette.this.model.getColour());
 		}
 

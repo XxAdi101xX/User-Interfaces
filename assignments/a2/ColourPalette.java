@@ -54,7 +54,6 @@ class ColourPalette extends JPanel  {
 			addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) { // left click
-						System.out.println("111");
 						ColourPalette.this.model.setColour(colour, false);
 						setAsSelected();
 					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
@@ -76,7 +75,6 @@ class ColourPalette extends JPanel  {
 		}
 		
 		public void removeAsSelected() {
-			System.out.println("resettt");
 			setBorder(new LineBorder(Color.BLACK, 1));
 		}
 	}

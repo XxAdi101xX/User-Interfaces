@@ -48,7 +48,7 @@ public class Main {
 
 		// add views (each view is a JPanel)
 		windowPanel.add(palettePanel, BorderLayout.WEST);
-		windowPanel.add(canvas, BorderLayout.EAST);
+		windowPanel.add(canvas);
 
 		frame.setJMenuBar(menuBar);
 		
