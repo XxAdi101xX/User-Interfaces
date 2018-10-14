@@ -6,6 +6,7 @@ public class Shape {
     private Tool shape;
     private Color borderColour;
     private Color backgroundColour;
+    private Boolean isFilled;
     private int lineWidth;
     private Point startPoint;
     private Point endPoint;
@@ -14,6 +15,7 @@ public class Shape {
         this.shape = shape;
         this.borderColour = borderColour;
         this.backgroundColour = null;
+        this.isFilled = false;
         this.lineWidth = lineWidth;
         this.startPoint = new Point(startingX, startingY);
         this.endPoint = new Point(endingX, endingY);
@@ -33,6 +35,14 @@ public class Shape {
 
     public void setBackgroundCOlour(Color backgroundColour) {
         this.backgroundColour = backgroundColour;
+    }
+
+    public Boolean getFilled() {
+        return isFilled;
+    }
+
+    public void setFilled() {
+        isFilled = true;
     }
 
     public int getLineWidth() {
@@ -60,16 +70,13 @@ public class Shape {
     }
 
     public Boolean hasIntersected(Point intersectionPoint) {
+        System.out.println(intersectionPoint.x + " " + intersectionPoint.y);
+        System.out.println(startPoint.x + " " + startPoint.y);
+        System.out.println(endPoint.x + " " + endPoint.y);
         if (shape == Tool.LINE) {
             double m = (double)(endPoint.y - startPoint.y) / (double)(endPoint.x - startPoint.x);
             double b = startPoint.y - (m * startPoint.x);
             double remainder = intersectionPoint.y - (m * intersectionPoint.x + b);
-            System.out.println(intersectionPoint.x + " " + intersectionPoint.y);
-            System.out.println(startPoint.x + " " + startPoint.y);
-            System.out.println(endPoint.x + " " + endPoint.y);
-            System.out.println(remainder);
-            System.out.println(m + " " + b);
-
             return Math.abs(remainder) <= lineWidth;
         } else if (shape == Tool.RECTANGLE) {
             return false;

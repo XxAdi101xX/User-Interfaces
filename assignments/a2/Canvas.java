@@ -4,7 +4,17 @@
 
 import javax.swing.*;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+
 import java.awt.event.*;
 import java.util.*;
 import java.lang.*;
@@ -85,6 +95,8 @@ public class Canvas extends JPanel {
 										currentShape = null; // delete shape
 										break;
 									case FILL:
+										currentShape.setFilled();
+										currentShape.setBackgroundCOlour(Canvas.this.model.getColour());
 										shapes.add(currentShape); // add shape back to front of array for increased priority
 										break;
 									default:
@@ -100,7 +112,7 @@ public class Canvas extends JPanel {
 		
 				public void mouseReleased(MouseEvent e) {
 					if (Canvas.this.model.isDrawingTool()) {
-						currentShape = null;
+						currentShape = null; // reset to indicate that nothing is really selected when drawing a shape
 					}
 				  	repaint();
 				}
@@ -125,10 +137,13 @@ public class Canvas extends JPanel {
 			for (Shape s : shapes) {
 				Point startPoint = s.getStartPoints();
 				Point endPoint = s.getEndPoints();
+				// indicatator that a specific shape is "selected" by the cursor
+				Boolean isSelected = currentShape == s && Canvas.this.model.getTool() == Tool.CURSOR; 
 
 				switch(s.getShape()) {
 					case LINE: {
-						if (currentShape == s && Canvas.this.model.getTool() == Tool.CURSOR) {
+						Line2D line = new Line2D.Double(startPoint, endPoint);
+						if (isSelected) {
 							// draw outline to show that this is selected
 							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
 							g2d.setColor(Color.BLACK);
@@ -136,19 +151,61 @@ public class Canvas extends JPanel {
 						}
 						g2d.setStroke(new BasicStroke(s.getLineWidth()));
 						g2d.setColor(s.getBorderColour());
-						g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+						g2d.draw(line);
 						break;
 					}
 					case RECTANGLE: {
+						Rectangle rectangle= new Rectangle(startPoint);
+						rectangle.add(endPoint);
+						
+						if (isSelected) {
+							// draw outline to show that this is selected
+							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
+							g2d.setColor(Color.BLACK);
+							g2d.draw(rectangle);
+						}
+
 						g2d.setStroke(new BasicStroke(s.getLineWidth()));
+						if (s.getFilled()) {
+							g2d.setColor(s.getBackgroundColour());
+							g2d.fill(rectangle);
+						}
 						g2d.setColor(s.getBorderColour());
-						g2d.drawRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+						g2d.draw(rectangle);
 						break;
 					}
 					case CIRCLE: {
+						int width = Math.abs(endPoint.x - startPoint.x); 
+						int height = Math.abs(endPoint.y - startPoint.y);
+						Ellipse2D.Double circle = new Ellipse2D.Double(startPoint.x, startPoint.y, width, height);
+
+						if (startPoint.y < endPoint.y) {
+							if (startPoint.x < endPoint.x) {
+								circle = new Ellipse2D.Double(startPoint.x, startPoint.y, width, height);
+							} else {
+								circle = new Ellipse2D.Double(startPoint.x - width, startPoint.y, width, height);
+							}
+						} else {
+							if (startPoint.x < endPoint.x) {
+								circle = new Ellipse2D.Double(startPoint.x, startPoint.y - height, width, height);
+							} else {
+								circle = new Ellipse2D.Double(startPoint.x - width, startPoint.y - height, width, height);
+							}
+						}
+
+						if (isSelected) {
+							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
+							g2d.setColor(Color.BLACK);
+							g2d.draw(circle);
+						}
+
 						g2d.setStroke(new BasicStroke(s.getLineWidth()));
+						if (s.getFilled()) {
+							g2d.setColor(s.getBackgroundColour());
+							g2d.fill(circle);
+						}
 						g2d.setColor(s.getBorderColour());
-						g2d.drawOval(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+						g2d.draw(circle);
 						break;
 					}
 				}
