@@ -109,6 +109,11 @@ public class Model {
 	public void setSwappingFocus(Boolean swapping) {
 		swappingFocus = swapping;
 	}
+
+	public void clearShapes() {
+		shapes.clear();
+		notifyObservers();
+	}
 	
 	// notify the IView observer
 	private void notifyObservers() {

@@ -14,11 +14,23 @@ public class Shape {
     private Point startPoint;
     private Point endPoint;
 
+    // constructor used when creating shape object on the screen
     Shape(Tool shape, Color borderColour, int lineWidth, int startingX, int startingY, int endingX, int endingY) {
         this.shape = shape;
         this.borderColour = borderColour;
         this.backgroundColour = null;
         this.isFilled = false;
+        this.lineWidth = lineWidth;
+        this.startPoint = new Point(startingX, startingY);
+        this.endPoint = new Point(endingX, endingY);
+    }
+
+    // constructor used to load in shape data
+    Shape(Tool shape, Color borderColour, Color backgroundColour, Boolean isFilled, int lineWidth, int startingX, int startingY, int endingX, int endingY) {
+        this.shape = shape;
+        this.borderColour = borderColour;
+        this.backgroundColour = backgroundColour;
+        this.isFilled = isFilled;
         this.lineWidth = lineWidth;
         this.startPoint = new Point(startingX, startingY);
         this.endPoint = new Point(endingX, endingY);
@@ -40,7 +52,7 @@ public class Shape {
         return backgroundColour;
     }
 
-    public void setBackgroundCOlour(Color backgroundColour) {
+    public void setBackgroundColour(Color backgroundColour) {
         this.backgroundColour = backgroundColour;
     }
 
