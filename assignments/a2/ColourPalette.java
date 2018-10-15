@@ -40,11 +40,11 @@ class ColourPalette extends JPanel  {
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("ToolPalette: updateView");
+				System.out.println("ColourPalette: updateView");
 				if (model.isUsingCustomColour()) {
 					selectedColour.removeAsSelected();
-				}
-
+				} 
+				
 				if (model.getCurrentShape() != null && 
 					model.getTool() == Tool.CURSOR && 
 					model.getCurrentShape().getBorderColour() != selectedColour.getColour()) {
@@ -71,6 +71,7 @@ class ColourPalette extends JPanel  {
 					} else {
 						// TODO deal with custom colour
 						// model.setUsingCustomColour(true);
+						// ColourPalette.this.model.setColour(shapeColour, true);
 					}
 				}
 			}

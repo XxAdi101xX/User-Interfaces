@@ -44,11 +44,16 @@ public class Canvas extends JPanel {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("Canvas: updateView");
-				if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
-					model.getCurrentShape().setBorderColour(model.getColour());
-					model.getCurrentShape().setLineWidth(model.getLineWidth());
-					surface.repaint();
-				}
+				// if (model.getSwappingFocus()) {
+				// 	System.out.println("SWAPPING MODE");
+				// 	model.setSwappingFocus(false);
+				// } else {
+					if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
+						model.getCurrentShape().setBorderColour(model.getColour());
+						// model.getCurrentShape().setLineWidth(model.getLineWidth());
+						surface.repaint();
+					}
+				// }
 			}
 		});
 	}
@@ -90,26 +95,29 @@ public class Canvas extends JPanel {
 					} else {
 						for (int i = Canvas.this.model.getShapeListSize() - 1; i >= 0; i--) {
 							if (Canvas.this.model.getShapeByIndex(i).hasIntersected(new Point(e.getX(), e.getY()))) {
-								// remove shape from arraylist temporarily
-								// currentShape = shapes.get(i);
-								// shapes.remove(i);
+								Boolean sameTarget = Canvas.this.model.getCurrentShape() == Canvas.this.model.getShapeByIndex(i) ||
+													 Canvas.this.model.getCurrentShape() == null;
+
 								Canvas.this.model.setCurrentShape(Canvas.this.model.getShapeByIndex(i));
 								Canvas.this.model.removeShapeByIndex(i);
 								
 								// handle behaviour based on selected utility tool
 								switch (Canvas.this.model.getTool()) {
 									case CURSOR:
-										// shapes.add(currentShape); // add shape back to front of array for increased priority
+										// add shape back to front of array for increased priority
+										if (!sameTarget) {
+											Canvas.this.model.setSwappingFocus(true);
+										}
 										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());
 										break;
 									case ERASER:
-										// currentShape = null; // delete shape
+										// delete shape
 										Canvas.this.model.setCurrentShape(null);
 										break;
 									case FILL:
 										Canvas.this.model.getCurrentShape().setFilled();
 										Canvas.this.model.getCurrentShape().setBackgroundCOlour(Canvas.this.model.getColour());
-										// shapes.add(currentShape); // add shape back to front of array for increased priority
+										// add shape back to front of array for increased priority
 										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());										
 										break;
 									default:

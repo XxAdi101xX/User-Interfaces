@@ -9,6 +9,7 @@ public class Model {
 	private int lineWidth;
 	private Shape currentShape;
 	private ArrayList<Shape> shapes = new ArrayList<Shape>(); // all the shapes
+	private Boolean swappingFocus = false;
 	private ArrayList<IView> views = new ArrayList<IView>(); // all the views of this model
 
 	// set the view observer
@@ -25,7 +26,6 @@ public class Model {
 	// set the current tool
 	public void setTool(Tool newTool) {
 		tool = newTool;
-		notifyObservers();
 	}
 
 	// check if the current tool is an circle, line or rectangle
@@ -53,6 +53,7 @@ public class Model {
 
 	public void setUsingCustomColour(Boolean custom) {
 		isCustomColour = custom;
+		// notifyObservers();
 	}
 
 	// get the line width
@@ -99,6 +100,14 @@ public class Model {
 	// remove shape by index
 	public void removeShapeByIndex(int index) {
 		shapes.remove(index);
+	}
+
+	public Boolean getSwappingFocus() {
+		return swappingFocus;
+	}
+
+	public void setSwappingFocus(Boolean swapping) {
+		swappingFocus = swapping;
 	}
 	
 	// notify the IView observer
