@@ -38,6 +38,9 @@ class ColourPicker extends JPanel {
                 System.out.println("ColourPicker: updateView");
                 if (!model.isUsingCustomColour()) {
                     removeAsSelected();
+                } else {
+                    // model.setColour(model.getCurrentShape().getBorderColour(), true);
+                    // setAsSelected(model.getCurrentShape().getBorderColour());
                 }
 			}
 		});
@@ -50,7 +53,6 @@ class ColourPicker extends JPanel {
     }
     
     public void removeAsSelected() {
-        System.out.println("resettt");
         setBorder(new LineBorder(Color.BLACK, 5));
     }
 }

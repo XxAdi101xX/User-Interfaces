@@ -8,16 +8,22 @@ import java.awt.event.*;
 class ColourPalette extends JPanel  {
 	private Model model;
 	private ColourPanel selectedColour;
+	private Color colourA = Color.RED;
+	private Color colourB = Color.GREEN;
+	private Color colourC = Color.BLUE;
+	private Color colourD = Color.ORANGE;
+	private Color colourE = Color.PINK;
+	private Color colourF = Color.YELLOW;
 
 	public ColourPalette(Model model) {
 		this.model = model;
 
-		ColourPanel a = new ColourPanel(Color.RED);
-		ColourPanel b = new ColourPanel(Color.GREEN);
-		ColourPanel c = new ColourPanel(Color.BLUE);
-		ColourPanel d = new ColourPanel(Color.ORANGE);
-		ColourPanel e = new ColourPanel(Color.PINK);
-		ColourPanel f = new ColourPanel(Color.YELLOW);
+		ColourPanel a = new ColourPanel(colourA);
+		ColourPanel b = new ColourPanel(colourB);
+		ColourPanel c = new ColourPanel(colourC);
+		ColourPanel d = new ColourPanel(colourD);
+		ColourPanel e = new ColourPanel(colourE);
+		ColourPanel f = new ColourPanel(colourF);
 
 		this.setLayout (new GridLayout(3, 2));
 		this.add(a);
@@ -37,6 +43,35 @@ class ColourPalette extends JPanel  {
 				System.out.println("ToolPalette: updateView");
 				if (model.isUsingCustomColour()) {
 					selectedColour.removeAsSelected();
+				}
+
+				if (model.getCurrentShape() != null && 
+					model.getTool() == Tool.CURSOR && 
+					model.getCurrentShape().getBorderColour() != selectedColour.getColour()) {
+					Color shapeColour = model.getCurrentShape().getBorderColour();
+
+					if (shapeColour == colourA) {
+						a.setAsSelected();
+						ColourPalette.this.model.setColour(colourA, false);
+					} else if (shapeColour == colourB) {
+						b.setAsSelected();
+						ColourPalette.this.model.setColour(colourB, false);
+					} else if (shapeColour == colourC) {
+						c.setAsSelected();
+						ColourPalette.this.model.setColour(colourC, false);
+					} else if (shapeColour == colourD) {
+						d.setAsSelected();
+						ColourPalette.this.model.setColour(colourD, false);
+					} else if (shapeColour == colourE) {
+						e.setAsSelected();
+						ColourPalette.this.model.setColour(colourE, false);
+					} else if (shapeColour == colourF) {
+						f.setAsSelected();
+						ColourPalette.this.model.setColour(colourF, false);
+					} else {
+						// TODO deal with custom colour
+						// model.setUsingCustomColour(true);
+					}
 				}
 			}
 		});

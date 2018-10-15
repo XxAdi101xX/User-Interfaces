@@ -51,6 +51,19 @@ public class Main {
 		windowPanel.add(canvas);
 
 		frame.setJMenuBar(menuBar);
+
+		// windowPanel.setFocusable(true);
+		// windowPanel.addKeyListener(new KeyAdapter() {
+		// 	public void keyPressed(KeyEvent e) {
+		// 		System.out.println("sdggggggggggggggggggggfsdf");
+		// 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		// 			if (model.getTool() == Tool.CURSOR && model.getCurrentShape() != null) {
+		// 				model.setCurrentShape(null);
+		// 				System.out.println("sdfsdf");
+		// 			}
+		// 		}
+		// 	}
+		// });
 		
 		// create the window
 		frame.setPreferredSize(new Dimension(880,800));

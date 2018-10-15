@@ -51,6 +51,10 @@ public class Model {
 		return isCustomColour;
 	}
 
+	public void setUsingCustomColour(Boolean custom) {
+		isCustomColour = custom;
+	}
+
 	// get the line width
 	public int getLineWidth() {
 		return lineWidth;
@@ -59,6 +63,7 @@ public class Model {
 	// set the line width
 	public void setLineWidth(int newWidth) {
 		lineWidth = newWidth;
+		System.out.println("itgdgdf" + newWidth);
 		notifyObservers();
 	}
 
@@ -99,7 +104,6 @@ public class Model {
 	// notify the IView observer
 	private void notifyObservers() {
 			for (IView view : this.views) {
-				System.out.println("Model: notify View");
 				view.updateView();
 			}
 	}

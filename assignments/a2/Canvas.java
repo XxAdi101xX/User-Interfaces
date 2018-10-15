@@ -34,28 +34,23 @@ public class Canvas extends JPanel {
 		this.model = model;
 		
 		// anonymous class acts as model listener
-		this.model.addView(new IView() {
-			public void updateView() {
-				System.out.println("Canvas: updateView");
-			}
-		});
 		// this.setLayout(new GridBagLayout());
 		setLayout(new BorderLayout());
 		// this.setLayout(new BorderLayout());
 		PaintShapes surface = new PaintShapes();
+		
 		this.add(surface, BorderLayout.CENTER);
-			
-		// setup the event to go to the "controller"
-		// (this anonymous class is essentially the controller)		
-		// addMouseListener(new MouseAdapter() {
-		// 		public void mouseClicked(MouseEvent e) {
-		// 			System.out.println("clickeddd" + e.getX() + " " + e.getY());
-		// 			PaintShape line = new Line(e.getX(), e.getY());
-		// 			add(line, new GridBagConstraints());
-		// 			// add(new JButton("  Two  "));
-		// 			revalidate();
-		// 		}
-		// });
+
+		this.model.addView(new IView() {
+			public void updateView() {
+				System.out.println("Canvas: updateView");
+				if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
+					model.getCurrentShape().setBorderColour(model.getColour());
+					model.getCurrentShape().setLineWidth(model.getLineWidth());
+					surface.repaint();
+				}
+			}
+		});
 	}
 
 	class PaintShapes extends JComponent {
@@ -65,6 +60,18 @@ public class Canvas extends JPanel {
 		PaintShapes() {
 			// currentShape = null;
 			Canvas.this.model.setCurrentShape(null);
+
+			// setFocusable(true);
+			// requestFocusInWindow();
+			// Canvas.this.requestFocus();
+			// addKeyListener(new KeyAdapter() {
+			// 	public void keyPressed(KeyEvent e) {
+			// 		System.out.println("ttttttttttttttttttttt");
+			// 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			// 			System.out.println("sdfdfsfdsfssfsd");
+			// 		}
+			// 	}
+			// });
 
 			addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
@@ -92,8 +99,6 @@ public class Canvas extends JPanel {
 								// handle behaviour based on selected utility tool
 								switch (Canvas.this.model.getTool()) {
 									case CURSOR:
-										System.out.println("yoooooooooooooooooo");
-
 										// shapes.add(currentShape); // add shape back to front of array for increased priority
 										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());
 										break;

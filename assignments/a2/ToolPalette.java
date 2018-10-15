@@ -45,12 +45,11 @@ public class ToolPalette extends JPanel  {
 		
 		this.setBackground(Color.BLACK);
 		
-		// anonymous class acts as model listener
-		this.model.addView(new IView() { // NECESSARY?
-			public void updateView() {
-				System.out.println("ColourPalette: updateView");
-			}
-		});
+		// // anonymous class acts as model listener
+		// this.model.addView(new IView() { // NECESSARY?
+		// 	public void updateView() {
+		// 	}
+		// });
 
 
 		// setup the event to go to the "controller"

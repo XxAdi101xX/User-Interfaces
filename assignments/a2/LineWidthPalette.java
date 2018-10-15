@@ -13,8 +13,11 @@ import java.awt.event.*;
 
 public class LineWidthPalette extends JPanel  {
 	private Model model;
-	private Color defaultColour = Color.BLACK;
 	private Line selectedLine;
+	final private Color defaultColour = Color.BLACK;
+	final private int thinWidth = 5;
+	final private int mediumWidth = 10;
+	final private int thickWidth = 15;
 
 	public LineWidthPalette(Model model) {
 		this.model = model;
@@ -22,9 +25,9 @@ public class LineWidthPalette extends JPanel  {
 		// Setup the class layout
 		this.setLayout(new GridLayout(3, 1));
 
-		Line thinLine = new Line(5, defaultColour);
-		Line mediumLine = new Line(10, this.model.getColour());
-		Line thickLine = new Line(15, defaultColour);
+		Line thinLine = new Line(thinWidth, defaultColour);
+		Line mediumLine = new Line(mediumWidth, this.model.getColour());
+		Line thickLine = new Line(thickWidth, defaultColour);
 
 		this.add(thinLine);
 		this.add(mediumLine);
@@ -46,6 +49,25 @@ public class LineWidthPalette extends JPanel  {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("LineWidthPalette: updateView");
+				
+				if (model.getCurrentShape() != null && 
+					model.getTool() == Tool.CURSOR && 
+					model.getCurrentShape().getLineWidth() != selectedLine.getLineWidth()) {
+					switch (model.getCurrentShape().getLineWidth()) {
+						case thinWidth:
+							thinLine.setAsSelected();
+							break;
+						case mediumWidth:
+							mediumLine.setAsSelected();
+							break;
+						case thickWidth:
+							thickLine.setAsSelected();
+							break;
+						default:
+							System.out.println("error with setting line width of current selected shape");
+					}
+				}
+
 				selectedLine.updateColour(model.getColour());
 			}
 		});
@@ -61,7 +83,7 @@ public class LineWidthPalette extends JPanel  {
 	}
 
 	class Line extends JComponent {
-		private int width;
+		final private int width;
 		private Color colour;
 
 		Line(int lineWidth, Color lineColour) {
@@ -71,10 +93,17 @@ public class LineWidthPalette extends JPanel  {
 			addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) { // left click
-						setAsSelected();
+						if (!isSelected()) {
+							LineWidthPalette.this.model.setLineWidth(width);
+							setAsSelected();
+						}
 					}
 				}
 			});
+		}
+
+		private Boolean isSelected() {
+			return LineWidthPalette.this.selectedLine == this;
 		}
 
 		protected void paintComponent(Graphics g) {
@@ -90,7 +119,6 @@ public class LineWidthPalette extends JPanel  {
 		public void setAsSelected() {
 			selectedLine.removeAsSelected();
 			selectedLine = this;
-			LineWidthPalette.this.model.setLineWidth(width);
 			updateColour(LineWidthPalette.this.model.getColour());
 		}
 

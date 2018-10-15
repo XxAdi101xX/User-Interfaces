@@ -32,6 +32,10 @@ public class Shape {
         return borderColour;
     }
 
+    public void setBorderColour(Color colour) {
+        this.borderColour = colour;
+    }
+
     public Color getBackgroundColour() {
         return backgroundColour;
     }
