@@ -59,9 +59,7 @@ public class Canvas extends JPanel {
 	}
 
 	class PaintShapes extends JComponent {
-		// Shape currentShape;
-		// ArrayList<Shape> shapes = new ArrayList<Shape>();
-
+		Point previousMousePoint;
 		PaintShapes() {
 			// currentShape = null;
 			Canvas.this.model.setCurrentShape(null);
@@ -108,6 +106,7 @@ public class Canvas extends JPanel {
 										if (!sameTarget) {
 											Canvas.this.model.setSwappingFocus(true);
 										}
+										previousMousePoint = new Point(e.getX(), e.getY());
 										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());
 										break;
 									case ERASER:
@@ -144,6 +143,23 @@ public class Canvas extends JPanel {
 				public void mouseDragged(MouseEvent e) {
 					if (Canvas.this.model.isDrawingTool()) {
 						Canvas.this.model.getCurrentShape().setEndPoints(e.getX(), e.getY());
+						repaint();
+					} else if (Canvas.this.model.getTool() == Tool.CURSOR) {
+						Point startPoint = Canvas.this.model.getCurrentShape().getStartPoints();
+						Point endPoint = Canvas.this.model.getCurrentShape().getEndPoints();
+
+						// find mouse change 
+						int deltaX = previousMousePoint.x - e.getX();
+						int deltaY = previousMousePoint.y - e.getY();
+
+						// move points accordingly
+						Canvas.this.model.getCurrentShape().setStartPoints(startPoint.x -= deltaX, startPoint.y -= deltaY);
+						Canvas.this.model.getCurrentShape().setEndPoints(endPoint.x -= deltaX, endPoint.y -= deltaY);
+
+						// update last mouse position
+						previousMousePoint.x = e.getX();
+						previousMousePoint.y = e.getY();
+						
 						repaint();
 					}
 				}
