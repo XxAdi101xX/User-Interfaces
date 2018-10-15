@@ -80,9 +80,11 @@ public class MenuBar extends JMenuBar {
 							options[2]
 						);
 		
-		if (response == 0) { // trigger our save option
+		if (response == 0) {
+			// save
 			saveCanvasToFile();
 		} else if (response == 1) {
+			// clear
 			model.clearShapes();
 		}
 	}

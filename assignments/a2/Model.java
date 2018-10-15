@@ -79,10 +79,12 @@ public class Model {
 		notifyObservers();
 	}
 
+	// get the array list of shapes
 	public ArrayList<Shape> getShapeList() {
 		return shapes;
 	}
 
+	// get the size of the shapes arraylist
 	public int getShapeListSize() {
 		return shapes.size();
 	}
@@ -110,6 +112,7 @@ public class Model {
 		swappingFocus = swapping;
 	}
 
+	// clear the shapes arraylist
 	public void clearShapes() {
 		shapes.clear();
 		notifyObservers();
@@ -117,8 +120,8 @@ public class Model {
 	
 	// notify the IView observer
 	private void notifyObservers() {
-			for (IView view : this.views) {
-				view.updateView();
-			}
+		for (IView view : this.views) {
+			view.updateView();
+		}
 	}
 }
