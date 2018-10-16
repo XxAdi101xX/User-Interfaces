@@ -36,6 +36,7 @@ class ColourPalette extends JPanel  {
 		selectedColour = a;
 		selectedColour.setAsSelected();
 		this.model.setColour(selectedColour.getColour(), false);
+		this.setBorder(new LineBorder(Color.BLACK, 3));
 
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {

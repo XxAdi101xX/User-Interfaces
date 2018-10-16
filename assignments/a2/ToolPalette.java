@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import java.awt.BorderLayout;
@@ -43,7 +42,7 @@ public class ToolPalette extends JPanel  {
 		selectedToolPanel = cursor;
 		selectedToolPanel.addAsSelected();
 		
-		this.setBackground(Color.BLACK);
+		this.setBorder(new LineBorder(Color.BLACK, 3));
 	}
 
 	class ToolPanel extends JButton {
@@ -60,7 +59,6 @@ public class ToolPalette extends JPanel  {
 			
 			// set button properties
 			setBackground(Color.WHITE);
-			setPreferredSize(new Dimension(100,100));
 			setBorder(new LineBorder(Color.BLACK, 1));
 			setFocusPainted(false);
 	

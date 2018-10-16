@@ -4,6 +4,7 @@ import javax.swing.border.LineBorder;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Color;
 import java.awt.event.*;
 
@@ -16,10 +17,12 @@ class ColourPicker extends JPanel {
         this.model = model;
 
         button = new JButton("Colour Picker");
-        button.setPreferredSize(new Dimension(200,60));
+        button.setBackground(new Color(211, 211, 211));
+        button.setPreferredSize(new Dimension(getWidth(), 50));
 
-        this.setLayout(new GridBagLayout());
-		this.add(button, new GridBagConstraints());
+        this.setLayout(new GridLayout(1, 1));
+        this.add(button);
+        this.setBackground(Color.WHITE);
         button.addMouseListener(new MouseAdapter() {
             public void mouseReleased (MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {

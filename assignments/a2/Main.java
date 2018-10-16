@@ -23,16 +23,13 @@ public class Main {
 		Canvas canvas = new Canvas(model);
 		MenuBar menuBar = new MenuBar(model);
 
-		toolPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-
 		// create bottom palette with colour picker and line widths
 		JPanel bottomPalette = new JPanel(new BorderLayout());
 		bottomPalette.add(colourPicker, BorderLayout.NORTH);
 		bottomPalette.add(lineWidthPalette);
 
+		// create general palette paneel
 		JPanel palettePanel = new JPanel(new GridLayout(3, 1));
-		// palettePanel.setMaximumSize(new Dimension(300, palettePanel.getHeight()));
-		//palettePanel.setPreferredSize(new Dimension(300, palettePanel.getHeight()));
 		palettePanel.add(toolPalette);
 		palettePanel.add(colourPalette);
 		palettePanel.add(bottomPalette);
@@ -42,6 +39,11 @@ public class Main {
 		windowPanel.add(palettePanel, BorderLayout.WEST);
 		windowPanel.add(canvas);
 		
+		frame.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent componentEvent) {
+				palettePanel.setPreferredSize(new Dimension(180 + frame.getWidth() / 20, frame.getHeight()));
+			}
+		});
 		// create the window
 		frame.setPreferredSize(new Dimension(880,800));
 		frame.setMinimumSize(new Dimension(640,480));

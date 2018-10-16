@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -35,6 +36,10 @@ public class LineWidthPalette extends JPanel  {
 
 		selectedLine = mediumLine;
 		this.model.setLineWidth(mediumLine.getLineWidth());
+
+		this.setBorder(new LineBorder(Color.BLACK, 3));
+		this.setBackground(Color.WHITE);
+
 
 		// button = new JButton("?");
 		// button.setMaximumSize(new Dimension(200, 200));
