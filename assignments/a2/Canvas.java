@@ -1,7 +1,3 @@
-// HelloMVC: a simple MVC example
-// the model is just a counter 
-// inspired by code by Joseph Mack, http://www.austintek.com/mvc/
-
 import javax.swing.*;
 
 import java.awt.BasicStroke;
@@ -20,14 +16,10 @@ import java.util.*;
 import java.lang.*;
 
 public class Canvas extends JPanel {
-
-	// the model that this view is showing
 	private Model model;
-	//private JLabel label = new JLabel();
 
 	Canvas(Model model) {
-		// create UI
-		setBackground(Color.WHITE);
+		this.setBackground(Color.WHITE);
 		//this.setPreferredSize(new Dimension(1800, this.getHeight()));
 		
 		// s1et the model
@@ -35,10 +27,9 @@ public class Canvas extends JPanel {
 		
 		// anonymous class acts as model listener
 		// this.setLayout(new GridBagLayout());
-		setLayout(new BorderLayout());
 		// this.setLayout(new BorderLayout());
 		PaintShapes surface = new PaintShapes();
-		
+		setLayout(new BorderLayout());
 		this.add(surface, BorderLayout.CENTER);
 
 		this.model.addView(new IView() {

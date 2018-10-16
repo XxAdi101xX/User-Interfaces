@@ -44,21 +44,6 @@ public class ToolPalette extends JPanel  {
 		selectedToolPanel.addAsSelected();
 		
 		this.setBackground(Color.BLACK);
-		
-		// // anonymous class acts as model listener
-		// this.model.addView(new IView() { // NECESSARY?
-		// 	public void updateView() {
-		// 	}
-		// });
-
-
-		// setup the event to go to the "controller"
-		// (this anonymous class is essentially the controller)
-		// button.addActionListener(new ActionListener() {
-		// 	public void actionPerformed(ActionEvent e) {
-		// 		model.incrementCounter();
-		// 	}
-		// });
 	}
 
 	class ToolPanel extends JButton {
@@ -74,7 +59,7 @@ public class ToolPalette extends JPanel  {
 			setIcon(icon);
 			
 			// set button properties
-			setBackground(Color.WHITE);			// setMargin(new Insets(15, 15, 15, 15));
+			setBackground(Color.WHITE);
 			setPreferredSize(new Dimension(100,100));
 			setBorder(new LineBorder(Color.BLACK, 1));
 			setFocusPainted(false);

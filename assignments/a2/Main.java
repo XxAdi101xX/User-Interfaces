@@ -23,36 +23,30 @@ public class Main {
 		Canvas canvas = new Canvas(model);
 		MenuBar menuBar = new MenuBar(model);
 
+		toolPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
+
+		// create bottom palette with colour picker and line widths
+		JPanel bottomPalette = new JPanel(new BorderLayout());
+		bottomPalette.add(colourPicker, BorderLayout.NORTH);
+		bottomPalette.add(lineWidthPalette);
+
 		JPanel palettePanel = new JPanel(new GridLayout(3, 1));
 		// palettePanel.setMaximumSize(new Dimension(300, palettePanel.getHeight()));
 		//palettePanel.setPreferredSize(new Dimension(300, palettePanel.getHeight()));
 		palettePanel.add(toolPalette);
 		palettePanel.add(colourPalette);
-		// palettePanel.add(lineWidthPalette);
-
-		JPanel bottomPalette = new JPanel(new BorderLayout());
-		bottomPalette.add(colourPicker, BorderLayout.NORTH);
-		bottomPalette.add(lineWidthPalette);
-
 		palettePanel.add(bottomPalette);
-		// button.setMaximumSize(new Dimension(200, 200));
-		// button.setPreferredSize(new Dimension(200, 200));
 
-		toolPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		// colourPalette.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
-		
 		// create a layout panel to hold the two views
-		JPanel windowPanel = new JPanel(new BorderLayout());
-		frame.getContentPane().add(windowPanel);
-
-		// add views (each view is a JPanel)
+		JPanel windowPanel = new JPanel(new BorderLayout());	
 		windowPanel.add(palettePanel, BorderLayout.WEST);
 		windowPanel.add(canvas);
-
-		frame.setJMenuBar(menuBar);
+		
 		// create the window
 		frame.setPreferredSize(new Dimension(880,800));
 		frame.setMinimumSize(new Dimension(640,480));
+		frame.getContentPane().add(windowPanel);
+		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
