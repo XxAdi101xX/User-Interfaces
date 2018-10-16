@@ -5,10 +5,8 @@ import java.awt.Color;
 import java.awt.List;
 import java.awt.Point;
 import java.awt.event.*;
+
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 

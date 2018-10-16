@@ -90,6 +90,16 @@ public class LineWidthPalette extends JPanel  {
 			width = lineWidth;
 			colour = lineColour;
 
+			addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						if (LineWidthPalette.this.model.getTool() == Tool.CURSOR && LineWidthPalette.this.model.getCurrentShape() != null) {
+							LineWidthPalette.this.model.setCurrentShape(null);
+						}
+					}
+				}
+			});
+
 			addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {
 					if (e.getButton() == MouseEvent.BUTTON1) { // left click
@@ -135,6 +145,4 @@ public class LineWidthPalette extends JPanel  {
 			return width;
 		}
 	}
-
-
 }

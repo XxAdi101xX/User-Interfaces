@@ -21,7 +21,6 @@ public class Main {
 		LineWidthPalette lineWidthPalette = new LineWidthPalette(model);
 		ColourPicker colourPicker = new ColourPicker(model);
 		Canvas canvas = new Canvas(model);
-		// Menu DO I NEED THE FINAL KEYWORD
 		MenuBar menuBar = new MenuBar(model);
 
 		JPanel palettePanel = new JPanel(new GridLayout(3, 1));
@@ -51,20 +50,6 @@ public class Main {
 		windowPanel.add(canvas);
 
 		frame.setJMenuBar(menuBar);
-
-		// windowPanel.setFocusable(true);
-		// windowPanel.addKeyListener(new KeyAdapter() {
-		// 	public void keyPressed(KeyEvent e) {
-		// 		System.out.println("sdggggggggggggggggggggfsdf");
-		// 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-		// 			if (model.getTool() == Tool.CURSOR && model.getCurrentShape() != null) {
-		// 				model.setCurrentShape(null);
-		// 				System.out.println("sdfsdf");
-		// 			}
-		// 		}
-		// 	}
-		// });
-		
 		// create the window
 		frame.setPreferredSize(new Dimension(880,800));
 		frame.setMinimumSize(new Dimension(640,480));

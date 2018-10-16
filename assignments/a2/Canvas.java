@@ -64,20 +64,19 @@ public class Canvas extends JPanel {
 			// currentShape = null;
 			Canvas.this.model.setCurrentShape(null);
 
-			// setFocusable(true);
-			// requestFocusInWindow();
-			// Canvas.this.requestFocus();
-			// addKeyListener(new KeyAdapter() {
-			// 	public void keyPressed(KeyEvent e) {
-			// 		System.out.println("ttttttttttttttttttttt");
-			// 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			// 			System.out.println("sdfdfsfdsfssfsd");
-			// 		}
-			// 	}
-			// });
+			addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						if (Canvas.this.model.getTool() == Tool.CURSOR && Canvas.this.model.getCurrentShape() != null) {
+							Canvas.this.model.setCurrentShape(null);
+						}
+					}
+				}
+			});
 
 			addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
+					requestFocus();
 					if (Canvas.this.model.isDrawingTool()) {
 						Shape newShape = new Shape(
 							Canvas.this.model.getTool(),
