@@ -120,6 +120,7 @@ public class Model {
 	// clear the shapes arraylist
 	public void clearShapes() {
 		shapes.clear();
+		currentShape = null;
 		notifyObservers();
 	}
 

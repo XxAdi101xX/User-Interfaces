@@ -49,7 +49,7 @@ public class Canvas extends JPanel {
 
 					Point currentCanvasSize = Canvas.this.model.getCurrentCanvasSize();
 					Point fixedCanvasSize = Canvas.this.model.getFixedCanvasSize();
-					if (currentCanvasSize.x > fixedCanvasSize.x || currentCanvasSize.y > fixedCanvasSize.y) {
+					if (currentCanvasSize.x > fixedCanvasSize.x && currentCanvasSize.y > fixedCanvasSize.y) {
 						surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
 						model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
 					}
