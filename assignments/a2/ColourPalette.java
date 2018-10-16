@@ -8,22 +8,16 @@ import java.awt.event.*;
 class ColourPalette extends JPanel  {
 	private Model model;
 	private ColourPanel selectedColour;
-	private Color colourA = Color.RED;
-	private Color colourB = Color.GREEN;
-	private Color colourC = Color.BLUE;
-	private Color colourD = Color.ORANGE;
-	private Color colourE = Color.PINK;
-	private Color colourF = Color.YELLOW;
 
 	public ColourPalette(Model model) {
 		this.model = model;
 
-		ColourPanel a = new ColourPanel(colourA);
-		ColourPanel b = new ColourPanel(colourB);
-		ColourPanel c = new ColourPanel(colourC);
-		ColourPanel d = new ColourPanel(colourD);
-		ColourPanel e = new ColourPanel(colourE);
-		ColourPanel f = new ColourPanel(colourF);
+		ColourPanel a = new ColourPanel(Color.RED);
+		ColourPanel b = new ColourPanel(Color.GREEN);
+		ColourPanel c = new ColourPanel(Color.BLUE);
+		ColourPanel d = new ColourPanel(Color.ORANGE);
+		ColourPanel e = new ColourPanel(Color.PINK);
+		ColourPanel f = new ColourPanel(Color.YELLOW);
 
 		this.setLayout (new GridLayout(3, 2));
 		this.add(a);
@@ -51,24 +45,24 @@ class ColourPalette extends JPanel  {
 					model.getCurrentShape().getBorderColour() != selectedColour.getColour()) {
 					Color shapeColour = model.getCurrentShape().getBorderColour();
 
-					if (shapeColour == colourA) {
+					if (shapeColour == a.getColour()) {
 						a.setAsSelected();
-						model.setColour(colourA, false);
-					} else if (shapeColour == colourB) {
+						model.setColour(a.getColour(), false);
+					} else if (shapeColour == b.getColour()) {
 						b.setAsSelected();
-						model.setColour(colourB, false);
-					} else if (shapeColour == colourC) {
+						model.setColour(b.getColour(), false);
+					} else if (shapeColour == c.getColour()) {
 						c.setAsSelected();
-						model.setColour(colourC, false);
-					} else if (shapeColour == colourD) {
+						model.setColour(c.getColour(), false);
+					} else if (shapeColour == d.getColour()) {
 						d.setAsSelected();
-						model.setColour(colourD, false);
-					} else if (shapeColour == colourE) {
+						model.setColour(d.getColour(), false);
+					} else if (shapeColour == e.getColour()) {
 						e.setAsSelected();
-						model.setColour(colourE, false);
-					} else if (shapeColour == colourF) {
+						model.setColour(e.getColour(), false);
+					} else if (shapeColour == f.getColour()) {
 						f.setAsSelected();
-						model.setColour(colourF, false);
+						model.setColour(f.getColour(), false);
 					} else {
 						// TODO deal with custom colour
 						// model.setUsingCustomColour(true);
@@ -81,10 +75,11 @@ class ColourPalette extends JPanel  {
 
 	class ColourPanel extends JButton {
 		private Color colour;
+		private JColorChooser colourChooser = new JColorChooser();
 
-		public ColourPanel(Color colour) {	
-			this.colour = colour;
-			setBackground(colour);
+		public ColourPanel(Color panelColour) {	
+			this.colour = panelColour;
+			setBackground(panelColour);
 			setBorder(new LineBorder(Color.BLACK, 1));
 			setFocusPainted(false);
 
@@ -104,10 +99,18 @@ class ColourPalette extends JPanel  {
 						ColourPalette.this.model.setColour(colour, false);
 						setAsSelected();
 					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
-						System.out.println("TODO MAYBE TO RECONFIGURE THE PANEL");
+						Color chosenColour = colourChooser.showDialog(new JPanel(), "Colour Picker", Color.ORANGE);
+						if (chosenColour != null) {
+							setColour(chosenColour);
+						}
 					}
 				}
 			});
+		}
+
+		public void setColour(Color newColour) {
+			colour = newColour;
+			setBackground(newColour);
 		}
 
 		public Color getColour() {
