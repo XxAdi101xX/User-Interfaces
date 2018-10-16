@@ -83,6 +83,4 @@ public class ToolPalette extends JPanel  {
 			setBorder(new LineBorder(Color.BLACK, 1));
 		}
 	}
-
-
 }

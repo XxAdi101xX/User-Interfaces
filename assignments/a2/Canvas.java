@@ -30,7 +30,6 @@ public class Canvas extends JPanel {
 
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBackground(Color.WHITE);
 
 		setLayout(new BorderLayout());
 		this.add(scrollPane, BorderLayout.CENTER);

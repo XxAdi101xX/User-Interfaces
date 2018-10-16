@@ -40,16 +40,6 @@ public class LineWidthPalette extends JPanel  {
 		this.setBorder(new LineBorder(Color.BLACK, 3));
 		this.setBackground(Color.WHITE);
 
-
-		// button = new JButton("?");
-		// button.setMaximumSize(new Dimension(200, 200));
-		// button.setPreferredSize(new Dimension(200, 200));
-		// a GridBagLayout with default constraints centres
-		// the widget in the window
-		// this.setLayout(new GridBagLayout());
-		// this.add(button, new GridBagConstraints());
-
-
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
 			public void updateView() {
@@ -79,15 +69,6 @@ public class LineWidthPalette extends JPanel  {
 				selectedLine.updateColour(model.getColour());
 			}
 		});
-
-
-		// setup the event to go to the "controller"
-		// (this anonymous class is essentially the controller)
-		// button.addActionListener(new ActionListener() {
-		// 	public void actionPerformed(ActionEvent e) {
-		// 		model.incrementCounter();
-		// 	}
-		// });
 	}
 
 	class Line extends JComponent {
