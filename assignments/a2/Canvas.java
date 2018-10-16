@@ -168,6 +168,9 @@ public class Canvas extends JPanel {
 		
 			Graphics2D g2d = (Graphics2D) g.create();
 
+			g2d.setColor(Color.WHITE);
+			g2d.fillRect(0, 0, getWidth(), getHeight());
+
 			for (Shape s : Canvas.this.model.getShapeList()) {
 				Point startPoint = s.getStartPoints();
 				Point endPoint = s.getEndPoints();
