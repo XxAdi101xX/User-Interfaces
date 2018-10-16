@@ -41,11 +41,14 @@ public class Main {
 		
 		frame.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent componentEvent) {
-				palettePanel.setPreferredSize(new Dimension(180 + frame.getWidth() / 20, frame.getHeight()));
+				int panelWidth = 180 + windowPanel.getWidth() / 20;
+				int scrollPaneWidth = 5;
+				model.setCurrentCanvasSize(windowPanel.getWidth() - panelWidth - scrollPaneWidth, windowPanel.getHeight() - scrollPaneWidth);
+				palettePanel.setPreferredSize(new Dimension(panelWidth, windowPanel.getHeight()));
 			}
 		});
 		// create the window
-		frame.setPreferredSize(new Dimension(880,800));
+		frame.setPreferredSize(new Dimension(1280,800));
 		frame.setMinimumSize(new Dimension(640,480));
 		frame.getContentPane().add(windowPanel);
 		frame.setJMenuBar(menuBar);

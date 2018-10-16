@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -17,20 +18,22 @@ import java.lang.*;
 
 public class Canvas extends JPanel {
 	private Model model;
+	private PaintShapes surface;
+	private JScrollPane scrollPane;
 
-	Canvas(Model model) {
-		this.setBackground(Color.WHITE);
-		//this.setPreferredSize(new Dimension(1800, this.getHeight()));
-		
-		// s1et the model
+	Canvas(Model model) {		
+		// set the model
 		this.model = model;
-		
-		// anonymous class acts as model listener
-		// this.setLayout(new GridBagLayout());
-		// this.setLayout(new BorderLayout());
-		PaintShapes surface = new PaintShapes();
+
+		surface = new PaintShapes();
+		scrollPane = new JScrollPane(surface);
+
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBackground(Color.WHITE);
+
 		setLayout(new BorderLayout());
-		this.add(surface, BorderLayout.CENTER);
+		this.add(scrollPane, BorderLayout.CENTER);
 
 		this.model.addView(new IView() {
 			public void updateView() {
@@ -44,6 +47,13 @@ public class Canvas extends JPanel {
 						model.getCurrentShape().setLineWidth(model.getLineWidth());
 					}
 					surface.repaint();
+
+					Point currentCanvasSize = Canvas.this.model.getCurrentCanvasSize();
+					Point fixedCanvasSize = Canvas.this.model.getFixedCanvasSize();
+					if (currentCanvasSize.x > fixedCanvasSize.x || currentCanvasSize.y > fixedCanvasSize.y) {
+						surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
+						model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
+					}
 				// }
 			}
 		});
@@ -52,7 +62,6 @@ public class Canvas extends JPanel {
 	class PaintShapes extends JComponent {
 		Point previousMousePoint;
 		PaintShapes() {
-			// currentShape = null;
 			Canvas.this.model.setCurrentShape(null);
 
 			addKeyListener(new KeyAdapter() {
@@ -76,8 +85,6 @@ public class Canvas extends JPanel {
 							e.getX(), e.getY(), 
 							e.getX(), e.getY()
 						);
-						// shapes.add(newShape);
-						// currentShape = newShape;
 						Canvas.this.model.addShape(newShape);
 						Canvas.this.model.setCurrentShape(newShape);
 					} else {
@@ -122,7 +129,7 @@ public class Canvas extends JPanel {
 		
 				public void mouseReleased(MouseEvent e) {
 					if (Canvas.this.model.isDrawingTool()) {
-						// currentShape = null; // reset to indicate that nothing is really selected when drawing a shape
+						// reset to indicate that nothing is really selected when drawing a shape
 						Canvas.this.model.setCurrentShape(null);
 					}
 				  	repaint();
@@ -160,7 +167,6 @@ public class Canvas extends JPanel {
 			super.paintComponent(g);
 		
 			Graphics2D g2d = (Graphics2D) g.create();
-			// System.out.println(getWidth()/4 + " " + getHeight()/2 + " " + (int) (getWidth() * (0.75)) + " " + getHeight()/2);
 
 			for (Shape s : Canvas.this.model.getShapeList()) {
 				Point startPoint = s.getStartPoints();

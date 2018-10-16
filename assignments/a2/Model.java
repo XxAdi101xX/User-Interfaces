@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Point;
 import java.util.ArrayList;
 
 public class Model {
@@ -11,6 +12,10 @@ public class Model {
 	private ArrayList<Shape> shapes = new ArrayList<Shape>(); // all the shapes
 	private Boolean swappingFocus = false;
 	private ArrayList<IView> views = new ArrayList<IView>(); // all the views of this model
+	private int currentCanvasWidth = 0;
+	private int currentCanvasHeight = 0;
+	private int fixedCanvasWidth = 0;
+	private int fixedCanvasHeight = 0;
 
 	// set the view observer
 	public void addView(IView view) {
@@ -116,6 +121,25 @@ public class Model {
 	public void clearShapes() {
 		shapes.clear();
 		notifyObservers();
+	}
+
+	public void setCurrentCanvasSize(int width, int height) {
+		currentCanvasWidth = width;
+		currentCanvasHeight = height;
+		notifyObservers();
+	}
+
+	public Point getCurrentCanvasSize() {
+		return new Point(currentCanvasWidth, currentCanvasHeight);
+	}
+
+	public void setFixedCanvasSize(int width, int height) {
+		fixedCanvasWidth = width;
+		fixedCanvasHeight = height;
+	}
+
+	public Point getFixedCanvasSize() {
+		return new Point(fixedCanvasWidth, fixedCanvasHeight);
 	}
 	
 	// notify the IView observer
