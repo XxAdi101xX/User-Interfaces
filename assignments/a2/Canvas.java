@@ -138,7 +138,7 @@ public class Canvas extends JPanel {
 
 			addMouseMotionListener(new MouseMotionAdapter() {
 				public void mouseDragged(MouseEvent e) {
-					if (Canvas.this.model.isDrawingTool()) {
+					if (Canvas.this.model.isDrawingTool() && contains(e.getX(), e.getY())) {
 						Canvas.this.model.getCurrentShape().setEndPoints(e.getX(), e.getY());
 						repaint();
 					} else if (Canvas.this.model.getTool() == Tool.CURSOR && Canvas.this.model.getCurrentShape() != null) {
