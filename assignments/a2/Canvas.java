@@ -37,23 +37,18 @@ public class Canvas extends JPanel {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("Canvas: updateView");
-				// if (model.getSwappingFocus()) {
-				// 	System.out.println("SWAPPING MODE");
-				// 	model.setSwappingFocus(false);
-				// } else {
-					if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
-						model.getCurrentShape().setBorderColour(model.getColour());
-						model.getCurrentShape().setLineWidth(model.getLineWidth());
-					}
-					surface.repaint();
+				if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
+					model.getCurrentShape().setBorderColour(model.getColour());
+					model.getCurrentShape().setLineWidth(model.getLineWidth());
+				}
+				surface.repaint();
 
-					Point currentCanvasSize = Canvas.this.model.getCurrentCanvasSize();
-					Point fixedCanvasSize = Canvas.this.model.getFixedCanvasSize();
-					if (currentCanvasSize.x > fixedCanvasSize.x && currentCanvasSize.y > fixedCanvasSize.y) {
-						surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
-						model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
-					}
-				// }
+				Point currentCanvasSize = Canvas.this.model.getCurrentCanvasSize();
+				Point fixedCanvasSize = Canvas.this.model.getFixedCanvasSize();
+				if (currentCanvasSize.x > fixedCanvasSize.x && currentCanvasSize.y > fixedCanvasSize.y) {
+					surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
+					model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
+				}
 			}
 		});
 	}
@@ -89,9 +84,6 @@ public class Canvas extends JPanel {
 					} else {
 						for (int i = Canvas.this.model.getShapeListSize() - 1; i >= 0; i--) {
 							if (Canvas.this.model.getShapeByIndex(i).hasIntersected(new Point(e.getX(), e.getY()))) {
-								Boolean sameTarget = Canvas.this.model.getCurrentShape() == Canvas.this.model.getShapeByIndex(i) ||
-													 Canvas.this.model.getCurrentShape() == null;
-
 								Canvas.this.model.setCurrentShape(Canvas.this.model.getShapeByIndex(i));
 								Canvas.this.model.removeShapeByIndex(i);
 								
@@ -99,9 +91,6 @@ public class Canvas extends JPanel {
 								switch (Canvas.this.model.getTool()) {
 									case CURSOR:
 										// add shape back to front of array for increased priority
-										if (!sameTarget) {
-											Canvas.this.model.setSwappingFocus(true);
-										}
 										previousMousePoint = new Point(e.getX(), e.getY());
 										Canvas.this.model.addShape(Canvas.this.model.getCurrentShape());
 										break;
@@ -192,7 +181,12 @@ public class Canvas extends JPanel {
 					}
 					case RECTANGLE: {
 						Rectangle rectangle = s.getRectangleObject();
-						
+
+						if (s.getFilled()) {
+							g2d.setStroke(new BasicStroke(s.getLineWidth()));
+							g2d.setColor(s.getBackgroundColour());
+							g2d.fill(rectangle);
+						}
 						if (isSelected) {
 							// draw outline to show that this is selected
 							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
@@ -201,17 +195,18 @@ public class Canvas extends JPanel {
 						}
 
 						g2d.setStroke(new BasicStroke(s.getLineWidth()));
-						if (s.getFilled()) {
-							g2d.setColor(s.getBackgroundColour());
-							g2d.fill(rectangle);
-						}
 						g2d.setColor(s.getBorderColour());
 						g2d.draw(rectangle);
 						break;
 					}
 					case CIRCLE: {
 						Ellipse2D.Double circle = s.getEllipsesObject();
-
+						
+						if (s.getFilled()) {
+							g2d.setStroke(new BasicStroke(s.getLineWidth()));
+							g2d.setColor(s.getBackgroundColour());
+							g2d.fill(circle);
+						}
 						if (isSelected) {
 							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
 							g2d.setColor(Color.BLACK);
@@ -219,10 +214,6 @@ public class Canvas extends JPanel {
 						}
 
 						g2d.setStroke(new BasicStroke(s.getLineWidth()));
-						if (s.getFilled()) {
-							g2d.setColor(s.getBackgroundColour());
-							g2d.fill(circle);
-						}
 						g2d.setColor(s.getBorderColour());
 						g2d.draw(circle);
 						break;

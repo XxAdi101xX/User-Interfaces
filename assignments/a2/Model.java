@@ -10,7 +10,6 @@ public class Model {
 	private int lineWidth;
 	private Shape currentShape;
 	private ArrayList<Shape> shapes = new ArrayList<Shape>(); // all the shapes
-	private Boolean swappingFocus = false;
 	private ArrayList<IView> views = new ArrayList<IView>(); // all the views of this model
 	private int currentCanvasWidth = 0;
 	private int currentCanvasHeight = 0;
@@ -109,14 +108,6 @@ public class Model {
 	// remove shape by index
 	public void removeShapeByIndex(int index) {
 		shapes.remove(index);
-	}
-
-	public Boolean getSwappingFocus() {
-		return swappingFocus;
-	}
-
-	public void setSwappingFocus(Boolean swapping) {
-		swappingFocus = swapping;
 	}
 
 	// clear the shapes arraylist
