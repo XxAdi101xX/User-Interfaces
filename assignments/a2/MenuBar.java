@@ -15,24 +15,31 @@ public class MenuBar extends JMenuBar {
 	private JFileChooser fileChooser = new JFileChooser();
 	private FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("jPanel Text File", "txt");
 	private JMenu file = new JMenu("File");
-	// private JMenu view = new JMenu("View");
+	private JMenuItem newCanvas;
+	private JMenuItem loadCanvas;
+	private JMenuItem saveCanvas;
+	// private JMenu view;
 
 	public MenuBar(Model model) {
 		this.model = model;
 		fileChooser.setFileFilter(fileFilter);
 		
+		file = new JMenu("File");
+		// view = new JMenu("View")
 		add(file);
+		// add(view);
+		
+		// create menu items
+		newCanvas = new JMenuItem("New");
+		loadCanvas = new JMenuItem("Load");
+		saveCanvas = new JMenuItem("Save");
 
-		// Menu Items for File 
-		JMenuItem newCanvas = new JMenuItem("New");
-		newCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-
-		JMenuItem loadCanvas = new JMenuItem("Load");
-		loadCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-
-		JMenuItem saveCanvas = new JMenuItem("Save");
+		// set shortcuts for convenience
+		newCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));		
+		loadCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_L, ActionEvent.CTRL_MASK));		
 		saveCanvas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 
+		// add to file menu
 		file.add(newCanvas);
 		file.add(loadCanvas);
 		file.add(saveCanvas);
@@ -108,8 +115,7 @@ public class MenuBar extends JMenuBar {
 				scanner.close();
 			}
 		} catch (Exception exception) {
-			System.out.println ("Exception Occured when Loading!!!!");
-			exception.printStackTrace();
+			System.out.println ("Exception Occured when Loading. Invalid file!");
 		}
 	}
 	
@@ -144,8 +150,7 @@ public class MenuBar extends JMenuBar {
 				out.close();
 			}
 		} catch (Exception exception) {
-			System.out.println ("Exception Occured when Saving!!!!");
-			exception.printStackTrace();
+			System.out.println ("Exception Occured when Saving. Invalid file!");
 		}
 	}
 }
