@@ -7,3 +7,6 @@ The rectangle icon is protected by a Freeware License.
 The eraser icon is protected by a Freeware License.
 The cursor icon is protected by a Creative Commons Attribution Non-commercial (by-nc) License.
 
+For the extra feature, I chose to implement the customizable colour pallet which can change colour by right clicking 
+and selecting a colour
+

@@ -1,16 +1,21 @@
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.*;
 
 class ColourPalette extends JPanel  {
 	private Model model;
 	private ColourPanel selectedColour;
+	private Boolean disabled;
 
 	public ColourPalette(Model model) {
 		this.model = model;
+		this.disabled = false;
 
 		ColourPanel a = new ColourPanel(Color.RED);
 		ColourPanel b = new ColourPanel(Color.GREEN);
@@ -31,16 +36,29 @@ class ColourPalette extends JPanel  {
 		selectedColour.setAsSelected();
 		this.model.setColour(selectedColour.getColour(), false);
 		this.setBorder(new LineBorder(Color.BLACK, 3));
+		this.setBackground(Color.BLACK);
 
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("ColourPalette: updateView");
+				if (model.getTool() == Tool.ERASER) {
+					disabled = true;
+				} else {
+					disabled = false;
+				}
+				a.checkDisabled();
+				b.checkDisabled();
+				c.checkDisabled();
+				d.checkDisabled();
+				e.checkDisabled();
+				f.checkDisabled();
+
 				if (model.isUsingCustomColour()) {
 					selectedColour.removeAsSelected();
 				} 
 				
-				if (model.getCurrentShape() != null && 
+				if (model.getCurrentShape() != null &&
 					model.getTool() == Tool.CURSOR && 
 					model.getCurrentShape().getBorderColour() != selectedColour.getColour()) {
 					Color shapeColour = model.getCurrentShape().getBorderColour();
@@ -65,6 +83,7 @@ class ColourPalette extends JPanel  {
 						model.setColour(f.getColour(), false);
 					} else {
 						// TODO deal with custom colour
+						// model.setColour(shapeColour, true);
 						// model.setUsingCustomColour(true);
 						// ColourPalette.this.model.setColour(shapeColour, true);
 					}
@@ -95,7 +114,7 @@ class ColourPalette extends JPanel  {
 
 			addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {
-					if (e.getButton() == MouseEvent.BUTTON1) { // left click
+					if (e.getButton() == MouseEvent.BUTTON1 && !disabled) { // left click
 						ColourPalette.this.model.setColour(colour, false);
 						setAsSelected();
 					} else if (e.getButton() == MouseEvent.BUTTON3){ // right click
@@ -126,6 +145,25 @@ class ColourPalette extends JPanel  {
 		
 		public void removeAsSelected() {
 			setBorder(new LineBorder(Color.BLACK, 1));
+		}
+
+		public void checkDisabled() {
+			setEnabled(!disabled);
+			repaint();
+		}
+
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+		
+			Graphics2D g2d = (Graphics2D) g.create();
+			if (disabled) {
+				g2d.setColor(Color.BLACK);
+				g2d.setStroke(new BasicStroke(10));
+				g2d.drawLine(0, 0, getWidth(), getHeight());
+				g2d.drawLine(getWidth(), 0, 0, getHeight());
+				g2d.dispose();
+			}
+	
 		}
 	}
 }

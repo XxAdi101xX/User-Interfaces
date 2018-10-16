@@ -15,13 +15,15 @@ import java.awt.event.*;
 public class LineWidthPalette extends JPanel  {
 	private Model model;
 	private Line selectedLine;
-	final private Color defaultColour = Color.BLACK;
+	private Boolean disabled;
+	final private Color defaultColour = Color.DARK_GRAY;
 	final private int thinWidth = 5;
 	final private int mediumWidth = 10;
 	final private int thickWidth = 15;
 
 	public LineWidthPalette(Model model) {
 		this.model = model;
+		this.disabled = false;
 
 		// Setup the class layout
 		this.setLayout(new GridLayout(3, 1));
@@ -44,6 +46,12 @@ public class LineWidthPalette extends JPanel  {
 		this.model.addView(new IView() {
 			public void updateView() {
 				System.out.println("LineWidthPalette: updateView");
+				if (model.getTool() == Tool.FILL || model.getTool() == Tool.ERASER) {
+					disabled = true;
+				} else {
+					disabled = false;
+				}
+				repaint();
 				
 				if (model.getCurrentShape() != null && 
 					model.getTool() == Tool.CURSOR && 
@@ -71,6 +79,20 @@ public class LineWidthPalette extends JPanel  {
 		});
 	}
 
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+	
+		Graphics2D g2d = (Graphics2D) g.create();
+		if (disabled) {
+			g2d.setColor(Color.BLACK);
+			g2d.setStroke(new BasicStroke(10));
+			g2d.drawLine(0, 0, getWidth(), getHeight());
+			g2d.drawLine(getWidth(), 0, 0, getHeight());
+			g2d.dispose();
+		}
+
+	}
+
 	class Line extends JComponent {
 		final private int width;
 		private Color colour;
@@ -91,7 +113,7 @@ public class LineWidthPalette extends JPanel  {
 
 			addMouseListener(new MouseAdapter() {
 				public void mouseReleased(MouseEvent e) {
-					if (e.getButton() == MouseEvent.BUTTON1) { // left click
+					if (e.getButton() == MouseEvent.BUTTON1 && !disabled) { // left click
 						if (!isSelected()) {
 							LineWidthPalette.this.model.setLineWidth(width);
 							setAsSelected();

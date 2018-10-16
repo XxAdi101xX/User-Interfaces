@@ -31,6 +31,7 @@ public class Model {
 	// set the current tool
 	public void setTool(Tool newTool) {
 		tool = newTool;
+		notifyObservers();
 	}
 
 	// check if the current tool is an circle, line or rectangle
@@ -97,6 +98,7 @@ public class Model {
 	// add a shape to the shape list
 	public void addShape (Shape shape) {
 		shapes.add(shape);
+		// notifyObservers();
 	}
 
 	// get shape by index

@@ -43,6 +43,7 @@ public class ToolPalette extends JPanel  {
 		selectedToolPanel.addAsSelected();
 		
 		this.setBorder(new LineBorder(Color.BLACK, 3));
+		this.setBackground(Color.BLACK);
 	}
 
 	class ToolPanel extends JButton {
