@@ -56,12 +56,15 @@ public class LineWidthPalette extends JPanel  {
 					switch (model.getCurrentShape().getLineWidth()) {
 						case thinWidth:
 							thinLine.setAsSelected();
+							model.setLineWidth(thinWidth);
 							break;
 						case mediumWidth:
 							mediumLine.setAsSelected();
+							model.setLineWidth(mediumWidth);
 							break;
 						case thickWidth:
 							thickLine.setAsSelected();
+							model.setLineWidth(thickWidth);
 							break;
 						default:
 							System.out.println("error with setting line width of current selected shape");
@@ -128,8 +131,8 @@ public class LineWidthPalette extends JPanel  {
 
 		public void setAsSelected() {
 			selectedLine.removeAsSelected();
-			selectedLine = this;
 			updateColour(LineWidthPalette.this.model.getColour());
+			selectedLine = this;
 		}
 
 		public void removeAsSelected() {

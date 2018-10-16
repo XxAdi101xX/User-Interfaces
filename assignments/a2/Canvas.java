@@ -50,7 +50,7 @@ public class Canvas extends JPanel {
 				// } else {
 					if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
 						model.getCurrentShape().setBorderColour(model.getColour());
-						// model.getCurrentShape().setLineWidth(model.getLineWidth());
+						model.getCurrentShape().setLineWidth(model.getLineWidth());
 					}
 					surface.repaint();
 				// }

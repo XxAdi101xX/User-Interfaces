@@ -52,22 +52,22 @@ class ColourPalette extends JPanel  {
 
 					if (shapeColour == colourA) {
 						a.setAsSelected();
-						ColourPalette.this.model.setColour(colourA, false);
+						model.setColour(colourA, false);
 					} else if (shapeColour == colourB) {
 						b.setAsSelected();
-						ColourPalette.this.model.setColour(colourB, false);
+						model.setColour(colourB, false);
 					} else if (shapeColour == colourC) {
 						c.setAsSelected();
-						ColourPalette.this.model.setColour(colourC, false);
+						model.setColour(colourC, false);
 					} else if (shapeColour == colourD) {
 						d.setAsSelected();
-						ColourPalette.this.model.setColour(colourD, false);
+						model.setColour(colourD, false);
 					} else if (shapeColour == colourE) {
 						e.setAsSelected();
-						ColourPalette.this.model.setColour(colourE, false);
+						model.setColour(colourE, false);
 					} else if (shapeColour == colourF) {
 						f.setAsSelected();
-						ColourPalette.this.model.setColour(colourF, false);
+						model.setColour(colourF, false);
 					} else {
 						// TODO deal with custom colour
 						// model.setUsingCustomColour(true);
