@@ -36,19 +36,45 @@ public class Canvas extends JPanel {
 
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("Canvas: updateView");
+				System.out.println("Canvas: updateView" + model.getShapeListSize());
 				if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
 					model.getCurrentShape().setBorderColour(model.getColour());
 					model.getCurrentShape().setLineWidth(model.getLineWidth());
 				}
+
 				surface.repaint();
 
-				Point currentCanvasSize = Canvas.this.model.getCurrentCanvasSize();
-				Point fixedCanvasSize = Canvas.this.model.getFixedCanvasSize();
-				if (currentCanvasSize.x > fixedCanvasSize.x && currentCanvasSize.y > fixedCanvasSize.y) {
+				Point currentCanvasSize = model.getCurrentCanvasSize();
+				Point fixedCanvasSize = model.getFixedCanvasSize();
+				Point previousCanvasSize = model.getPreviousCanvasSize();
+
+				if (model.getViewFullSize()) {
+					if (currentCanvasSize.x > fixedCanvasSize.x && currentCanvasSize.y > fixedCanvasSize.y) {
+						scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+						scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+						surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
+						model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
+					}
+				} else {
 					surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
 					model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
+					scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+					for (Shape s : model.getShapeList()) {
+						Point startPoint = s.getStartPoints();
+						Point endPoint = s.getEndPoints();
+	
+						double startXRatio = (double)startPoint.x / previousCanvasSize.x;
+						double startYRatio = (double)startPoint.y / previousCanvasSize.y;
+						double endXRatio = (double)endPoint.x / previousCanvasSize.x;
+						double endYRatio = (double)endPoint.y / previousCanvasSize.y;
+	
+						s.setStartPoints((int)Math.round(currentCanvasSize.x * startXRatio), (int)Math.round(currentCanvasSize.y * startYRatio));
+						s.setEndPoints((int)Math.round(currentCanvasSize.x * endXRatio), (int)Math.round(currentCanvasSize.y * endYRatio));
+					}			
 				}
+				model.setPreviousCanvasSize(currentCanvasSize.x, currentCanvasSize.y);
 			}
 		});
 	}

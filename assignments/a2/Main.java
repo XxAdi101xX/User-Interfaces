@@ -39,10 +39,15 @@ public class Main {
 		windowPanel.add(palettePanel, BorderLayout.WEST);
 		windowPanel.add(canvas);
 		
+		model.setViewFullSize(true);
 		frame.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent componentEvent) {
 				int panelWidth = 180 + windowPanel.getWidth() / 20;
 				int scrollPaneWidth = 5;
+
+				if (model.getPreviousCanvasSize().x == 0 && model.getPreviousCanvasSize().y == 0) {
+					model.setPreviousCanvasSize(windowPanel.getWidth() - panelWidth - scrollPaneWidth, windowPanel.getHeight() - scrollPaneWidth);
+				}
 				model.setCurrentCanvasSize(windowPanel.getWidth() - panelWidth - scrollPaneWidth, windowPanel.getHeight() - scrollPaneWidth);
 				palettePanel.setPreferredSize(new Dimension(panelWidth, windowPanel.getHeight()));
 			}

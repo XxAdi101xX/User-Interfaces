@@ -15,6 +15,10 @@ public class Model {
 	private int currentCanvasHeight = 0;
 	private int fixedCanvasWidth = 0;
 	private int fixedCanvasHeight = 0;
+	private int previousCanvasWidth = 0;
+	private int previousCanvasHeight = 0;
+	private Boolean viewFullSize = true;
+
 
 	// set the view observer
 	public void addView(IView view) {
@@ -50,7 +54,6 @@ public class Model {
 		notifyObservers();
 	}
 	
-
 	// return whether a custom colour is being used
 	public Boolean isUsingCustomColour() {
 		return isCustomColour;
@@ -69,7 +72,6 @@ public class Model {
 	// set the line width
 	public void setLineWidth(int newWidth) {
 		lineWidth = newWidth;
-		System.out.println("itgdgdf" + newWidth);
 		notifyObservers();
 	}
 
@@ -134,6 +136,23 @@ public class Model {
 
 	public Point getFixedCanvasSize() {
 		return new Point(fixedCanvasWidth, fixedCanvasHeight);
+	}
+
+	public void setPreviousCanvasSize(int width, int height) {
+		previousCanvasWidth = width;
+		previousCanvasHeight = height;
+	}
+
+	public Point getPreviousCanvasSize() {
+		return new Point(previousCanvasWidth, previousCanvasHeight);
+	}
+
+	public void setViewFullSize(Boolean isFull) {
+		viewFullSize = isFull;
+	}
+
+	public Boolean getViewFullSize() {
+		return viewFullSize;
 	}
 	
 	// notify the IView observer

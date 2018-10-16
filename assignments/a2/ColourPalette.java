@@ -98,8 +98,8 @@ class ColourPalette extends JPanel  {
 						model.setColour(f.getColour(), false);
 					} else {
 						// TODO deal with custom colour
-						// model.setColour(shapeColour, true);
-						// model.setUsingCustomColour(true);
+						// model.setColour(shapeColour, true);]
+						model.setUsingCustomColour(true);
 						// ColourPalette.this.model.setColour(shapeColour, true);
 					}
 				}

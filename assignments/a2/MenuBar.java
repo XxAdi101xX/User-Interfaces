@@ -18,16 +18,18 @@ public class MenuBar extends JMenuBar {
 	private JMenuItem newCanvas;
 	private JMenuItem loadCanvas;
 	private JMenuItem saveCanvas;
-	// private JMenu view;
+	private JMenu view;
+	private JCheckBoxMenuItem fullSize;
+	private JCheckBoxMenuItem fitToWindow;
 
 	public MenuBar(Model model) {
 		this.model = model;
 		fileChooser.setFileFilter(fileFilter);
 		
 		file = new JMenu("File");
-		// view = new JMenu("View")
+		view = new JMenu("View");
 		add(file);
-		// add(view);
+		add(view);
 		
 		// create menu items
 		newCanvas = new JMenuItem("New");
@@ -44,14 +46,13 @@ public class MenuBar extends JMenuBar {
 		file.add(loadCanvas);
 		file.add(saveCanvas);
 		
-		// Optional feature yayyy
-		// add(view);
-		// // Menu Items for View
-		// JMenuItem fullSize = new JMenuItem("Full Size");
-		// JMenuItem fitToWindow = new JMenuItem("Fit to Window");
+		// Menu Items for View
+		fullSize = new JCheckBoxMenuItem("Full Size");
+		fitToWindow = new JCheckBoxMenuItem("Fit to Window");
+		fullSize.setState(true);
 		
-		// view.add(fullSize);
-		// view.add(fitToWindow);
+		view.add(fullSize);
+		view.add(fitToWindow);
 		
 		newCanvas.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -68,6 +69,20 @@ public class MenuBar extends JMenuBar {
 		saveCanvas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveCanvasToFile();
+			}
+		});
+
+		fullSize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fitToWindow.setState(false);
+				model.setViewFullSize(true);
+			}
+		});
+
+		fitToWindow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				fullSize.setState(false);
+				model.setViewFullSize(false);
 			}
 		});
 	}
