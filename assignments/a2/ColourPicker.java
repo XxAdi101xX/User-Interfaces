@@ -40,7 +40,7 @@ class ColourPicker extends JPanel {
 
         this.model.addView(new IView() {
 			public void updateView() {
-                System.out.println("ColourPicker: updateView");
+                // System.out.println("ColourPicker: updateView");
                 if (model.getTool() == Tool.ERASER) {
 					disabled = true;
 				} else {

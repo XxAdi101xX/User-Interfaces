@@ -36,7 +36,7 @@ public class Canvas extends JPanel {
 
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("Canvas: updateView" + model.getShapeListSize());
+				// System.out.println("Canvas: updateView" + model.getShapeListSize());
 				if (model.getCurrentShape() != null && model.getTool() == Tool.CURSOR) {
 					model.getCurrentShape().setBorderColour(model.getColour());
 					model.getCurrentShape().setLineWidth(model.getLineWidth());

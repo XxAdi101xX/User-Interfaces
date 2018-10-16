@@ -41,7 +41,7 @@ class ColourPalette extends JPanel  {
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("ColourPalette: updateView");
+				// System.out.println("ColourPalette: updateView");
 				if (model.getTool() == Tool.ERASER) {
 					disabled = true;
 				} else {

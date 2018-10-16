@@ -45,7 +45,7 @@ public class LineWidthPalette extends JPanel  {
 		// anonymous class acts as model listener
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("LineWidthPalette: updateView");
+				// System.out.println("LineWidthPalette: updateView");
 				if (model.getTool() == Tool.FILL || model.getTool() == Tool.ERASER) {
 					disabled = true;
 				} else {

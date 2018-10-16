@@ -21,7 +21,7 @@ public class ToolPalette extends JPanel  {
 		this.model = model;		
 		
 		// Instantiate the various tool options
-		ToolPanel cursor = new ToolPanel(Tool.CURSOR, "icons/cursor2.png");
+		ToolPanel cursor = new ToolPanel(Tool.CURSOR, "icons/cursor.png");
 		ToolPanel eraser = new ToolPanel(Tool.ERASER, "icons/eraser.png");
 		ToolPanel line = new ToolPanel(Tool.LINE, "icons/line.png");
 		ToolPanel circle = new ToolPanel(Tool.CIRCLE, "icons/circle.png");
