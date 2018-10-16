@@ -8,7 +8,7 @@ public class Model {
 	private Color colour;
 	private Boolean isCustomColour = false;
 	private int lineWidth;
-	private Shape currentShape;
+	private Shape currentShape = null;
 	private ArrayList<Shape> shapes = new ArrayList<Shape>(); // all the shapes
 	private ArrayList<IView> views = new ArrayList<IView>(); // all the views of this model
 	private int currentCanvasWidth = 0;

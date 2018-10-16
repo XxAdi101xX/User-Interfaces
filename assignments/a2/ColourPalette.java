@@ -57,28 +57,43 @@ class ColourPalette extends JPanel  {
 				if (model.isUsingCustomColour()) {
 					selectedColour.removeAsSelected();
 				} 
-				
-				if (model.getCurrentShape() != null &&
+				Boolean equalColour = 	model.getCurrentShape() == null ? true : // we set random value if currentshape is null
+										model.getCurrentShape().getBorderColour().getRed() == selectedColour.getColour().getRed() &&
+										model.getCurrentShape().getBorderColour().getGreen() == selectedColour.getColour().getGreen() &&
+										model.getCurrentShape().getBorderColour().getBlue() == selectedColour.getColour().getBlue();
+				if (model.getCurrentShape() != null && // this statement is required 
 					model.getTool() == Tool.CURSOR && 
-					model.getCurrentShape().getBorderColour() != selectedColour.getColour()) {
+					!equalColour) {
 					Color shapeColour = model.getCurrentShape().getBorderColour();
 
-					if (shapeColour == a.getColour()) {
+					if (shapeColour.getRed() == a.getColour().getRed() && 
+						shapeColour.getGreen() == a.getColour().getGreen() && 
+						shapeColour.getBlue() == a.getColour().getBlue()) {
 						a.setAsSelected();
 						model.setColour(a.getColour(), false);
-					} else if (shapeColour == b.getColour()) {
+					} else if (	shapeColour.getRed() == b.getColour().getRed() && 
+							   	shapeColour.getGreen() == b.getColour().getGreen() && 
+								shapeColour.getBlue() == b.getColour().getBlue()) {
 						b.setAsSelected();
 						model.setColour(b.getColour(), false);
-					} else if (shapeColour == c.getColour()) {
+					} else if (	shapeColour.getRed() == c.getColour().getRed() && 
+								shapeColour.getGreen() == c.getColour().getGreen() && 
+				 				shapeColour.getBlue() == c.getColour().getBlue()) {
 						c.setAsSelected();
 						model.setColour(c.getColour(), false);
-					} else if (shapeColour == d.getColour()) {
+					} else if (	shapeColour.getRed() == d.getColour().getRed() && 
+								shapeColour.getGreen() == d.getColour().getGreen() && 
+				 				shapeColour.getBlue() == d.getColour().getBlue()) {
 						d.setAsSelected();
 						model.setColour(d.getColour(), false);
-					} else if (shapeColour == e.getColour()) {
+					} else if (	shapeColour.getRed() == e.getColour().getRed() && 
+								shapeColour.getGreen() == e.getColour().getGreen() && 
+				 				shapeColour.getBlue() == e.getColour().getBlue()) {
 						e.setAsSelected();
 						model.setColour(e.getColour(), false);
-					} else if (shapeColour == f.getColour()) {
+					} else if (	shapeColour.getRed() == f.getColour().getRed() && 
+								shapeColour.getGreen() == f.getColour().getGreen() && 
+				 				shapeColour.getBlue() == f.getColour().getBlue()) {
 						f.setAsSelected();
 						model.setColour(f.getColour(), false);
 					} else {
