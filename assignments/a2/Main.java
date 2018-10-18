@@ -42,7 +42,7 @@ public class Main {
 		model.setViewFullSize(true);
 		frame.addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent componentEvent) {
-				int panelWidth = 180 + windowPanel.getWidth() / 20;
+				int panelWidth = 100 + windowPanel.getWidth() / 10;
 				int scrollPaneWidth = 5;
 
 				if (model.getPreviousCanvasSize().x == 0 && model.getPreviousCanvasSize().y == 0) {
