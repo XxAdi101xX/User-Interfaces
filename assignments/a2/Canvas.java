@@ -158,7 +158,9 @@ public class Canvas extends JPanel {
 					if (Canvas.this.model.isDrawingTool() && contains(e.getX(), e.getY())) {
 						Canvas.this.model.getCurrentShape().setEndPoints(e.getX(), e.getY());
 						repaint();
-					} else if (Canvas.this.model.getTool() == Tool.CURSOR && Canvas.this.model.getCurrentShape() != null) {
+					} else if (	Canvas.this.model.getTool() == Tool.CURSOR && 
+								Canvas.this.model.getCurrentShape() != null &&
+								Canvas.this.model.getCurrentShape().hasIntersected(new Point(e.getX(), e.getY()))) {
 						Point startPoint = Canvas.this.model.getCurrentShape().getStartPoints();
 						Point endPoint = Canvas.this.model.getCurrentShape().getEndPoints();
 
