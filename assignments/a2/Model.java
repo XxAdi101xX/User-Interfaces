@@ -18,6 +18,7 @@ public class Model {
 	private int previousCanvasWidth = 0;
 	private int previousCanvasHeight = 0;
 	private Boolean viewFullSize = true;
+	private Boolean newCanvas = false;
 
 
 	// set the view observer
@@ -153,6 +154,17 @@ public class Model {
 
 	public Boolean getViewFullSize() {
 		return viewFullSize;
+	}
+
+	public void setNewCanvas(Boolean isNewCanvas) {
+		newCanvas = isNewCanvas;
+		if (newCanvas) {
+			notifyObservers();
+		}
+	}
+
+	public Boolean getNewCanvas() {
+		return newCanvas;
 	}
 	
 	// notify the IView observer

@@ -18,7 +18,7 @@ canvas size so far as reference and add scrollbars appropriately. If the scaling
 
 You can load in the jPanelDrawing.txt to test out the load function and then also just save your drawing to another file. Ensure that
 the file ends with the .txt postfix so that it's not filtered out by the file filter. When creating a new file, it will also prompt you to save 
-the file before exiting. 
+the file before exiting. Trying to create a new canvas will prompt you to first save the existing canvas and then create a new canvas with the new window size configurations. Just a note, shortcuts to these menu items have been added for convenience.
 
 The colour palette, colour picker and line width bar are disabled if some incompatible tool types are selected.
 

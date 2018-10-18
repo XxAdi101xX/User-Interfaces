@@ -107,6 +107,7 @@ public class MenuBar extends JMenuBar {
 			// clear
 			model.clearShapes();
 		}
+		model.setNewCanvas(true);
 	}
 
 	private void loadCanvasFromFile() {

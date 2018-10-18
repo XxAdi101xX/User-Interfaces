@@ -136,6 +136,9 @@ class ColourPalette extends JPanel  {
 						Color chosenColour = colourChooser.showDialog(new JPanel(), "Colour Picker", Color.ORANGE);
 						if (chosenColour != null) {
 							setColour(chosenColour);
+							if (selectedColour == ColourPanel.this) {
+								ColourPalette.this.model.setColour(chosenColour, false);
+							}
 						}
 					}
 				}
