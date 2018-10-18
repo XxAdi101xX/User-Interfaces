@@ -58,6 +58,7 @@ public class Canvas extends JPanel {
 						model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
 					}
 				} else {
+					model.setNewCanvas(false);
 					surface.setPreferredSize(new Dimension(currentCanvasSize.x, currentCanvasSize.y));
 					model.setFixedCanvasSize(currentCanvasSize.x , currentCanvasSize.y);
 					scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
