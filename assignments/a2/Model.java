@@ -150,6 +150,7 @@ public class Model {
 
 	public void setViewFullSize(Boolean isFull) {
 		viewFullSize = isFull;
+		notifyObservers();
 	}
 
 	public Boolean getViewFullSize() {
