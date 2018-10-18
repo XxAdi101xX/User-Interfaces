@@ -18,23 +18,26 @@ public class LineWidthPalette extends JPanel  {
 	private Boolean disabled;
 	final private Color defaultColour = Color.DARK_GRAY;
 	final private int thinWidth = 5;
-	final private int mediumWidth = 10;
-	final private int thickWidth = 15;
+	final private int mediumWidth = 8;
+	final private int thickWidth = 12;
+	final private int thickestWidth = 15;
 
 	public LineWidthPalette(Model model) {
 		this.model = model;
 		this.disabled = false;
 
 		// Setup the class layout
-		this.setLayout(new GridLayout(3, 1));
+		this.setLayout(new GridLayout(4, 1));
 
 		Line thinLine = new Line(thinWidth, defaultColour);
 		Line mediumLine = new Line(mediumWidth, this.model.getColour());
 		Line thickLine = new Line(thickWidth, defaultColour);
+		Line thickestLine = new Line(thickestWidth, defaultColour);
 
 		this.add(thinLine);
 		this.add(mediumLine);
 		this.add(thickLine);
+		this.add(thickestLine);
 
 		selectedLine = mediumLine;
 		this.model.setLineWidth(mediumLine.getLineWidth());
@@ -69,6 +72,9 @@ public class LineWidthPalette extends JPanel  {
 							thickLine.setAsSelected();
 							model.setLineWidth(thickWidth);
 							break;
+						case thickestWidth:
+							thickestLine.setAsSelected();
+							model.setLineWidth(thickestWidth);
 						default:
 							System.out.println("error with setting line width of current selected shape");
 					}

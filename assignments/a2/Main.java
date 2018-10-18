@@ -54,7 +54,7 @@ public class Main {
 		});
 		// create the window
 		frame.setPreferredSize(new Dimension(1280,800));
-		frame.setMinimumSize(new Dimension(640,480));
+		frame.setMinimumSize(new Dimension(680,540));
 		frame.getContentPane().add(windowPanel);
 		frame.setJMenuBar(menuBar);
 		frame.pack();

@@ -201,7 +201,7 @@ public class Canvas extends JPanel {
 						Line2D line = s.getLineObject();
 						if (isSelected) {
 							// draw outline to show that this is selected
-							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
+							g2d.setStroke(new BasicStroke(s.getLineWidth() + 7));
 							g2d.setColor(Color.BLACK);
 							g2d.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 						}
@@ -220,7 +220,7 @@ public class Canvas extends JPanel {
 						}
 						if (isSelected) {
 							// draw outline to show that this is selected
-							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
+							g2d.setStroke(new BasicStroke(s.getLineWidth() + 7));
 							g2d.setColor(Color.BLACK);
 							g2d.draw(rectangle);
 						}
@@ -239,7 +239,7 @@ public class Canvas extends JPanel {
 							g2d.fill(circle);
 						}
 						if (isSelected) {
-							g2d.setStroke(new BasicStroke(s.getLineWidth() + 5));
+							g2d.setStroke(new BasicStroke(s.getLineWidth() + 7));
 							g2d.setColor(Color.BLACK);
 							g2d.draw(circle);
 						}
