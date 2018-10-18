@@ -20,7 +20,7 @@ class ColourPicker extends JPanel {
 
         button = new JButton("Colour Picker");
         button.setBackground(new Color(211, 211, 211));
-        button.setPreferredSize(new Dimension(getWidth(), 50));
+        button.setPreferredSize(new Dimension(getWidth(), 50)); // default initial size
 
         this.setLayout(new GridLayout(1, 1));
         this.add(button);
@@ -41,6 +41,7 @@ class ColourPicker extends JPanel {
         this.model.addView(new IView() {
 			public void updateView() {
                 // System.out.println("ColourPicker: updateView");
+                button.setPreferredSize(new Dimension(getWidth(), model.getCurrentCanvasSize().y / 13));
                 if (model.getTool() == Tool.ERASER) {
 					disabled = true;
 				} else {
