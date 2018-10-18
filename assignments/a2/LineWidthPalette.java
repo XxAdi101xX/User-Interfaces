@@ -75,6 +75,7 @@ public class LineWidthPalette extends JPanel  {
 						case thickestWidth:
 							thickestLine.setAsSelected();
 							model.setLineWidth(thickestWidth);
+							break;
 						default:
 							System.out.println("error with setting line width of current selected shape");
 					}
