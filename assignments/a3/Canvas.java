@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 
 public class Canvas extends JPanel {
 	private Model model;
-	private Vector<Sprite> sprites = new Vector<Sprite>(); // All sprites we're managing
-	private Sprite interactiveSprite = null; // Sprite with which user is interacting
+	// private Vector<Sprite> sprites = new Vector<Sprite>(); // All sprites we're managing
+	// private Sprite interactiveSprite = null; // Sprite with which user is interacting
 
 	public Canvas(Model model) {
 		// Install our event handlers
@@ -49,10 +49,10 @@ public class Canvas extends JPanel {
 	 * Handle mouse press events
 	 */
 	private void handleMousePress(java.awt.event.MouseEvent e) {
-		for (Sprite sprite : sprites) {
-			interactiveSprite = sprite.getSpriteHit(e);
-			if (interactiveSprite != null) {
-				interactiveSprite.handleMouseDownEvent(e);
+		for (Sprite sprite : model.getSprites()) {
+			model.setInteractiveSprite(sprite.getSpriteHit(e));
+			if (model.getInteractiveSprite() != null) {
+				model.getInteractiveSprite().handleMouseDownEvent(e);
 				break;
 			} 
 		}
@@ -62,28 +62,25 @@ public class Canvas extends JPanel {
 	 * Handle mouse released events
 	 */
 	private void handleMouseReleased(MouseEvent e) {
-		if (interactiveSprite != null) {
-			interactiveSprite.handleMouseUp(e);
+		Sprite currentInteractiveSprite = model.getInteractiveSprite();
+
+		if (currentInteractiveSprite != null) {
+			currentInteractiveSprite.handleMouseUp(e);
 			repaint();
 		}
-		interactiveSprite = null;
+		model.setInteractiveSprite(null);
 	}
 
 	/**
 	 * Handle mouse dragged events
 	 */
 	private void handleMouseDragged(MouseEvent e) {
-		if (interactiveSprite != null) {
-			interactiveSprite.handleMouseDragEvent(e);
+		Sprite currentInteractiveSprite = model.getInteractiveSprite();
+
+		if (currentInteractiveSprite != null) {
+			currentInteractiveSprite.handleMouseDragEvent(e);
 			repaint();
 		}
-	}
-
-	/**
-	 * Add a top-level sprite to the canvas
-	 */
-	public void addSprite(Sprite s) {
-		sprites.add(s);
 	}
 
 	/**
@@ -93,7 +90,7 @@ public class Canvas extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		g.setColor(Color.BLACK);
-		for (Sprite sprite : sprites) {
+		for (Sprite sprite : model.getSprites()) {
 			sprite.draw((Graphics2D) g);
 		}
 	}

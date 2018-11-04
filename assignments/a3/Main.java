@@ -12,7 +12,7 @@ public class Main {
 
 		// add scene graph to the canvas
 		Canvas canvas = new Canvas(model);
-		canvas.addSprite(Main.makeSprite());
+		model.addSprite(Main.makeSprite());
 
 		MenuBar menuBar = new MenuBar(model);
 
