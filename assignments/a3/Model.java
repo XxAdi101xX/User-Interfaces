@@ -15,9 +15,21 @@ public class Model {
 		view.updateView(); // update the view to current state of the model
 	}
 
+	public void setInteractiveSprite(Sprite sprite) {
+		interactiveSprite = sprite;
+	}
+
+	public Spirte getInteractiveSprite(Sprite sprite) {
+		return interactiveSprite;
+	}
+
 	public void addSprite(Sprite s) {
 		sprites.add(s);
 		notifyObservers();
+	}
+
+	public ArrayList<Sprite> getSprites() {
+		return sprites;
 	}
 	
 	// notify the IView observer

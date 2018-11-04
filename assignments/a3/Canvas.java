@@ -14,11 +14,6 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-/**
- * A canvas that draws sprites.
- * 
- * Michael Terry & Jeff Avery
- */
 public class Canvas extends JPanel {
 	private Model model;
 	private Vector<Sprite> sprites = new Vector<Sprite>(); // All sprites we're managing
@@ -39,6 +34,13 @@ public class Canvas extends JPanel {
 		this.addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
 				handleMouseDragged(e);
+			}
+		});
+
+		this.model.addView(new IView() {
+			public void updateView() {
+				System.out.println("Canvas: updateView");
+				repaint();
 			}
 		});
 	}
