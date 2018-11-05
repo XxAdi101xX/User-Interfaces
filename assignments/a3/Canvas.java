@@ -87,12 +87,15 @@ public class Canvas extends JPanel {
 	 * Paint our canvas
 	 */
 	public void paint(Graphics g) {
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		g.setColor(Color.BLACK);
+		Graphics2D g2 = (Graphics2D) g;
+		AffineTransform save = g2.getTransform();
+		g2.setColor(Color.WHITE);
+		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+		g2.setColor(Color.BLACK);
 		for (Sprite sprite : model.getSprites()) {
-			sprite.draw((Graphics2D) g);
+			sprite.draw(g2);
 		}
+		g2.setTransform(save);
 	}
 
 }

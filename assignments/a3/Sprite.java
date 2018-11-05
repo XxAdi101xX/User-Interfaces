@@ -77,16 +77,14 @@ public abstract class Sprite {
      * appropriately so it can handle arbitrary transformations.
      */
     protected void handleMouseDragEvent(MouseEvent e) {
-        
-        Point2D oldPoint = lastPoint;
         Point2D newPoint = e.getPoint();
         switch (interactionMode) {
             case IDLE:
                 ; // no-op (shouldn't get here)
                 break;
             case DRAGGING:
-                double x_diff = newPoint.getX() - oldPoint.getX();
-                double y_diff = newPoint.getY() - oldPoint.getY();
+                double x_diff = newPoint.getX() - lastPoint.getX();
+                double y_diff = newPoint.getY() - lastPoint.getY();
                 transform.translate(x_diff, y_diff);
                 break;
             case ROTATING:
@@ -124,6 +122,7 @@ public abstract class Sprite {
             return this;
         }
         return null;
+        // return this;
     }
     
     /*

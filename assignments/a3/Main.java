@@ -24,6 +24,7 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(600, 400);
 		frame.setVisible(true);
+		frame.setResizable(false);
 	}
 	
 	/* Make sample scene graph for testing purposes. */
@@ -44,7 +45,7 @@ public class Main {
 		// build scene graph
 		firstSprite.addChild(secondSprite);
 		secondSprite.addChild(thirdSprite);
-		// thirdSprite.addChild(fourthSprite);
+		thirdSprite.addChild(fourthSprite);
 		
 		// return root of the tree
 		return firstSprite;

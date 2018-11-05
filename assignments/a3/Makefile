@@ -3,6 +3,7 @@ default:
 
 run: default
 	java Main
+	rm *.class
 
 clean:
 	rm *.class

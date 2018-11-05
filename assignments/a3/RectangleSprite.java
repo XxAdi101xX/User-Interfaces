@@ -50,13 +50,12 @@ public class RectangleSprite extends Sprite {
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
         }
-        // Point2D newPoint = (Point2D)p.clone();
-        Point MT = new Point();
-        inverseTransform.transform((Point)p, MT);
-        // AffineTransform x = AT1.createInverse();
-        // // apply the inverse transformation to the mouse position
-        // IAT1.transform(M, MT);
-        return rect.contains(MT);
+        Point2D newPoint = (Point2D)p.clone();
+        inverseTransform.transform(newPoint, newPoint);
+        return rect.contains(newPoint);
+        // Point MT = new Point();
+        // inverseTransform.transform((Point)p, MT);
+        // return rect.contains(MT);
     }
 
     protected void drawSprite(Graphics2D g) {
