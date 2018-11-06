@@ -1,5 +1,6 @@
 
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -58,9 +59,10 @@ public class RectangleSprite extends Sprite {
         // return rect.contains(MT);
     }
 
-    protected void drawSprite(Graphics2D g) {
-        g.setColor(Color.BLACK);
-        g.draw(rect);
+    protected void drawSprite(Graphics2D g2d) {
+        g2d.setStroke(new BasicStroke(7));
+        g2d.setColor(Color.BLACK);
+        g2d.draw(rect);
     }
     
     public String toString() {

@@ -14,6 +14,9 @@ public class Main {
 		Canvas canvas = new Canvas(model);
 		model.addSprite(Main.makeSprite());
 
+		Sprite ellipse = new EllipseSprite(100, 150);
+		model.addSprite(ellipse);
+
 		MenuBar menuBar = new MenuBar(model);
 
 		// create a frame to hold it
@@ -33,19 +36,15 @@ public class Main {
 		Sprite firstSprite = new RectangleSprite(70, 50);
 		Sprite secondSprite = new RectangleSprite(50, 40);
 		Sprite thirdSprite = new RectangleSprite(70, 30);
-		Sprite fourthSprite = new RectangleSprite(10, 10);
 
 		// define them based on relative, successive transformations
 		firstSprite.transform(AffineTransform.getTranslateInstance(50, 100));
 		secondSprite.transform(AffineTransform.getTranslateInstance(80, 5));
 		thirdSprite.transform(AffineTransform.getTranslateInstance(50, 5));
-		fourthSprite.transform(AffineTransform.getTranslateInstance(70, 30));
-		fourthSprite.transform(AffineTransform.getScaleInstance(4, 3));
 
 		// build scene graph
 		firstSprite.addChild(secondSprite);
 		secondSprite.addChild(thirdSprite);
-		thirdSprite.addChild(fourthSprite);
 		
 		// return root of the tree
 		return firstSprite;

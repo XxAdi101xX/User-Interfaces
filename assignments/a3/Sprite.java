@@ -25,14 +25,26 @@ public abstract class Sprite {
         ROTATING
     }
 
+    /***
+     * Maintains the types of possible sprites
+     */
+    protected enum SpriteType{
+        HEAD,
+        BODY,
+        UPPERARM,
+        LOWERARM,
+        UPPERLEG,
+        LOWERLEG
+    }
+
+    private SpriteType spriteType = null;
     private Sprite parent = null;                               // Pointer to our parent
     private Vector<Sprite> children = new Vector<Sprite>();     // Holds all of our children
     private AffineTransform transform = new AffineTransform();  // Our transformation matrix
     protected Point2D lastPoint = null;                         // Last mouse point
     protected InteractionMode interactionMode = InteractionMode.IDLE;    // current state
 
-    public Sprite() {
-    }
+    public Sprite() {}
     
     public Sprite(Sprite parent) {
         if (parent != null) {
@@ -65,6 +77,22 @@ public abstract class Sprite {
         if (e.getButton() == MouseEvent.BUTTON1) {
             interactionMode = InteractionMode.DRAGGING;
         }
+        switch (spriteType) {
+            case BODY:
+                interactionMode = InteractionMode.DRAGGING;
+                break;
+            case HEAD:
+            case UPPERARM:
+            case LOWERARM:
+            case UPPERLEG:
+                interactionMode = InteractionMode.ROTATING;
+                break;
+            case LOWERLEG:
+                interactionMode = InteractionMode.SCALING;
+                break;
+            default:
+                interactionMode = InteractionMode.IDLE;
+        }
         // Handle rotation, scaling mode depending on input
     }
 
@@ -80,7 +108,7 @@ public abstract class Sprite {
         Point2D newPoint = e.getPoint();
         switch (interactionMode) {
             case IDLE:
-                ; // no-op (shouldn't get here)
+                System.out.println("Warning: unhandled mouse drag event");
                 break;
             case DRAGGING:
                 double x_diff = newPoint.getX() - lastPoint.getX();
@@ -161,21 +189,22 @@ public abstract class Sprite {
      * Draws the sprite. This method will call drawSprite after
      * the transform has been set up for this sprite.
      */
-    public void draw(Graphics2D g) {
-        AffineTransform oldTransform = g.getTransform();
+    public void draw(Graphics2D g2) {
+        // Graphics2D g2 = (Graphics2D) g;
+        AffineTransform oldTransform = g2.getTransform();
 
         // Set to our transform
-        g.setTransform(this.getFullTransform());
+        g2.setTransform(this.getFullTransform());
         
         // Draw the sprite (delegated to sub-classes)
-        this.drawSprite(g);
+        this.drawSprite(g2);
         
         // Restore original transform
-        g.setTransform(oldTransform);
+        g2.setTransform(oldTransform);
 
         // Draw children
         for (Sprite sprite : children) {
-            sprite.draw(g);
+            sprite.draw(g2);
         }
     }
     
