@@ -77,22 +77,22 @@ public abstract class Sprite {
         if (e.getButton() == MouseEvent.BUTTON1) {
             interactionMode = InteractionMode.DRAGGING;
         }
-        switch (spriteType) {
-            case BODY:
-                interactionMode = InteractionMode.DRAGGING;
-                break;
-            case HEAD:
-            case UPPERARM:
-            case LOWERARM:
-            case UPPERLEG:
-                interactionMode = InteractionMode.ROTATING;
-                break;
-            case LOWERLEG:
-                interactionMode = InteractionMode.SCALING;
-                break;
-            default:
-                interactionMode = InteractionMode.IDLE;
-        }
+        // switch (spriteType) {
+        //     case BODY:
+        //         interactionMode = InteractionMode.DRAGGING;
+        //         break;
+        //     case HEAD:
+        //     case UPPERARM:
+        //     case LOWERARM:
+        //     case UPPERLEG:
+        //         interactionMode = InteractionMode.ROTATING;
+        //         break;
+        //     case LOWERLEG:
+        //         interactionMode = InteractionMode.SCALING;
+        //         break;
+        //     default:
+        //         interactionMode = InteractionMode.IDLE;
+        // }
         // Handle rotation, scaling mode depending on input
     }
 
@@ -189,22 +189,24 @@ public abstract class Sprite {
      * Draws the sprite. This method will call drawSprite after
      * the transform has been set up for this sprite.
      */
-    public void draw(Graphics2D g2) {
-        // Graphics2D g2 = (Graphics2D) g;
-        AffineTransform oldTransform = g2.getTransform();
+    public void draw(Graphics2D g) {
+        AffineTransform oldTransform = g.getTransform();
 
         // Set to our transform
-        g2.setTransform(this.getFullTransform());
+        Graphics2D g2 = (Graphics2D)g;
+        AffineTransform currentAT = g2.getTransform();
+        currentAT.concatenate(this.getFullTransform());
+        g2.setTransform(currentAT);
         
         // Draw the sprite (delegated to sub-classes)
-        this.drawSprite(g2);
+        this.drawSprite(g);
         
         // Restore original transform
-        g2.setTransform(oldTransform);
+        g.setTransform(oldTransform);
 
         // Draw children
         for (Sprite sprite : children) {
-            sprite.draw(g2);
+            sprite.draw(g);
         }
     }
     
