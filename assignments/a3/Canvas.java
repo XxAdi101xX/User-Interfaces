@@ -16,12 +16,12 @@ import javax.swing.JPanel;
 
 public class Canvas extends JPanel {
 	private Model model;
-	// private Vector<Sprite> sprites = new Vector<Sprite>(); // All sprites we're managing
-	// private Sprite interactiveSprite = null; // Sprite with which user is interacting
 
 	public Canvas(Model model) {
-		// Install our event handlers
+		// set model
 		this.model = model;
+
+		// Install our event handlers
 		this.addMouseListener(new MouseAdapter() {
 			public void mousePressed(java.awt.event.MouseEvent e) {
 				handleMousePress(e);
@@ -43,6 +43,30 @@ public class Canvas extends JPanel {
 				repaint();
 			}
 		});
+
+		makeRagDoll();
+	}
+
+	/**
+	 * Create a human like intereactive ragdoll onto the canvas
+	 */
+	private void makeRagDoll() {
+		// create four different parts
+		Sprite body = new RectangleSprite(SpriteType.BODY, 70, 50);
+		Sprite upperarm = new EllipseSprite(SpriteType.UPPERARM, 50, 40);
+		Sprite lowerarm = new EllipseSprite(SpriteType.LOWERARM, 70, 30);
+
+		// define them based on relative, successive transformations
+		body.transform(AffineTransform.getTranslateInstance(50, 100));
+		upperarm.transform(AffineTransform.getTranslateInstance(80, 5));
+		lowerarm.transform(AffineTransform.getTranslateInstance(50, 5));
+
+		// build scene graph
+		body.addChild(upperarm);
+		upperarm.addChild(lowerarm);
+		
+		// add root sprite
+		this.model.addSprite(body);
 	}
 
 	/**

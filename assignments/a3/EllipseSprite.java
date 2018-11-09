@@ -23,16 +23,18 @@ public class EllipseSprite extends Sprite {
      * Creates an ellipse based at the origin with the specified
      * width and height
      */
-    public EllipseSprite(int width, int height) {
+    public EllipseSprite(SpriteType type, int width, int height) {
         super();
+        setSpiritType(type);
         this.initialize(width, height);
     }
     /**
      * Creates an ellipse based at the origin with the specified
      * width, height, and parent
      */
-    public EllipseSprite(int width, int height, Sprite parentSprite) {
+    public EllipseSprite(SpriteType type, int width, int height, Sprite parentSprite) {
         super(parentSprite);
+        setSpiritType(type);
         this.initialize(width, height);
     }
     

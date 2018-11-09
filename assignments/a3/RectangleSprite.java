@@ -7,6 +7,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 
 
 /**
@@ -16,27 +17,31 @@ import java.awt.geom.Rectangle2D;
  */
 public class RectangleSprite extends Sprite {
 
-    private Rectangle2D rect = null;
+    // private Rectangle2D rect = null;
+    private RoundRectangle2D.Double rect = null;
 
     /**
      * Creates a rectangle based at the origin with the specified
      * width and height
      */
-    public RectangleSprite(int width, int height) {
+    public RectangleSprite(SpriteType type, int width, int height) {
         super();
-        this.initialize(width, height);
+        setSpiritType(type);
+        initialize(width, height);
     }
     /**
      * Creates a rectangle based at the origin with the specified
      * width, height, and parent
      */
-    public RectangleSprite(int width, int height, Sprite parentSprite) {
+    public RectangleSprite(SpriteType type, int width, int height, Sprite parentSprite) {
         super(parentSprite);
-        this.initialize(width, height);
+        setSpiritType(type);
+        initialize(width, height);
     }
-    
+
     private void initialize(int width, int height) {
-        rect = new Rectangle2D.Double(0, 0, width, height);
+        // rect = new Rectangle2D.Double(0, 0, width, height);
+        rect = new RoundRectangle2D.Double(0, 0, width, height, 1 , 1);
     }
     
     /**
@@ -59,7 +64,7 @@ public class RectangleSprite extends Sprite {
     }
 
     protected void drawSprite(Graphics2D g2d) {
-        g2d.setStroke(new BasicStroke(7));
+        g2d.setStroke(new BasicStroke(5));
         g2d.setColor(Color.BLACK);
         g2d.draw(rect);
     }

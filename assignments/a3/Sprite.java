@@ -1,5 +1,6 @@
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -23,18 +24,6 @@ public abstract class Sprite {
         DRAGGING,
         SCALING,
         ROTATING
-    }
-
-    /***
-     * Maintains the types of possible sprites
-     */
-    protected enum SpriteType{
-        HEAD,
-        BODY,
-        UPPERARM,
-        LOWERARM,
-        UPPERLEG,
-        LOWERLEG
     }
 
     private SpriteType spriteType = null;
@@ -75,7 +64,7 @@ public abstract class Sprite {
     protected void handleMouseDownEvent(MouseEvent e) {
         lastPoint = e.getPoint();
         if (e.getButton() == MouseEvent.BUTTON1) {
-            interactionMode = InteractionMode.DRAGGING;
+            interactionMode = InteractionMode.ROTATING;
         }
         // switch (spriteType) {
         //     case BODY:
@@ -94,6 +83,33 @@ public abstract class Sprite {
         //         interactionMode = InteractionMode.IDLE;
         // }
         // Handle rotation, scaling mode depending on input
+    }
+
+    /**
+     * Get the angle given between the origin point and the source point with respect to the X axis
+     * Pseudocode from https://stackoverflow.com/questions/2198303/java-2d-drag-mouse-to-rotate-image-smoothly
+     * @param origin
+     * @param source
+     * @return
+     */
+    private double getAngle(Point origin, Point source) {
+        double dy = source.y - origin.y;
+        double dx = source.x - origin.x;
+        double angle;
+        if (dx == 0) // special case
+            angle = dy >= 0 ? Math.PI / 2 : -Math.PI / 2;
+        else {
+            angle = Math.atan(dy/dx);
+            if (dx < 0) { // hemisphere correction
+                angle += Math.PI;
+            } 
+        }
+        // all between 0 and 2PI
+        if (angle < 0) { // between -PI/2 and 0
+            angle += 2*Math.PI;
+        }
+
+        return angle;
     }
 
     /**
@@ -116,7 +132,11 @@ public abstract class Sprite {
                 transform.translate(x_diff, y_diff);
                 break;
             case ROTATING:
-                ; // Provide rotation code here
+                Point origin = new Point(85, 125);
+                // Point origin = new Point(0, 0);
+                double sourceAngle = getAngle(origin, (Point)lastPoint);
+                double newAngle = getAngle(origin, (Point)newPoint);
+                transform.rotate(newAngle - sourceAngle);
                 break;
             case SCALING:
                 ; // Provide scaling code here
@@ -216,4 +236,8 @@ public abstract class Sprite {
      * Sub-classes should override this method to perform the drawing.
      */
     protected abstract void drawSprite(Graphics2D g);
+
+    protected void setSpiritType(SpriteType type) {
+        this.spriteType = type;
+    }
 }

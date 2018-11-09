@@ -6,48 +6,27 @@ import java.awt.geom.AffineTransform;
 import javax.swing.JFrame;
 
 public class Main {
-
 	public static void main(String[] args) {
-		Model model = new Model();	
+		// model for application
+		Model model = new Model();
 
-		// add scene graph to the canvas
+		// components
 		Canvas canvas = new Canvas(model);
-		model.addSprite(Main.makeSprite());
-
-		Sprite ellipse = new EllipseSprite(100, 150);
-		model.addSprite(ellipse);
-
 		MenuBar menuBar = new MenuBar(model);
 
-		// create a frame to hold it
+		// overall frame of application
 		JFrame frame = new JFrame("Interactive Ragdoll");
+
+		// initializing frame
 		frame.getContentPane().add(canvas);
 		frame.getContentPane().setLayout(new GridLayout(1, 1));
+
+		// default window properties
 		frame.setJMenuBar(menuBar);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(600, 400);
+		frame.setSize(1024, 768);
 		frame.setVisible(true);
 		frame.setResizable(false);
 	}
-	
-	/* Make sample scene graph for testing purposes. */
-	private static Sprite makeSprite() {
-		// create four different parts
-		Sprite firstSprite = new RectangleSprite(70, 50);
-		Sprite secondSprite = new RectangleSprite(50, 40);
-		Sprite thirdSprite = new RectangleSprite(70, 30);
-
-		// define them based on relative, successive transformations
-		firstSprite.transform(AffineTransform.getTranslateInstance(50, 100));
-		secondSprite.transform(AffineTransform.getTranslateInstance(80, 5));
-		thirdSprite.transform(AffineTransform.getTranslateInstance(50, 5));
-
-		// build scene graph
-		firstSprite.addChild(secondSprite);
-		secondSprite.addChild(thirdSprite);
-		
-		// return root of the tree
-		return firstSprite;
-	}
-
 }
+
