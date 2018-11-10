@@ -61,19 +61,22 @@ public class Model {
 
 		// define the initial transformations
 		body.transform(AffineTransform.getTranslateInstance(550, 100));
-		head.transform(AffineTransform.getTranslateInstance(15, -60));
+		head.transform(AffineTransform.getTranslateInstance(38, 3));
+		head.transform(AffineTransform.getRotateInstance(Math.toRadians(230)));
 
-		rightUpperArm.transform(AffineTransform.getTranslateInstance(95, -5));
+		rightUpperArm.transform(AffineTransform.getTranslateInstance(93, -5));
 		rightUpperArm.transform(AffineTransform.getRotateInstance(Math.toRadians(65)));
-		rightLowerArm.transform(AffineTransform.getTranslateInstance(80, 0));
+		rightLowerArm.transform(AffineTransform.getTranslateInstance(79, 0));
 		rightLowerArm.transform(AffineTransform.getRotateInstance(Math.toRadians(15)));
-		rightHand.transform(AffineTransform.getTranslateInstance(62, 0));
+		rightHand.transform(AffineTransform.getTranslateInstance(55, 10));
+		rightHand.transform(AffineTransform.getRotateInstance(Math.toRadians(-40)));
 
 		leftUpperArm.transform(AffineTransform.getTranslateInstance(5, 4));
 		leftUpperArm.transform(AffineTransform.getRotateInstance(Math.toRadians(115)));
-		leftLowerArm.transform(AffineTransform.getTranslateInstance(80, 0));
+		leftLowerArm.transform(AffineTransform.getTranslateInstance(72, 0));
 		leftLowerArm.transform(AffineTransform.getRotateInstance(Math.toRadians(340)));
-		leftHand.transform(AffineTransform.getTranslateInstance(62, 0));
+		leftHand.transform(AffineTransform.getTranslateInstance(57, 10));
+		leftHand.transform(AffineTransform.getRotateInstance(Math.toRadians(-45)));
 
 		rightUpperLeg.transform(AffineTransform.getTranslateInstance(50, 160));
 		rightLowerLeg.transform(AffineTransform.getTranslateInstance(0, 77));
