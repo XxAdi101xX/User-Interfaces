@@ -3,6 +3,7 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -19,6 +20,8 @@ public class RectangleSprite extends Sprite {
 
     // private Rectangle2D rect = null;
     private RoundRectangle2D.Double rect = null;
+    private int width = 0;
+    private int height = 0;
 
     /**
      * Creates a rectangle based at the origin with the specified
@@ -41,7 +44,9 @@ public class RectangleSprite extends Sprite {
 
     private void initialize(int width, int height) {
         // rect = new Rectangle2D.Double(0, 0, width, height);
-        rect = new RoundRectangle2D.Double(0, 0, width, height, 1 , 1);
+        rect = new RoundRectangle2D.Double(0, 0, width, height, 15, 15);
+        this.width = width;
+        this.height = height;
     }
     
     /**
@@ -64,12 +69,12 @@ public class RectangleSprite extends Sprite {
     }
 
     protected void drawSprite(Graphics2D g2d) {
-        g2d.setStroke(new BasicStroke(5));
+        g2d.setStroke(new BasicStroke(4));
         g2d.setColor(Color.BLACK);
         g2d.draw(rect);
     }
-    
-    public String toString() {
-        return "RectangleSprite: " + rect;
+
+    protected Point getDimensions() {
+        return new Point(this.width, this.height);
     }
 }

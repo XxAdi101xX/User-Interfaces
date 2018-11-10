@@ -3,6 +3,8 @@ public enum SpriteType{
     BODY,
     UPPERARM,
     LOWERARM,
+    HAND,
     UPPERLEG,
-    LOWERLEG
+    LOWERLEG,
+    FOOT
 }

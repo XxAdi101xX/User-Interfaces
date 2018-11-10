@@ -63,25 +63,32 @@ public abstract class Sprite {
      */
     protected void handleMouseDownEvent(MouseEvent e) {
         lastPoint = e.getPoint();
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            interactionMode = InteractionMode.ROTATING;
-        }
-        // switch (spriteType) {
-        //     case BODY:
-        //         interactionMode = InteractionMode.DRAGGING;
-        //         break;
-        //     case HEAD:
-        //     case UPPERARM:
-        //     case LOWERARM:
-        //     case UPPERLEG:
-        //         interactionMode = InteractionMode.ROTATING;
-        //         break;
-        //     case LOWERLEG:
-        //         interactionMode = InteractionMode.SCALING;
-        //         break;
-        //     default:
-        //         interactionMode = InteractionMode.IDLE;
+        // if (e.getButton() == MouseEvent.BUTTON1) {
+        //     interactionMode = InteractionMode.ROTATING;
         // }
+        switch (spriteType) {
+            case BODY:
+                interactionMode = InteractionMode.DRAGGING;
+                break;
+            case HEAD:
+            case UPPERARM:
+            case LOWERARM:
+            case HAND:
+            case FOOT:
+                interactionMode = InteractionMode.ROTATING;
+                break;
+            // case UPPERLEG:
+            //     interactionMode = InteractionMode.ROTATING;
+            //     break;
+            case UPPERLEG:
+            case LOWERLEG:
+                // interactionMode = InteractionMode.SCALING;
+                // break;
+                interactionMode = InteractionMode.ROTATING;
+                break;
+            default:
+                interactionMode = InteractionMode.IDLE;
+        }
         // Handle rotation, scaling mode depending on input
     }
 
@@ -132,7 +139,8 @@ public abstract class Sprite {
                 transform.translate(x_diff, y_diff);
                 break;
             case ROTATING:
-                Point origin = new Point(85, 125);
+                Point origin = new Point(585, 225);
+                origin = getDimensions();
                 // Point origin = new Point(0, 0);
                 double sourceAngle = getAngle(origin, (Point)lastPoint);
                 double newAngle = getAngle(origin, (Point)newPoint);
@@ -231,13 +239,23 @@ public abstract class Sprite {
     }
     
     /**
+     * Set the sprite type
+     */
+    protected void setSpiritType(SpriteType type) {
+        this.spriteType = type;
+    }
+
+    /**
      * The method that actually does the sprite drawing. This method
      * is called after the transform has been set up in the draw() method.
      * Sub-classes should override this method to perform the drawing.
      */
     protected abstract void drawSprite(Graphics2D g);
 
-    protected void setSpiritType(SpriteType type) {
-        this.spriteType = type;
-    }
+    // private Point getTranslation() {
+    //     return new Point((int)transform.getTranslateX(), (int)transform.getTranslateY());
+    // }
+
+    protected abstract Point getDimensions();
+
 }

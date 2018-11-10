@@ -62,12 +62,12 @@ public class EllipseSprite extends Sprite {
     }
 
     protected void drawSprite(Graphics2D g2d) {
-        g2d.setStroke(new BasicStroke(6));
+        g2d.setStroke(new BasicStroke(4));
         g2d.setColor(Color.BLACK);
         g2d.draw(ellipse);
     }
-    
-    public String toString() {
-        return "EllipseSprite: " + ellipse;
+
+    protected Point getDimensions() {
+        return new Point(); // FIX THISSS
     }
 }
