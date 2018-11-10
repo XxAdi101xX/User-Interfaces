@@ -15,9 +15,10 @@ public class MenuBar extends JMenuBar {
 	private JFileChooser fileChooser = new JFileChooser();
 	private FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("jPanel Text File", "txt");
 	private JMenu file = new JMenu("File");
-	private JMenuItem newCanvas;
+	private JMenuItem resetCanvas;
 	private JMenuItem loadCanvas;
 	private JMenuItem saveCanvas;
+	private JMenuItem quit;
 	private JMenu view;
 	private JCheckBoxMenuItem fullSize;
 	private JCheckBoxMenuItem fitToWindow;
@@ -29,36 +30,47 @@ public class MenuBar extends JMenuBar {
 		file = new JMenu("File");
 		view = new JMenu("View");
 		add(file);
-		add(view);
+		// add(view);
 		
 		// create menu items
-		newCanvas = new JMenuItem("New");
+		resetCanvas = new JMenuItem("Reset");
+		quit = new JMenuItem("Quit");
 		loadCanvas = new JMenuItem("Load");
 		saveCanvas = new JMenuItem("Save");
 
+
 		// set shortcuts for convenience
-		newCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));		
+		resetCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+		quit.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		loadCanvas.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_L, ActionEvent.CTRL_MASK));		
 		saveCanvas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 
 		// add to file menu
-		file.add(newCanvas);
-		file.add(loadCanvas);
-		file.add(saveCanvas);
+		file.add(resetCanvas);
+		file.addSeparator();
+		file.add(quit);
+		// file.add(loadCanvas);
+		// file.add(saveCanvas);
 		
 		// Menu Items for View
-		fullSize = new JCheckBoxMenuItem("Full Size");
-		fitToWindow = new JCheckBoxMenuItem("Fit to Window");
-		fullSize.setState(true);
+		// fullSize = new JCheckBoxMenuItem("Full Size");
+		// fitToWindow = new JCheckBoxMenuItem("Fit to Window");
+		// fullSize.setState(true);
 		
-		view.add(fullSize);
-		view.add(fitToWindow);
+		// view.add(fullSize);
+		// view.add(fitToWindow);
 		
-		// newCanvas.addActionListener(new ActionListener() {
-		// 	public void actionPerformed (ActionEvent e) {
-		// 		loadNewCanvas();
-		// 	}
-		// });
+		resetCanvas.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				loadNewCanvas();
+			}
+		});
+
+		quit.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		
 		// loadCanvas.addActionListener(new ActionListener() {
 		// 	public void actionPerformed (ActionEvent e) {
@@ -87,28 +99,27 @@ public class MenuBar extends JMenuBar {
 		// });
 	}
 
-	// private void loadNewCanvas() {
-	// 	Object[] options = {"Yes", "No", "Cancel"};
-	// 	int response = JOptionPane.showOptionDialog(
-	// 						new JPanel(),
-	// 						"Would you like to save before clearing your canvas?",
-	// 						"JSketch",
-	// 						JOptionPane.YES_NO_CANCEL_OPTION,
-	// 						JOptionPane.WARNING_MESSAGE,
-	// 						null,
-	// 						options,
-	// 						options[2]
-	// 					);
+	private void loadNewCanvas() {
+		Object[] options = {"Yes", "No", "Cancel"};
+		int response = JOptionPane.showOptionDialog(
+							new JPanel(),
+							"Would you like to save before resetting your canvas?",
+							"JSketch",
+							JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.WARNING_MESSAGE,
+							null,
+							options,
+							options[2]
+						);
 		
-	// 	if (response == 0) {
-	// 		// save
-	// 		saveCanvasToFile();
-	// 	} else if (response == 1) {
-	// 		// clear
-	// 		model.clearShapes();
-	// 	}
-	// 	model.setNewCanvas(true);
-	// }
+		if (response == 0) {
+			// save
+			// saveCanvasToFile(); TODO
+		} else if (response == 1) {
+			// reset
+			model.resetSprites();
+		}
+	}
 
 	// private void loadCanvasFromFile() {
 	// 	try {
