@@ -60,7 +60,7 @@ public class Model {
 		Sprite leftFoot = new EllipseSprite(SpriteType.FOOT, 50, 20);
 
 		// define the initial transformations
-		body.transform(AffineTransform.getTranslateInstance(550, 100));
+		body.transform(AffineTransform.getTranslateInstance(480, 220));
 		head.transform(AffineTransform.getTranslateInstance(38, 3));
 		head.transform(AffineTransform.getRotateInstance(Math.toRadians(230)));
 

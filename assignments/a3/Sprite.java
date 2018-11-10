@@ -32,13 +32,20 @@ public abstract class Sprite {
     private AffineTransform transform = new AffineTransform();  // Our transformation matrix
     protected Point2D lastPoint = null;                         // Last mouse point
     protected InteractionMode interactionMode = InteractionMode.IDLE;    // current state
+    private Double relativeRotation = 0.0;
+    private Double maxRotation = 0.0;
 
-    public Sprite() {}
+    public Sprite(SpriteType type) {
+        setSpiritType(type);
+        setRotationConstraint();
+    }
     
-    public Sprite(Sprite parent) {
+    public Sprite(SpriteType type, Sprite parent) {
         if (parent != null) {
             parent.addChild(this);
         }
+        setSpiritType(type);
+        setRotationConstraint();
     }
 
     public void addChild(Sprite s) {
@@ -142,7 +149,11 @@ public abstract class Sprite {
                 Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
                 double sourceAngle = getAngle(origin, lastPoint);
                 double newAngle = getAngle(origin, newPoint);
-                transform.rotate(newAngle - sourceAngle);
+
+                if (Math.abs(Math.toDegrees(newAngle - sourceAngle) + relativeRotation) <= maxRotation) {
+                    relativeRotation += Math.toDegrees(newAngle - sourceAngle);
+                    transform.rotate(newAngle - sourceAngle);
+                }
                 break;
             case SCALING:
                 ; // Provide scaling code here
@@ -241,6 +252,34 @@ public abstract class Sprite {
      */
     protected void setSpiritType(SpriteType type) {
         this.spriteType = type;
+    }
+
+    private void setRotationConstraint() {
+        relativeRotation = 0.0;
+        
+        switch(spriteType) {
+            case HEAD:
+                maxRotation = 50.0;
+                break;
+            case UPPERARM:
+                maxRotation = 350.0;
+                break;
+            case LOWERARM:
+                maxRotation = 135.0;
+                break;
+            case HAND:
+                maxRotation = 35.0;
+                break;
+            case UPPERLEG:
+            case LOWERLEG:
+                maxRotation = 90.0;
+                break;
+            case FOOT:
+                maxRotation = 35.0;
+                break;
+            default:
+                maxRotation = 0.0;
+        }
     }
 
     /**

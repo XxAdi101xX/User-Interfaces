@@ -27,18 +27,16 @@ public class RectangleSprite extends Sprite {
      * Creates a rectangle based at the origin with the specified
      * width and height
      */
-    public RectangleSprite(SpriteType type, int width, int height) {
-        super();
-        setSpiritType(type);
+    public RectangleSprite(SpriteType spriteType, int width, int height) {
+        super(spriteType);
         initialize(width, height);
     }
     /**
      * Creates a rectangle based at the origin with the specified
      * width, height, and parent
      */
-    public RectangleSprite(SpriteType type, int width, int height, Sprite parentSprite) {
-        super(parentSprite);
-        setSpiritType(type);
+    public RectangleSprite(SpriteType spriteType, int width, int height, Sprite parentSprite) {
+        super(spriteType, parentSprite);
         initialize(width, height);
     }
 

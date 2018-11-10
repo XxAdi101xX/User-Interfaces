@@ -24,8 +24,7 @@ public class EllipseSprite extends Sprite {
      * width and height
      */
     public EllipseSprite(SpriteType type, int width, int height) {
-        super();
-        setSpiritType(type);
+        super(type);
         this.initialize(width, height);
     }
     /**
@@ -33,8 +32,7 @@ public class EllipseSprite extends Sprite {
      * width, height, and parent
      */
     public EllipseSprite(SpriteType type, int width, int height, Sprite parentSprite) {
-        super(parentSprite);
-        setSpiritType(type);
+        super(type, parentSprite);
         this.initialize(width, height);
     }
     
