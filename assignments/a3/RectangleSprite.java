@@ -73,8 +73,4 @@ public class RectangleSprite extends Sprite {
         g2d.setColor(Color.BLACK);
         g2d.draw(rect);
     }
-
-    protected Point getDimensions() {
-        return new Point(this.width, this.height);
-    }
 }

@@ -66,8 +66,4 @@ public class EllipseSprite extends Sprite {
         g2d.setColor(Color.BLACK);
         g2d.draw(ellipse);
     }
-
-    protected Point getDimensions() {
-        return new Point(); // FIX THISSS
-    }
 }

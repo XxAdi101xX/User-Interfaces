@@ -97,15 +97,15 @@ public abstract class Sprite {
      * Pseudocode from https://stackoverflow.com/questions/2198303/java-2d-drag-mouse-to-rotate-image-smoothly
      * @param origin
      * @param source
-     * @return
+     * @return angle 
      */
-    private double getAngle(Point origin, Point source) {
-        double dy = source.y - origin.y;
-        double dx = source.x - origin.x;
+    private double getAngle(Point2D origin, Point2D source) {
+        double dy = source.getY() - origin.getY();
+        double dx = source.getX() - origin.getX();
         double angle;
-        if (dx == 0) // special case
+        if (dx == 0) { // special case
             angle = dy >= 0 ? Math.PI / 2 : -Math.PI / 2;
-        else {
+        } else {
             angle = Math.atan(dy/dx);
             if (dx < 0) { // hemisphere correction
                 angle += Math.PI;
@@ -113,7 +113,7 @@ public abstract class Sprite {
         }
         // all between 0 and 2PI
         if (angle < 0) { // between -PI/2 and 0
-            angle += 2*Math.PI;
+            angle += 2 * Math.PI;
         }
 
         return angle;
@@ -139,11 +139,9 @@ public abstract class Sprite {
                 transform.translate(x_diff, y_diff);
                 break;
             case ROTATING:
-                Point origin = new Point(585, 225);
-                origin = getDimensions();
-                // Point origin = new Point(0, 0);
-                double sourceAngle = getAngle(origin, (Point)lastPoint);
-                double newAngle = getAngle(origin, (Point)newPoint);
+                Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
+                double sourceAngle = getAngle(origin, lastPoint);
+                double newAngle = getAngle(origin, newPoint);
                 transform.rotate(newAngle - sourceAngle);
                 break;
             case SCALING:
@@ -251,11 +249,4 @@ public abstract class Sprite {
      * Sub-classes should override this method to perform the drawing.
      */
     protected abstract void drawSprite(Graphics2D g);
-
-    // private Point getTranslation() {
-    //     return new Point((int)transform.getTranslateX(), (int)transform.getTranslateY());
-    // }
-
-    protected abstract Point getDimensions();
-
 }
