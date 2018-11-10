@@ -117,7 +117,7 @@ public class MenuBar extends JMenuBar {
 			// saveCanvasToFile(); TODO
 		} else if (response == 1) {
 			// reset
-			model.resetSprites();
+			model.resetCanvas();
 		}
 	}
 

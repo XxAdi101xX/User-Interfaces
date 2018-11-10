@@ -30,7 +30,7 @@ public class Model {
 		return sprites;
 	}
 
-	public void resetSprites() {
+	public void resetCanvas() {
 		sprites.clear();
 		addRagDoll();
 	}
@@ -72,7 +72,7 @@ public class Model {
 		leftUpperArm.transform(AffineTransform.getTranslateInstance(5, 4));
 		leftUpperArm.transform(AffineTransform.getRotateInstance(Math.toRadians(115)));
 		leftLowerArm.transform(AffineTransform.getTranslateInstance(80, 0));
-		leftLowerArm.transform(AffineTransform.getRotateInstance(Math.toRadians(-20)));
+		leftLowerArm.transform(AffineTransform.getRotateInstance(Math.toRadians(340)));
 		leftHand.transform(AffineTransform.getTranslateInstance(62, 0));
 
 		rightUpperLeg.transform(AffineTransform.getTranslateInstance(50, 160));
@@ -81,7 +81,7 @@ public class Model {
 
 		leftUpperLeg.transform(AffineTransform.getTranslateInstance(10, 160));
 		leftLowerLeg.transform(AffineTransform.getTranslateInstance(0, 77));
-		leftFoot.transform(AffineTransform.getTranslateInstance(15, 75));
+		leftFoot.transform(AffineTransform.getTranslateInstance(13, 75));
 		leftFoot.transform(AffineTransform.getRotateInstance(Math.toRadians(175)));
 
 		// build ragdoll with body as base
