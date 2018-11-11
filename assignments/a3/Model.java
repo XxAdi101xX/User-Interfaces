@@ -116,7 +116,7 @@ public class Model {
 	public void addDogFigure() {
 		// create the body parts
 		Sprite body = new RectangleSprite(SpriteType.BODY, 220, 80);
-		Sprite tail = new RectangleSprite(SpriteType.NECK, 90, 10);
+		Sprite tail = new RectangleSprite(SpriteType.TAIL, 90, 10);
 		Sprite neck = new RectangleSprite(SpriteType.NECK, 20, 70);
 		Sprite head = new EllipseSprite(SpriteType.HEAD, 70, 40);
 
