@@ -106,25 +106,26 @@ public class MenuBar extends JMenuBar {
 	}
 
 	private void loadNewCanvas() {
-		Object[] options = {"Yes", "No", "Cancel"};
-		int response = JOptionPane.showOptionDialog(
-							new JPanel(),
-							"Would you like to save before resetting your canvas?",
-							"JSketch",
-							JOptionPane.YES_NO_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE,
-							null,
-							options,
-							options[2]
-						);
+		// Object[] options = {"Yes", "No", "Cancel"};
+		// int response = JOptionPane.showOptionDialog(
+		// 					new JPanel(),
+		// 					"Would you like to save before resetting your canvas?",
+		// 					"JSketch",
+		// 					JOptionPane.YES_NO_CANCEL_OPTION,
+		// 					JOptionPane.WARNING_MESSAGE,
+		// 					null,
+		// 					options,
+		// 					options[2]
+		// 				);
 		
-		if (response == 0) {
-			// save
-			// saveCanvasToFile(); TODO
-		} else if (response == 1) {
-			// reset
-			model.resetCanvas();
-		}
+		// if (response == 0) {
+		// 	// save
+		// 	// saveCanvasToFile(); TODO
+		// } else if (response == 1) {
+		// 	// reset
+		// 	model.resetCanvas();
+		// }
+		model.resetCanvas();
 	}
 
 	// private void loadCanvasFromFile() {

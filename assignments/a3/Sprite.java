@@ -29,7 +29,7 @@ public abstract class Sprite {
     protected InteractionMode interactionMode = InteractionMode.IDLE;    // current state
     private double relativeRotation = 0.0;
     private double maxRotation = 0.0;
-    private double yScaleRatio = 1.025;
+    private double yScaleRatio = 1.03;
 
     public Sprite(SpriteType type) {
         setSpriteType(type);
@@ -144,11 +144,9 @@ public abstract class Sprite {
         // double y_diff = newPoint.getY() - lastPoint.getY();
         // updateDimensions(0, y_diff);
         if (lastPoint.getY() < newPoint.getY()) {
-            transform.scale(1, yScaleRatio);
-            // yScaleRatio = (((yScaleRatio - 1) / 2) + 1);
+            transform.scale(1.0, yScaleRatio);
         } else {
-            transform.scale(1, 1/yScaleRatio);
-            // yScaleRatio = (((yScaleRatio - 1) * 2) + 1);
+            transform.scale(1.0, 1.0/yScaleRatio);
         }
     }
 
@@ -163,10 +161,9 @@ public abstract class Sprite {
         double sourceAngle = getAngle(origin, lastPoint);
         double newAngle = getAngle(origin, newPoint);
 
-        if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.3 && 
-            (getSpriteType() == SpriteType.UPPERLEG || getSpriteType() == SpriteType.LOWERLEG)) {
+        if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.4 && (getSpriteType() == SpriteType.UPPERLEG || 
+                                                                        getSpriteType() == SpriteType.LOWERLEG)) {
             handleScalingEvent(newPoint);
-            handleRotatingEvent(newPoint);
 
             // offset scaling for foot
             Sprite foot = children.get(0);
@@ -174,14 +171,16 @@ public abstract class Sprite {
                 foot = foot.children.get(0);
             }
             if (lastPoint.getY() < newPoint.getY()) {
-                foot.transform.scale(1, 1/yScaleRatio);
+                foot.transform.scale(1.0, 1.0 / yScaleRatio);
             } else {
-                foot.transform.scale(1, yScaleRatio);
+                foot.transform.scale(1.0, yScaleRatio);
             }
 
-            
+            handleRotatingEvent(newPoint);
 
-            return; // end early after handling special case
+            // Save our last point and end early after handling the special case
+            lastPoint = e.getPoint();
+            return;
         }
 
         switch (interactionMode) {
@@ -198,13 +197,12 @@ public abstract class Sprite {
                 handleScalingEvent(newPoint);
                 break;   
         }
-        // Save our last point, if it's needed next time around
+        // Save our last point before finishing
         lastPoint = e.getPoint();
     }
     
     protected void handleMouseUp(MouseEvent e) {
         interactionMode = InteractionMode.IDLE;
-        // Do any other interaction handling necessary here
     }
     
     /**

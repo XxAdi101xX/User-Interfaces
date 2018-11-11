@@ -39,7 +39,6 @@ public class Canvas extends JPanel {
 
 		this.model.addView(new IView() {
 			public void updateView() {
-				System.out.println("Canvas: updateView");
 				repaint();
 			}
 		});
