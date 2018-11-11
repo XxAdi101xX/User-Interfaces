@@ -18,6 +18,8 @@ import java.awt.geom.Point2D;
 public class EllipseSprite extends Sprite {
 
     private Ellipse2D.Double ellipse = null;
+    private int width;
+    private int height;
 
     /**
      * Creates an ellipse based at the origin with the specified
@@ -37,6 +39,8 @@ public class EllipseSprite extends Sprite {
     }
     
     private void initialize(int width, int height) {
+        this.width = width;
+        this.height = height;
         ellipse = new Ellipse2D.Double(0, 0, width, height);
     }
     

@@ -7,12 +7,7 @@ import java.awt.geom.Point2D;
 import java.util.Vector;
 
 /**
- * A building block for creating your own shapes that can be
- * transformed and that can respond to input. This class is
- * provided as an example; you will likely need to modify it
- * to meet the assignment requirements.
- * 
- * Michael Terry & Jeff Avery
+ * Base Sprite class 
  */
 public abstract class Sprite {
     
@@ -36,7 +31,7 @@ public abstract class Sprite {
     private Double maxRotation = 0.0;
 
     public Sprite(SpriteType type) {
-        setSpiritType(type);
+        setSpriteType(type);
         setRotationConstraint();
     }
     
@@ -44,7 +39,7 @@ public abstract class Sprite {
         if (parent != null) {
             parent.addChild(this);
         }
-        setSpiritType(type);
+        setSpriteType(type);
         setRotationConstraint();
     }
 
@@ -70,9 +65,7 @@ public abstract class Sprite {
      */
     protected void handleMouseDownEvent(MouseEvent e) {
         lastPoint = e.getPoint();
-        // if (e.getButton() == MouseEvent.BUTTON1) {
-        //     interactionMode = InteractionMode.ROTATING;
-        // }
+
         switch (spriteType) {
             case BODY:
                 interactionMode = InteractionMode.DRAGGING;
@@ -126,39 +119,64 @@ public abstract class Sprite {
         return angle;
     }
 
+    private void handleDraggingEvent(Point2D newPoint) {
+        double x_diff = newPoint.getX() - lastPoint.getX();
+        double y_diff = newPoint.getY() - lastPoint.getY();
+        transform.translate(x_diff, y_diff);
+    }
+
+    private void handleRotatingEvent(Point2D newPoint) {
+        Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
+        Double sourceAngle = getAngle(origin, lastPoint);
+        Double newAngle = getAngle(origin, newPoint);
+        System.out.println(Math.toDegrees(newAngle - sourceAngle));
+
+        if (Math.abs(Math.toDegrees(newAngle - sourceAngle) + relativeRotation) <= maxRotation) {
+            relativeRotation += Math.toDegrees(newAngle - sourceAngle);
+            transform.rotate(newAngle - sourceAngle);
+        }
+    }
+
+    protected void handleScalingEvent(Point2D newPoint) {
+        if (lastPoint.getY() < newPoint.getY()) {
+            transform.scale(1, 1.03);
+        } else {
+            transform.scale(1, 0.97);
+        }
+    }
+
     /**
      * Handle mouse drag event, with the assumption that we have already
      * been "selected" as the sprite to interact with.
-     * This is a very simple method that only works because we
-     * assume that the coordinate system has not been modified
-     * by scales or rotations. You will need to modify this method
-     * appropriately so it can handle arbitrary transformations.
      */
     protected void handleMouseDragEvent(MouseEvent e) {
         Point2D newPoint = e.getPoint();
+
+        Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
+        Double sourceAngle = getAngle(origin, lastPoint);
+        Double newAngle = getAngle(origin, newPoint);
+
+        if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.3 && 
+            (getSpriteType() == SpriteType.UPPERLEG || getSpriteType() == SpriteType.LOWERLEG)) {
+            handleScalingEvent(newPoint);
+            handleRotatingEvent(newPoint);
+
+            return; // end early after handling special case
+        }
+
         switch (interactionMode) {
             case IDLE:
                 System.out.println("Warning: unhandled mouse drag event");
                 break;
             case DRAGGING:
-                double x_diff = newPoint.getX() - lastPoint.getX();
-                double y_diff = newPoint.getY() - lastPoint.getY();
-                transform.translate(x_diff, y_diff);
+                handleDraggingEvent(newPoint);
                 break;
             case ROTATING:
-                Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
-                double sourceAngle = getAngle(origin, lastPoint);
-                double newAngle = getAngle(origin, newPoint);
-
-                if (Math.abs(Math.toDegrees(newAngle - sourceAngle) + relativeRotation) <= maxRotation) {
-                    relativeRotation += Math.toDegrees(newAngle - sourceAngle);
-                    transform.rotate(newAngle - sourceAngle);
-                }
+                handleRotatingEvent(newPoint);
                 break;
             case SCALING:
-                ; // Provide scaling code here
-                break;
-                
+                handleScalingEvent(newPoint);
+                break;   
         }
         // Save our last point, if it's needed next time around
         lastPoint = e.getPoint();
@@ -171,8 +189,6 @@ public abstract class Sprite {
     
     /**
      * Locates the sprite that was hit by the given event.
-     * You *may* need to modify this method, depending on
-     * how you modify other parts of the class.
      * 
      * @return The sprite that was hit, or null if no sprite was hit
      */
@@ -189,11 +205,6 @@ public abstract class Sprite {
         return null;
         // return this;
     }
-    
-    /*
-     * Important note: How transforms are handled here are only an example. You will
-     * likely need to modify this code for it to work for your assignment.
-     */
     
     /**
      * Returns the full transform to this object from the root
@@ -227,6 +238,7 @@ public abstract class Sprite {
      * the transform has been set up for this sprite.
      */
     public void draw(Graphics2D g) {
+        
         AffineTransform oldTransform = g.getTransform();
 
         // Set to our transform
@@ -250,10 +262,20 @@ public abstract class Sprite {
     /**
      * Set the sprite type
      */
-    protected void setSpiritType(SpriteType type) {
+    protected void setSpriteType(SpriteType type) {
         this.spriteType = type;
     }
 
+    /**
+     * @return the SpiteType
+     */
+    private SpriteType getSpriteType() {
+        return this.spriteType;
+    }
+
+    /**
+     * Set the rotation constraints based on the SpriteTpe
+     */
     private void setRotationConstraint() {
         relativeRotation = 0.0;
         
@@ -262,7 +284,7 @@ public abstract class Sprite {
                 maxRotation = 50.0;
                 break;
             case UPPERARM:
-                maxRotation = 350.0;
+                maxRotation = 360.0;
                 break;
             case LOWERARM:
                 maxRotation = 135.0;

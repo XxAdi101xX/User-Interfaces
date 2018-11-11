@@ -45,11 +45,11 @@ public class Model {
 
 		Sprite rightUpperArm = new EllipseSprite(SpriteType.UPPERARM, 80, 20);
 		Sprite rightLowerArm = new EllipseSprite(SpriteType.LOWERARM, 60, 20);
-		Sprite rightHand = new EllipseSprite(SpriteType.LOWERARM, 20, 20);
+		Sprite rightHand = new EllipseSprite(SpriteType.HAND, 20, 20);
 
 		Sprite leftUpperArm = new EllipseSprite(SpriteType.UPPERARM, 80, 20);
 		Sprite leftLowerArm = new EllipseSprite(SpriteType.LOWERARM, 60, 20);
-		Sprite leftHand = new EllipseSprite(SpriteType.LOWERARM, 20, 20);
+		Sprite leftHand = new EllipseSprite(SpriteType.HAND, 20, 20);
 
 		Sprite rightUpperLeg = new EllipseSprite(SpriteType.UPPERLEG, 20, 80);
 		Sprite rightLowerLeg = new EllipseSprite(SpriteType.LOWERLEG, 20, 60);

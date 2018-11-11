@@ -42,9 +42,9 @@ public class RectangleSprite extends Sprite {
 
     private void initialize(int width, int height) {
         // rect = new Rectangle2D.Double(0, 0, width, height);
-        rect = new RoundRectangle2D.Double(0, 0, width, height, 15, 15);
         this.width = width;
         this.height = height;
+        rect = new RoundRectangle2D.Double(0, 0, width, height, 15, 15);
     }
     
     /**
