@@ -29,6 +29,7 @@ public abstract class Sprite {
     protected InteractionMode interactionMode = InteractionMode.IDLE;    // current state
     private Double relativeRotation = 0.0;
     private Double maxRotation = 0.0;
+    private Double yScaleRatio = 1.03;
 
     public Sprite(SpriteType type) {
         setSpriteType(type);
@@ -129,7 +130,6 @@ public abstract class Sprite {
         Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
         Double sourceAngle = getAngle(origin, lastPoint);
         Double newAngle = getAngle(origin, newPoint);
-        System.out.println(Math.toDegrees(newAngle - sourceAngle));
 
         if (Math.abs(Math.toDegrees(newAngle - sourceAngle) + relativeRotation) <= maxRotation) {
             relativeRotation += Math.toDegrees(newAngle - sourceAngle);
@@ -139,9 +139,11 @@ public abstract class Sprite {
 
     protected void handleScalingEvent(Point2D newPoint) {
         if (lastPoint.getY() < newPoint.getY()) {
-            transform.scale(1, 1.03);
+            transform.scale(1, yScaleRatio);
+            // yScaleRatio = (((yScaleRatio - 1) / 2) + 1);
         } else {
-            transform.scale(1, 0.97);
+            transform.scale(1, 1/yScaleRatio);
+            // yScaleRatio = (((yScaleRatio - 1) * 2) + 1);
         }
     }
 
@@ -160,6 +162,19 @@ public abstract class Sprite {
             (getSpriteType() == SpriteType.UPPERLEG || getSpriteType() == SpriteType.LOWERLEG)) {
             handleScalingEvent(newPoint);
             handleRotatingEvent(newPoint);
+
+            // offset scaling for foot (this assumes that )
+            Sprite foot = children.get(0);
+            while (!foot.children.isEmpty()) {
+                foot = foot.children.get(0);
+            }
+            if (lastPoint.getY() < newPoint.getY()) {
+                foot.transform.scale(1, 1/yScaleRatio);
+            } else {
+                foot.transform.scale(1, yScaleRatio);
+            }
+
+            
 
             return; // end early after handling special case
         }
