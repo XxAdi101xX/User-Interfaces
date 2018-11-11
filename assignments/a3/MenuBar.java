@@ -19,18 +19,18 @@ public class MenuBar extends JMenuBar {
 	private JMenuItem loadCanvas;
 	private JMenuItem saveCanvas;
 	private JMenuItem quit;
-	private JMenu view;
-	private JCheckBoxMenuItem fullSize;
-	private JCheckBoxMenuItem fitToWindow;
+	private JMenu addFigure;
+	private JMenuItem humanFigure;
+	private JMenuItem dogFigure;
 
 	public MenuBar(Model model) {
 		this.model = model;
 		fileChooser.setFileFilter(fileFilter);
 		
 		file = new JMenu("File");
-		view = new JMenu("View");
+		addFigure = new JMenu("Add");
 		add(file);
-		// add(view);
+		add(addFigure);
 		
 		// create menu items
 		resetCanvas = new JMenuItem("Reset");
@@ -52,13 +52,12 @@ public class MenuBar extends JMenuBar {
 		// file.add(loadCanvas);
 		// file.add(saveCanvas);
 		
-		// Menu Items for View
-		// fullSize = new JCheckBoxMenuItem("Full Size");
-		// fitToWindow = new JCheckBoxMenuItem("Fit to Window");
-		// fullSize.setState(true);
+		// Menu Items for AddFigure
+		humanFigure = new JMenuItem("Human");
+		dogFigure = new JMenuItem("Dog");
 		
-		// view.add(fullSize);
-		// view.add(fitToWindow);
+		addFigure.add(humanFigure);
+		addFigure.add(dogFigure);
 		
 		resetCanvas.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -84,19 +83,17 @@ public class MenuBar extends JMenuBar {
 		// 	}
 		// });
 
-		// fullSize.addActionListener(new ActionListener() {
-		// 	public void actionPerformed(ActionEvent e) {
-		// 		fitToWindow.setState(false);
-		// 		model.setViewFullSize(true);
-		// 	}
-		// });
+		humanFigure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.addHumanFigure();
+			}
+		});
 
-		// fitToWindow.addActionListener(new ActionListener() {
-		// 	public void actionPerformed(ActionEvent e) {
-		// 		fullSize.setState(false);
-		// 		model.setViewFullSize(false);
-		// 	}
-		// });
+		dogFigure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.addDogFigure();
+			}
+		});
 	}
 
 	private void loadNewCanvas() {

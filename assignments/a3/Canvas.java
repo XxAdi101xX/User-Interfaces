@@ -44,7 +44,7 @@ public class Canvas extends JPanel {
 			}
 		});
 
-		this.model.addRagDoll();
+		this.model.addHumanFigure();
 	}
 
 	/**

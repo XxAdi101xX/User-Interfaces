@@ -6,5 +6,7 @@ public enum SpriteType{
     HAND,
     UPPERLEG,
     LOWERLEG,
-    FOOT
+    FOOT,
+
+    NECK
 }

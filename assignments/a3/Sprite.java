@@ -76,6 +76,7 @@ public abstract class Sprite {
             case LOWERARM:
             case HAND:
             case FOOT:
+            case NECK:
                 interactionMode = InteractionMode.ROTATING;
                 break;
             // case UPPERLEG:
@@ -315,6 +316,10 @@ public abstract class Sprite {
                 break;
             case FOOT:
                 maxRotation = 35.0;
+                break;
+                
+            case NECK:
+                maxRotation = 25.0;
                 break;
             default:
                 maxRotation = 0.0;

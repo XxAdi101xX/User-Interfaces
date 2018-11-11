@@ -32,13 +32,13 @@ public class Model {
 
 	public void resetCanvas() {
 		sprites.clear();
-		addRagDoll();
+		addHumanFigure();
 	}
 
 	/**
 	 * Create a human like intereactive ragdoll onto the canvas
 	 */
-	public void addRagDoll() {
+	public void addHumanFigure() {
 		// create the body parts
 		Sprite body = new RectangleSprite(SpriteType.BODY, 80, 160);
 		Sprite head = new EllipseSprite(SpriteType.HEAD, 50, 50);
@@ -97,6 +97,67 @@ public class Model {
 		body.addChild(leftUpperArm);
 		leftUpperArm.addChild(leftLowerArm);
 		leftLowerArm.addChild(leftHand);
+
+		body.addChild(rightUpperLeg);
+		rightUpperLeg.addChild(rightLowerLeg);
+		rightLowerLeg.addChild(rightFoot);
+
+		body.addChild(leftUpperLeg);
+		leftUpperLeg.addChild(leftLowerLeg);
+		leftLowerLeg.addChild(leftFoot);
+		
+		// add root sprite
+		addSprite(body);
+	}
+
+		/**
+	 * Create a giraffe figure onto the canvas
+	 */
+	public void addDogFigure() {
+		// create the body parts
+		Sprite body = new RectangleSprite(SpriteType.BODY, 220, 80);
+		Sprite tail = new RectangleSprite(SpriteType.NECK, 90, 10);
+		Sprite neck = new RectangleSprite(SpriteType.NECK, 20, 70);
+		Sprite head = new EllipseSprite(SpriteType.HEAD, 70, 40);
+
+		Sprite rightUpperLeg = new EllipseSprite(SpriteType.UPPERLEG, 20, 60);
+		Sprite rightLowerLeg = new EllipseSprite(SpriteType.LOWERLEG, 20, 40);
+		Sprite rightFoot = new EllipseSprite(SpriteType.FOOT, 50, 20);
+
+		Sprite leftUpperLeg = new EllipseSprite(SpriteType.UPPERLEG, 20, 80);
+		Sprite leftLowerLeg = new EllipseSprite(SpriteType.LOWERLEG, 20, 60);
+		Sprite leftFoot = new EllipseSprite(SpriteType.FOOT, 50, 20);
+
+		// define the initial transformations
+		body.transform(AffineTransform.getTranslateInstance(420, 270));
+		body.transform(AffineTransform.getRotateInstance(Math.toRadians(20)));
+
+		tail.transform(AffineTransform.getTranslateInstance(220, 45));
+		tail.transform(AffineTransform.getRotateInstance(Math.toRadians(-40)));
+
+		neck.transform(AffineTransform.getTranslateInstance(10, 0));
+		neck.transform(AffineTransform.getRotateInstance(Math.toRadians(140)));
+
+		head.transform(AffineTransform.getTranslateInstance(10, 60));
+		head.transform(AffineTransform.getRotateInstance(Math.toRadians(30)));
+
+		leftUpperLeg.transform(AffineTransform.getTranslateInstance(10, 80));
+		leftUpperLeg.transform(AffineTransform.getRotateInstance(Math.toRadians(-20)));
+		leftLowerLeg.transform(AffineTransform.getTranslateInstance(0, leftUpperLeg.getDimensions().getY() - 3));
+		leftFoot.transform(AffineTransform.getTranslateInstance(13, 75));
+		leftFoot.transform(AffineTransform.getRotateInstance(Math.toRadians(175)));
+
+		rightUpperLeg.transform(AffineTransform.getTranslateInstance(170, 85));
+		rightUpperLeg.transform(AffineTransform.getRotateInstance(Math.toRadians(-20)));
+		rightLowerLeg.transform(AffineTransform.getTranslateInstance(0, 60));
+		rightFoot.transform(AffineTransform.getTranslateInstance(13, 55));
+		rightFoot.transform(AffineTransform.getRotateInstance(Math.toRadians(175)));
+
+		// build ragdoll with body as base
+		body.addChild(tail);
+
+		body.addChild(neck);
+		neck.addChild(head);
 
 		body.addChild(rightUpperLeg);
 		rightUpperLeg.addChild(rightLowerLeg);
