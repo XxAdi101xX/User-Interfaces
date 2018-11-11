@@ -12,8 +12,6 @@ import java.awt.geom.Point2D;
 
 /**
  * Ellipse Sprite Class
- * 
- * Michael Terry & Jeff Avery
  */
 public class EllipseSprite extends Sprite {
 
@@ -58,21 +56,27 @@ public class EllipseSprite extends Sprite {
         Point2D newPoint = (Point2D)p.clone();
         inverseTransform.transform(newPoint, newPoint);
         return ellipse.contains(newPoint);
-        // Point MT = new Point();
-        // inverseTransform.transform((Point)p, MT);
-        // return ellipse.contains(MT);
     }
 
+    /**
+     * Draw the ellipse
+     */
     protected void drawSprite(Graphics2D g2d) {
         g2d.setStroke(new BasicStroke(4));
         g2d.setColor(Color.BLACK);
         g2d.draw(ellipse);
     }
 
+    /**
+     * Update the ellipse dimensions
+     */
     protected void updateDimensions(double xInc, double yInc) {
         initialize(width + xInc, height + yInc);
     }
 
+    /**
+     * Get the ellipse dimensions
+     */
     public Point2D getDimensions() {
         return new Point2D.Double(width, height);
     }

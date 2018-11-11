@@ -7,7 +7,6 @@ public enum SpriteType{
     UPPERLEG,
     LOWERLEG,
     FOOT,
-
     NECK,
     TAIL
 }

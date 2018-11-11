@@ -336,7 +336,15 @@ public abstract class Sprite {
      */
     protected abstract void drawSprite(Graphics2D g);
 
+    /**
+     * Update the Dimensions with the x and y increments
+     * @param xInc
+     * @param yInc
+     */
     protected abstract void updateDimensions(double xInc, double yInc);
 
+    /**
+     * Get the sprite dimensions
+     */
     public abstract Point2D getDimensions();
 }

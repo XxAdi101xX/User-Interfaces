@@ -12,9 +12,7 @@ import java.awt.geom.RoundRectangle2D;
 
 
 /**
- * A simple demo of how to create a rectangular sprite.
- * 
- * Michael Terry & Jeff Avery
+ * A rectangular sprite.
  */
 public class RectangleSprite extends Sprite {
 
@@ -61,21 +59,27 @@ public class RectangleSprite extends Sprite {
         Point2D newPoint = (Point2D)p.clone();
         inverseTransform.transform(newPoint, newPoint);
         return rect.contains(newPoint);
-        // Point MT = new Point();
-        // inverseTransform.transform((Point)p, MT);
-        // return rect.contains(MT);
     }
 
+    /**
+     * Draw the rectangle
+     */
     protected void drawSprite(Graphics2D g2d) {
         g2d.setStroke(new BasicStroke(4));
         g2d.setColor(Color.BLACK);
         g2d.draw(rect);
     }
 
+    /**
+     * Update the rectangle dimensions
+     */
     protected void updateDimensions(double xInc, double yInc) {
         initialize(width + xInc, height + yInc);
     }
 
+    /**
+     * Get the dimensions for the sprite
+     */
     public Point2D getDimensions() {
         return new Point2D.Double(width, height);
     }
