@@ -22,6 +22,7 @@ public class MenuBar extends JMenuBar {
 	private JMenu addFigure;
 	private JMenuItem humanFigure;
 	private JMenuItem dogFigure;
+	private JMenuItem scarecrowFigure;
 
 	public MenuBar(Model model) {
 		this.model = model;
@@ -55,9 +56,11 @@ public class MenuBar extends JMenuBar {
 		// Menu Items for AddFigure
 		humanFigure = new JMenuItem("Human");
 		dogFigure = new JMenuItem("Dog");
+		scarecrowFigure = new JMenuItem("Crazy Scarecrow");
 		
 		addFigure.add(humanFigure);
 		addFigure.add(dogFigure);
+		addFigure.add(scarecrowFigure);
 		
 		resetCanvas.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
@@ -92,6 +95,12 @@ public class MenuBar extends JMenuBar {
 		dogFigure.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.addDogFigure();
+			}
+		});
+
+		scarecrowFigure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.addScarecrowFigure();
 			}
 		});
 	}

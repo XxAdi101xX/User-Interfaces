@@ -35,7 +35,7 @@ public class Model {
 		addHumanFigure();
 	}
 
-	/**
+	/*
 	 * Create a human like intereactive ragdoll onto the canvas
 	 */
 	public void addHumanFigure() {
@@ -110,13 +110,13 @@ public class Model {
 		addSprite(body);
 	}
 
-		/**
+	/*
 	 * Create a giraffe figure onto the canvas
 	 */
 	public void addDogFigure() {
 		// create the body parts
 		Sprite body = new RectangleSprite(SpriteType.BODY, 220, 80);
-		Sprite tail = new RectangleSprite(SpriteType.TAIL, 90, 10);
+		Sprite tail = new RectangleSprite(SpriteType.PIVOT, 90, 10);
 		Sprite neck = new RectangleSprite(SpriteType.NECK, 20, 70);
 		Sprite head = new EllipseSprite(SpriteType.HEAD, 70, 40);
 
@@ -153,7 +153,7 @@ public class Model {
 		rightFoot.transform(AffineTransform.getTranslateInstance(13, 55));
 		rightFoot.transform(AffineTransform.getRotateInstance(Math.toRadians(175)));
 
-		// build ragdoll with body as base
+		// build dog with body as base
 		body.addChild(tail);
 
 		body.addChild(neck);
@@ -167,6 +167,63 @@ public class Model {
 		leftUpperLeg.addChild(leftLowerLeg);
 		leftLowerLeg.addChild(leftFoot);
 		
+		// add root sprite
+		addSprite(body);
+	}
+
+	/*
+	 * Create a tree figure onto the canvas
+	 */
+	public void addScarecrowFigure() {
+		// create the body parts
+		Sprite body = new EllipseSprite(SpriteType.BODY, 60, 340);
+		Sprite base = new RectangleSprite(SpriteType.BASE, 220, 80);
+		Sprite head = new EllipseSprite(SpriteType.HEAD, 50, 60);
+		Sprite leftEye = new EllipseSprite(SpriteType.EYE, 10, 10);
+		Sprite rightEye = new EllipseSprite(SpriteType.EYE, 10, 10);
+		Sprite leftBranch = new RectangleSprite(SpriteType.LOWERARM, 200, 10);
+		Sprite leftStick1 = new RectangleSprite(SpriteType.PIVOT, 70, 10);
+		Sprite leftStick2 = new RectangleSprite(SpriteType.PIVOT, 70, 10);
+		Sprite rightBranch = new RectangleSprite(SpriteType.LOWERARM, 200, 10);
+		Sprite rightStick1 = new RectangleSprite(SpriteType.PIVOT, 70, 10);
+		Sprite rightStick2 = new RectangleSprite(SpriteType.PIVOT, 70, 10);
+
+		// define the initial transformations
+		body.transform(AffineTransform.getTranslateInstance(430, 170));
+		base.transform(AffineTransform.getTranslateInstance(-80, body.getDimensions().getY()));
+		head.transform(AffineTransform.getTranslateInstance(30, 5));
+		head.transform(AffineTransform.getRotateInstance(Math.toRadians(230)));
+		leftEye.transform(AffineTransform.getTranslateInstance(30, 20));
+		rightEye.transform(AffineTransform.getTranslateInstance(15, 25));
+
+		leftBranch.transform(AffineTransform.getTranslateInstance(0, 140));
+		leftBranch.transform(AffineTransform.getRotateInstance(Math.toRadians(190)));
+		
+		leftStick1.transform(AffineTransform.getTranslateInstance(140, 10));
+		leftStick1.transform(AffineTransform.getRotateInstance(Math.toRadians(65)));
+		leftStick2.transform(AffineTransform.getTranslateInstance(140, -6));
+		leftStick2.transform(AffineTransform.getRotateInstance(Math.toRadians(-65)));
+
+		rightBranch.transform(AffineTransform.getTranslateInstance(60, 140));
+		rightBranch.transform(AffineTransform.getRotateInstance(Math.toRadians(-30)));
+
+		rightStick1.transform(AffineTransform.getTranslateInstance(140, 10));
+		rightStick1.transform(AffineTransform.getRotateInstance(Math.toRadians(65)));
+		rightStick2.transform(AffineTransform.getTranslateInstance(140, -6));
+		rightStick2.transform(AffineTransform.getRotateInstance(Math.toRadians(-65)));
+
+
+		// build dog with body as base
+		body.addChild(head);
+		head.addChild(leftEye);
+		head.addChild(rightEye);
+		body.addChild(base);
+		body.addChild(leftBranch);
+		leftBranch.addChild(leftStick1);
+		leftBranch.addChild(leftStick2);
+		body.addChild(rightBranch);
+		rightBranch.addChild(rightStick1);
+		rightBranch.addChild(rightStick2);
 		// add root sprite
 		addSprite(body);
 	}

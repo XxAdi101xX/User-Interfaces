@@ -77,7 +77,8 @@ public abstract class Sprite {
             case HAND:
             case FOOT:
             case NECK:
-            case TAIL:
+            case PIVOT:
+            case EYE:
                 interactionMode = InteractionMode.ROTATING;
                 break;
             // case UPPERLEG:
@@ -185,7 +186,7 @@ public abstract class Sprite {
 
         switch (interactionMode) {
             case IDLE:
-                System.out.println("Warning: unhandled mouse drag event");
+                ; // do nothing
                 break;
             case DRAGGING:
                 handleDraggingEvent(newPoint);
@@ -303,6 +304,7 @@ public abstract class Sprite {
                 maxRotation = 50.0;
                 break;
             case UPPERARM:
+            case EYE:
                 maxRotation = 360.0;
                 break;
             case LOWERARM:
@@ -321,7 +323,7 @@ public abstract class Sprite {
             case NECK:
                 maxRotation = 25.0;
                 break;
-            case TAIL:
+            case PIVOT:
                 maxRotation = 40.0;
                 break;
             default:
