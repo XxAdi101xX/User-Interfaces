@@ -79,11 +79,11 @@ public class Model {
 		leftHand.transform(AffineTransform.getRotateInstance(Math.toRadians(-45)));
 
 		rightUpperLeg.transform(AffineTransform.getTranslateInstance(50, 160));
-		rightLowerLeg.transform(AffineTransform.getTranslateInstance(0, 77));
+		rightLowerLeg.transform(AffineTransform.getTranslateInstance(0, rightUpperLeg.getDimensions().getY() - 3));
 		rightFoot.transform(AffineTransform.getTranslateInstance(5, 55));
 
 		leftUpperLeg.transform(AffineTransform.getTranslateInstance(10, 160));
-		leftLowerLeg.transform(AffineTransform.getTranslateInstance(0, 77));
+		leftLowerLeg.transform(AffineTransform.getTranslateInstance(0, leftUpperLeg.getDimensions().getY() - 3));
 		leftFoot.transform(AffineTransform.getTranslateInstance(13, 75));
 		leftFoot.transform(AffineTransform.getRotateInstance(Math.toRadians(175)));
 

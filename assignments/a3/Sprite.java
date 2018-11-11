@@ -27,9 +27,9 @@ public abstract class Sprite {
     private AffineTransform transform = new AffineTransform();  // Our transformation matrix
     protected Point2D lastPoint = null;                         // Last mouse point
     protected InteractionMode interactionMode = InteractionMode.IDLE;    // current state
-    private Double relativeRotation = 0.0;
-    private Double maxRotation = 0.0;
-    private Double yScaleRatio = 1.03;
+    private double relativeRotation = 0.0;
+    private double maxRotation = 0.0;
+    private double yScaleRatio = 1.025;
 
     public Sprite(SpriteType type) {
         setSpriteType(type);
@@ -128,8 +128,8 @@ public abstract class Sprite {
 
     private void handleRotatingEvent(Point2D newPoint) {
         Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
-        Double sourceAngle = getAngle(origin, lastPoint);
-        Double newAngle = getAngle(origin, newPoint);
+        double sourceAngle = getAngle(origin, lastPoint);
+        double newAngle = getAngle(origin, newPoint);
 
         if (Math.abs(Math.toDegrees(newAngle - sourceAngle) + relativeRotation) <= maxRotation) {
             relativeRotation += Math.toDegrees(newAngle - sourceAngle);
@@ -138,6 +138,8 @@ public abstract class Sprite {
     }
 
     protected void handleScalingEvent(Point2D newPoint) {
+        // double y_diff = newPoint.getY() - lastPoint.getY();
+        // updateDimensions(0, y_diff);
         if (lastPoint.getY() < newPoint.getY()) {
             transform.scale(1, yScaleRatio);
             // yScaleRatio = (((yScaleRatio - 1) / 2) + 1);
@@ -155,15 +157,15 @@ public abstract class Sprite {
         Point2D newPoint = e.getPoint();
 
         Point2D origin = new Point2D.Double(getFullTransform().getTranslateX(), getFullTransform().getTranslateY());
-        Double sourceAngle = getAngle(origin, lastPoint);
-        Double newAngle = getAngle(origin, newPoint);
+        double sourceAngle = getAngle(origin, lastPoint);
+        double newAngle = getAngle(origin, newPoint);
 
         if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.3 && 
             (getSpriteType() == SpriteType.UPPERLEG || getSpriteType() == SpriteType.LOWERLEG)) {
             handleScalingEvent(newPoint);
             handleRotatingEvent(newPoint);
 
-            // offset scaling for foot (this assumes that )
+            // offset scaling for foot
             Sprite foot = children.get(0);
             while (!foot.children.isEmpty()) {
                 foot = foot.children.get(0);
@@ -325,4 +327,8 @@ public abstract class Sprite {
      * Sub-classes should override this method to perform the drawing.
      */
     protected abstract void drawSprite(Graphics2D g);
+
+    protected abstract void updateDimensions(double xInc, double yInc);
+
+    public abstract Point2D getDimensions();
 }
