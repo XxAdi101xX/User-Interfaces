@@ -10,5 +10,5 @@ public enum SpriteType{
     NECK,
     PIVOT,
     EYE,
-    BASE
+    BASE,
 }

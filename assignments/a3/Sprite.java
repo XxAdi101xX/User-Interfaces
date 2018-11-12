@@ -18,7 +18,7 @@ public abstract class Sprite {
         IDLE,
         DRAGGING,
         SCALING,
-        ROTATING
+        ROTATING,
     }
 
     private SpriteType spriteType = null;
@@ -115,6 +115,7 @@ public abstract class Sprite {
                 angle += Math.PI;
             } 
         }
+
         // all between 0 and 2PI
         if (angle < 0) { // between -PI/2 and 0
             angle += 2 * Math.PI;
@@ -141,8 +142,6 @@ public abstract class Sprite {
     }
 
     protected void handleScalingEvent(Point2D newPoint) {
-        // double y_diff = newPoint.getY() - lastPoint.getY();
-        // updateDimensions(0, y_diff);
         if (lastPoint.getY() < newPoint.getY()) {
             transform.scale(1.0, yScaleRatio);
         } else {
@@ -161,7 +160,7 @@ public abstract class Sprite {
         double sourceAngle = getAngle(origin, lastPoint);
         double newAngle = getAngle(origin, newPoint);
 
-        if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.4 && (getSpriteType() == SpriteType.UPPERLEG || 
+        if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.5 && (getSpriteType() == SpriteType.UPPERLEG || 
                                                                         getSpriteType() == SpriteType.LOWERLEG)) {
             handleScalingEvent(newPoint);
 
@@ -170,13 +169,15 @@ public abstract class Sprite {
             while (!foot.children.isEmpty()) {
                 foot = foot.children.get(0);
             }
-            if (lastPoint.getY() < newPoint.getY()) {
-                foot.transform.scale(1.0, 1.0 / yScaleRatio);
+            if (foot.getSpriteType() == SpriteType.FOOT) {
+                if (lastPoint.getY() < newPoint.getY()) {
+                    foot.transform.scale(1.0, 1.0 / yScaleRatio);
+                } else {
+                    foot.transform.scale(1.0, yScaleRatio);
+                }
             } else {
-                foot.transform.scale(1.0, yScaleRatio);
+                System.out.println("Error!!!");
             }
-
-            handleRotatingEvent(newPoint);
 
             // Save our last point and end early after handling the special case
             lastPoint = e.getPoint();
@@ -185,7 +186,7 @@ public abstract class Sprite {
 
         switch (interactionMode) {
             case IDLE:
-                ; // do nothing
+                // do nothing
                 break;
             case DRAGGING:
                 handleDraggingEvent(newPoint);
