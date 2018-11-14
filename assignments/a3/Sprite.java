@@ -137,7 +137,9 @@ public abstract class Sprite {
 
         double deltaAngle = Math.toDegrees(newAngle - sourceAngle);
 
-        if (Math.abs(deltaAngle + relativeRotation) <= maxRotation) {
+        // random bug where deltaAngle is sometimes -350ish which screws up all the calculatations
+        // hence we want to avoid those cases
+        if (Math.abs(deltaAngle + relativeRotation) <= maxRotation && Math.abs(deltaAngle) <= 300) {
             relativeRotation += deltaAngle;
             transform.rotate(newAngle - sourceAngle);
         }
