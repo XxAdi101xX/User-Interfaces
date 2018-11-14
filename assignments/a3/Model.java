@@ -66,8 +66,8 @@ public class Model {
 
 		rightUpperArm.transform(AffineTransform.getTranslateInstance(93, -5));
 		rightUpperArm.transform(AffineTransform.getRotateInstance(Math.toRadians(65)));
-		rightLowerArm.transform(AffineTransform.getTranslateInstance(79, 0));
-		rightLowerArm.transform(AffineTransform.getRotateInstance(Math.toRadians(15)));
+		rightLowerArm.transform(AffineTransform.getTranslateInstance(80, 0));
+		rightLowerArm.transform(AffineTransform.getRotateInstance(Math.toRadians(20)));
 		rightHand.transform(AffineTransform.getTranslateInstance(55, 10));
 		rightHand.transform(AffineTransform.getRotateInstance(Math.toRadians(-40)));
 
@@ -79,11 +79,11 @@ public class Model {
 		leftHand.transform(AffineTransform.getRotateInstance(Math.toRadians(-45)));
 
 		rightUpperLeg.transform(AffineTransform.getTranslateInstance(50, 160));
-		rightLowerLeg.transform(AffineTransform.getTranslateInstance(0, rightUpperLeg.getDimensions().getY() - 3));
+		rightLowerLeg.transform(AffineTransform.getTranslateInstance(0, 77));
 		rightFoot.transform(AffineTransform.getTranslateInstance(5, 55));
 
 		leftUpperLeg.transform(AffineTransform.getTranslateInstance(10, 160));
-		leftLowerLeg.transform(AffineTransform.getTranslateInstance(0, leftUpperLeg.getDimensions().getY() - 3));
+		leftLowerLeg.transform(AffineTransform.getTranslateInstance(0, 77));
 		leftFoot.transform(AffineTransform.getTranslateInstance(13, 75));
 		leftFoot.transform(AffineTransform.getRotateInstance(Math.toRadians(175)));
 

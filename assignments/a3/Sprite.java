@@ -135,17 +135,38 @@ public abstract class Sprite {
         double sourceAngle = getAngle(origin, lastPoint);
         double newAngle = getAngle(origin, newPoint);
 
-        if (Math.abs(Math.toDegrees(newAngle - sourceAngle) + relativeRotation) <= maxRotation) {
-            relativeRotation += Math.toDegrees(newAngle - sourceAngle);
+        double deltaAngle = Math.toDegrees(newAngle - sourceAngle);
+
+        if (Math.abs(deltaAngle + relativeRotation) <= maxRotation) {
+            relativeRotation += deltaAngle;
             transform.rotate(newAngle - sourceAngle);
         }
     }
 
-    protected void handleScalingEvent(Point2D newPoint) {
+    protected boolean handleScalingEvent(Point2D newPoint) {
         if (lastPoint.getY() < newPoint.getY()) {
+            if (transform.getScaleY() >= 3) return false;
             transform.scale(1.0, yScaleRatio);
         } else {
+            if (transform.getScaleY() <= 0.5) return false;
             transform.scale(1.0, 1.0/yScaleRatio);
+        }
+        return true;
+    }
+
+    private void handleFootScaling(Point2D newPoint) {
+        Sprite foot = children.get(0);
+        while (!foot.children.isEmpty()) {
+            foot = foot.children.get(0);
+        }
+        if (foot.getSpriteType() == SpriteType.FOOT) {
+            if (lastPoint.getY() < newPoint.getY()) {
+                foot.transform.scale(1.0, 1.0 / yScaleRatio);
+            } else {
+                foot.transform.scale(1.0, yScaleRatio);
+            }
+        } else {
+            System.out.println("Error!!!");
         }
     }
 
@@ -162,22 +183,10 @@ public abstract class Sprite {
 
         if (Math.abs(Math.toDegrees(newAngle - sourceAngle)) <= 0.5 && (getSpriteType() == SpriteType.UPPERLEG || 
                                                                         getSpriteType() == SpriteType.LOWERLEG)) {
-            handleScalingEvent(newPoint);
+            boolean scaled = handleScalingEvent(newPoint);
 
             // offset scaling for foot
-            Sprite foot = children.get(0);
-            while (!foot.children.isEmpty()) {
-                foot = foot.children.get(0);
-            }
-            if (foot.getSpriteType() == SpriteType.FOOT) {
-                if (lastPoint.getY() < newPoint.getY()) {
-                    foot.transform.scale(1.0, 1.0 / yScaleRatio);
-                } else {
-                    foot.transform.scale(1.0, yScaleRatio);
-                }
-            } else {
-                System.out.println("Error!!!");
-            }
+            if (scaled) handleFootScaling(newPoint);                                                                       
 
             // Save our last point and end early after handling the special case
             lastPoint = e.getPoint();
