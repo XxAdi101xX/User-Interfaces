@@ -90,6 +90,9 @@ public abstract class Sprite {
                 // break;
                 interactionMode = InteractionMode.ROTATING;
                 break;
+            case BASE:
+                interactionMode = InteractionMode.SCALING;
+                break;
             default:
                 interactionMode = InteractionMode.IDLE;
         }
