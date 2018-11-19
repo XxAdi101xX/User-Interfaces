@@ -7,7 +7,7 @@
     tools:context=".PictureActivity">
 
     <RatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/activityPictureRatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="61dp"

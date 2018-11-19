@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
             "bunny.jpg",
             "chinchilla.jpg",
             "doggo.jpg",
-            "fox.jpg",
             "hamster.jpg",
             "husky.jpg",
             "kitten.png",
@@ -48,17 +47,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
         gv = (GridView) findViewById(R.id.gridview);
         filterRatingBar = findViewById(R.id.rb_rating);
-        currentFilterRating = 5;
+        setFilterRating(5);
 
         filterRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                currentFilterRating = rating;
+                setFilterRating(rating);
                 Log.d("Filter", Float.toString(rating));
 
             }
@@ -153,6 +153,21 @@ public class MainActivity extends AppCompatActivity {
     public void openImageActivity(float pictureRating){
         Intent intent = new Intent(this, PictureActivity.class);
         intent.putExtra("rating", pictureRating);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                float rating = data.getFloatExtra("rating", 5);
+                setFilterRating(rating); // TODO remove this later
+                filterRatingBar.setRating(rating); // TODO remove this later
+            }
+        }
+    }
+
+    private void setFilterRating(float rating) {
+        currentFilterRating = rating;
     }
 }
