@@ -28,12 +28,12 @@ public class PictureActivity extends AppCompatActivity {
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 pictureRating = rating;
                 Log.d("Filter", Float.toString(rating));
-                goToParent();
+                goToParentActivity();
             }
         });
     }
 
-    public void goToParent() {
+    public void goToParentActivity() {
         Intent intent = new Intent();
         intent.putExtra("rating", pictureRating);
         setResult(RESULT_OK, intent);

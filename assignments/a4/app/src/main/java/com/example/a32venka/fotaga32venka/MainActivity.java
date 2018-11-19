@@ -2,27 +2,21 @@ package com.example.a32venka.fotaga32venka;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     GridView gv;
@@ -51,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        gv = (GridView) findViewById(R.id.gridview);
         filterRatingBar = findViewById(R.id.rb_rating);
         setFilterRating(5);
 
@@ -59,33 +52,37 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 setFilterRating(rating);
-                Log.d("Filter", Float.toString(rating));
-
             }
         });
 
-        final List<String> plantsList = new ArrayList<>(Arrays.asList(imageFileNames));
-
-        // Create a new ArrayAdapter
-        final ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<>
-                (this,android.R.layout.simple_list_item_1, plantsList);
-
-        // Data bind GridView with ArrayAdapter (String Array elements)
-//        gv.setAdapter(gridViewArrayAdapter);
+        gv = findViewById(R.id.gridview);
         gv.setAdapter(new ImageAdapter(this));
     }
 
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
-            return null;
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap bmp = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
 
-    public class ImageAdapter extends BaseAdapter {
+    private class ImageAdapter extends BaseAdapter {
         private Context mContext;
 
         public ImageAdapter(Context c) {
@@ -116,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
                 mImageView = (ImageView) convertView;
             }
 
-
-//            mImageView.setImageDrawable(LoadImageFromWebOperations("https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/" + imageFiles[position]));
-            mImageView.setImageResource(R.drawable.ic_action_clear);
+            String url = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/" + imageFileNames[position];
+            new DownloadImageTask(mImageView).execute(url);
+            
             return mImageView;
         }
     }
@@ -130,24 +127,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void handleClear(View v) {
         Log.d("Icons", "clicked clear");
-        try {
-            getInfo();
-        } catch (Exception ex) {
-            Log.d("GetInfo", "EXCEPTION!!!!!!!!!!");
-        }
-    }
-
-    public void getInfo() throws Exception {
-        URL oracle = new URL("https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images");
-        URLConnection yc = oracle.openConnection();
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                yc.getInputStream()));
-        Log.d("URL", "kkk");
-
-        String inputLine;
-        Log.d("MAYBE GETING PICC", "UHHH");
-        while ((inputLine = in.readLine()) != null) Log.d("PICTUREEEEEE", inputLine);
-        in.close();
     }
 
     public void openImageActivity(float pictureRating){
