@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 
 import java.io.InputStream;
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
             String url = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/" + imageFileNames[position];
             new DownloadImageTask(mImageView).execute(url);
-            
+
             return mImageView;
         }
     }
