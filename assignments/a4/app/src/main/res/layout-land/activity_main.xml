@@ -21,18 +21,20 @@
             android:id="@+id/ic_action_reload"
             android:src="@drawable/ic_action_reload"
             android:layout_height="50dp"
+            android:contentDescription="@string/app_name"
             android:onClick="handleReload"/>
         <ImageView
             android:layout_width="50dp"
             android:id="@+id/ic_action_clear"
             android:src="@drawable/ic_action_clear"
             android:layout_height="50dp"
+            android:contentDescription="@string/app_name"
             android:onClick="handleClear"/>
         <RatingBar
             android:id="@+id/rb_rating"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:orientation="horizontal"
             android:rating="5.0"/>
 
@@ -43,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="300dp"
-        android:numColumns="1"
+        android:numColumns="2"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
