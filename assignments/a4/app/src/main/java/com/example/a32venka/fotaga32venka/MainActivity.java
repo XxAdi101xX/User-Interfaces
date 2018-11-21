@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 
 import java.io.InputStream;
@@ -60,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
         gv.setAdapter(new ImageAdapter(this));
     }
 
-    static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-        public DownloadImageTask(ImageView bmImage) {
+        private DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private class ImageAdapter extends BaseAdapter {
         private Context mContext;
 
-        public ImageAdapter(Context c) {
+        private ImageAdapter(Context c) {
             mContext = c;
         }
 
@@ -107,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (convertView == null) {
                 mImageView = new ImageView(mContext);
-                mImageView.setLayoutParams(new GridView.LayoutParams(130, 130));
+                mImageView.setLayoutParams(new GridView.LayoutParams(180, 180));
                 mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 mImageView.setPadding(16, 16, 16, 16);
             } else {
