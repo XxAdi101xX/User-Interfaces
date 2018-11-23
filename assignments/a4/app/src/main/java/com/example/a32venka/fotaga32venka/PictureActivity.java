@@ -15,6 +15,7 @@ import java.io.InputStream;
 
 public class PictureActivity extends AppCompatActivity {
     int id;
+    String url;
     RatingBar ratingBar;
     ImageView image;
     float pictureRating;
@@ -25,17 +26,18 @@ public class PictureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_picture);
 
         image = findViewById(R.id.imageView);
-        String url = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/hamster.jpg";
-        new DownloadImageTask(image).execute(url);
         ratingBar = findViewById(R.id.activityPictureRatingBar);
 
         Intent intent = getIntent();
-        // extract the intent value in int
         id = intent.getIntExtra("id", 0);
+        url = intent.getStringExtra("url");
         pictureRating = intent.getFloatExtra("rating", 0);
 
-        ratingBar.setRating(pictureRating);
+        // get image
+        new DownloadImageTask(image).execute(url);
 
+        // get rating value and set onclick listener
+        ratingBar.setRating(pictureRating);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -43,6 +45,7 @@ public class PictureActivity extends AppCompatActivity {
             }
         });
 
+        // go to main activity on picture click
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,9 +54,9 @@ public class PictureActivity extends AppCompatActivity {
         });
     }
 
-    static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> { // TODO remove later
+    static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-        public DownloadImageTask(ImageView bmImage) {
+        private DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
@@ -64,7 +67,7 @@ public class PictureActivity extends AppCompatActivity {
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 bmp = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
+                Log.e("Error with getting image from URL: ", e.getMessage());
                 e.printStackTrace();
             }
             return bmp;

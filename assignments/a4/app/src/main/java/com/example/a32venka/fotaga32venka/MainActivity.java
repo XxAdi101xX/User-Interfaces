@@ -96,10 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-        Bitmap bitmap;
-        private DownloadImageTask(ImageView bmImage, Bitmap bitmap) {
+        private DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
-            this.bitmap = bitmap;
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -116,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         }
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
-            bitmap = result.copy(result.getConfig(), true);
         }
     }
 
@@ -176,9 +173,10 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    public void openImageActivity(int id, float pictureRating){
+    public void openImageActivity(int id, String imageUrl, float pictureRating){
         Intent intent = new Intent(this, PictureActivity.class);
         intent.putExtra("id", id);
+        intent.putExtra("url", imageUrl);
         intent.putExtra("rating", pictureRating);
         startActivityForResult(intent, 1);
     }
@@ -230,21 +228,21 @@ public class MainActivity extends AppCompatActivity {
         private String imageUrl;
         private float rating;
 
-        public ImageInfo(int id, String imageUrl, float rating) {
+        private ImageInfo(int id, String imageUrl, float rating) {
             this.id = id;
             this.imageUrl = imageUrl;
             this.rating = rating;
         }
 
-        int getId() {
+        public int getId() {
             return id;
         }
 
-        String getUrl() {
+        public String getUrl() {
             return imageUrl;
         }
 
-        float getRating() {
+        private float getRating() {
             return rating;
         }
 
@@ -277,15 +275,12 @@ public class MainActivity extends AppCompatActivity {
 
             ImageView image = view.findViewById(R.id.grid_image);
             Bitmap imageBitmap = null;
-            new DownloadImageTask(image, imageBitmap).execute(imageInfo.getUrl());
-//            imageView.setImageBitmap(imageInfo.bitmap);
-//            Bitmap bitmap = ((BitmapDrawable)(imageInfo.image).getDrawable()).getBitmap();
-//            imageView.setImageBitmap(bitmap);
+            new DownloadImageTask(image).execute(imageInfo.getUrl());
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openImageActivity(imageInfo.getId(), imageInfo.getRating());
+                    openImageActivity(imageInfo.getId(), imageInfo.getUrl(), imageInfo.getRating());
                 }
             });
 
