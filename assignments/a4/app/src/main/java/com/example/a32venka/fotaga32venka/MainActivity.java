@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
 
 import java.io.InputStream;
@@ -29,9 +26,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     GridView gv;
     RatingBar filterRatingBar;
+    float currentFilterRating;
+
     ArrayList<ImageInfo> animalImages;
     ArrayAdapter<ImageInfo> adapter;
-    float currentFilterRating;
+
     final String baseUrl = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/";
     final String[] imageFileNames = {
             "bunny.jpg",
@@ -73,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new imageArrayAdapter(this, 0, animalImages);
         gv.setAdapter(adapter);
-
-        loadImages();
     }
 
     private void loadImages() {
@@ -150,11 +147,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handleReload(View v) {
-        Log.d("Icons", "clicked reload");
+        if (!animalImages.isEmpty()) {
+            handleClear(v);
+        }
+
+        setFilterRating(0);
+        loadImages();
+        adapter.notifyDataSetChanged();
     }
 
     public void handleClear(View v) {
-        Log.d("Icons", "clicked clear");
+        animalImages.clear();
+        adapter.notifyDataSetChanged();
     }
 
     public void openImageActivity(int id, float pictureRating){
@@ -206,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
         void setRating(float newRating, boolean fromUser) {
             this.rating = newRating;
-            
+
             if (!fromUser) {
                 adapter.notifyDataSetChanged();
             }
