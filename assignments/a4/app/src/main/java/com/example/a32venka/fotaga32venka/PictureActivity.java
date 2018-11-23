@@ -61,10 +61,10 @@ public class PictureActivity extends AppCompatActivity {
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
+            String urlDisplay = urls[0];
             Bitmap bmp = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
+                InputStream in = new java.net.URL(urlDisplay).openStream();
                 bmp = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 Log.e("Error with getting image from URL: ", e.getMessage());

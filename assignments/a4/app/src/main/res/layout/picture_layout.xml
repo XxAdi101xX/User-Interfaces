@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="center"
-        android:src="@drawable/ic_action_clear"/>
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_action_reload"/>
 
     <RatingBar
         android:id="@+id/picture_rating"

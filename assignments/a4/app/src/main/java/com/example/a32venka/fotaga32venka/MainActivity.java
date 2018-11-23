@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         // initialize filter values
         filterRatingBar = findViewById(R.id.main_filter_rating);
         modifyGlobalFilterRating(0);
-
         filterRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -75,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         allAnimalImages = new ArrayList<>();
         visibleAnimalImages = new ArrayList<>();
 
+        // set the adapter to the gridView
         adapter = new imageArrayAdapter(this, 0, visibleAnimalImages);
         gv.setAdapter(adapter);
     }
@@ -86,25 +85,17 @@ public class MainActivity extends AppCompatActivity {
 //        savedInstanceState.put(STATE_USER, mUser);
 //    }
 
-    private void loadImages() {
-        for (int i = 0; i < imageFileNames.length; ++i) {
-            ImageInfo newImageInfo = new ImageInfo(i,baseUrl + imageFileNames[i], 0);
-            allAnimalImages.add(newImageInfo);
-            visibleAnimalImages.add(newImageInfo);
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
         private DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
         protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
+            String urlDisplay = urls[0];
             Bitmap bmp = null;
             try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
+                InputStream in = new java.net.URL(urlDisplay).openStream();
                 bmp = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
@@ -117,43 +108,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class ImageAdapter extends BaseAdapter {
-        private Context context;
-        private LayoutInflater layoutInflater;
-
-        private ImageAdapter(Context c) {
-            context = c;
-            layoutInflater = LayoutInflater.from(c);
-        }
-
-        public int getCount() {
-            return imageFileNames.length;
-        }
-
-        public Object getItem(int position) {
-            return null;
-        }
-
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView mImageView;
-
-            if (convertView == null) {
-                mImageView = new ImageView(context);
-                mImageView.setLayoutParams(new GridView.LayoutParams(180, 180));
-                mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                mImageView.setPadding(16, 16, 16, 16);
-            } else {
-                mImageView = (ImageView) convertView;
-            }
-
-//            String url = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/" + imageFileNames[position];
-//            new DownloadImageTask(mImageView).execute(url);
-
-            return mImageView;
+    private void loadImages() {
+        for (int i = 0; i < imageFileNames.length; ++i) {
+            ImageInfo newImageInfo = new ImageInfo(i,baseUrl + imageFileNames[i], 0);
+            allAnimalImages.add(newImageInfo);
+            visibleAnimalImages.add(newImageInfo);
         }
     }
 
@@ -238,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             return id;
         }
 
-        public String getUrl() {
+        private String getUrl() {
             return imageUrl;
         }
 
@@ -246,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
             return rating;
         }
 
-        void setRating(float newRating) {
+        private void setRating(float newRating) {
             this.rating = newRating;
         }
     }
@@ -274,13 +233,12 @@ public class MainActivity extends AppCompatActivity {
             View view = inflater.inflate(R.layout.picture_layout, null);
 
             ImageView image = view.findViewById(R.id.grid_image);
-            Bitmap imageBitmap = null;
             new DownloadImageTask(image).execute(imageInfo.getUrl());
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openImageActivity(imageInfo.getId(), imageInfo.getUrl(), imageInfo.getRating());
+                    openImageActivity(position, imageInfo.getUrl(), imageInfo.getRating());
                 }
             });
 
