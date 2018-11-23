@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // initialize imageInfo arraylists
+        // initialize imageInfo arrayLists
         gv = findViewById(R.id.gridview);
         allAnimalImages = new ArrayList<>();
         visibleAnimalImages = new ArrayList<>();
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new imageArrayAdapter(this, 0, visibleAnimalImages);
         gv.setAdapter(adapter);
 
+        // restore the context on orientation change or after backgrounding the activity
         if (savedInstanceState != null) {
             float[] allRatings = savedInstanceState.getFloatArray("allRatings");
             modifyGlobalFilterRating(savedInstanceState.getFloat("globalFilterRating"));
@@ -92,10 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
         super.onSaveInstanceState(savedInstanceState);
-        float[] allRatings = new float[allAnimalImages.size()];
 
+        float[] allRatings = new float[allAnimalImages.size()];
         for (ImageInfo info: allAnimalImages) {
             allRatings[info.getId()] = info.getRating();
         }
@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putFloat("globalFilterRating", globalFilterRating);
     }
 
+    // download images from url
     static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
         private DownloadImageTask(ImageView bmImage) {
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // load fresh images
     private void loadImages() {
         for (int i = 0; i < imageFileNames.length; ++i) {
             ImageInfo newImageInfo = new ImageInfo(i,baseUrl + imageFileNames[i], 0);
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // handle a reload trigger
     public void handleReload(View v) {
         if (!visibleAnimalImages.isEmpty()) {
             handleClear(v);
@@ -145,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    // handle a clear trigger
     public void handleClear(View v) {
         allAnimalImages.clear();
         visibleAnimalImages.clear();
@@ -171,11 +175,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // change the global filter
     private void modifyGlobalFilterRating(float rating) {
         globalFilterRating = rating;
         filterRatingBar.setRating(rating);
     }
 
+    // change a picture specific filter
     private void modifyPictureFilterRating(int id, float rating, boolean updateView) {
         visibleAnimalImages.get(id).setRating(rating);
 
@@ -189,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // calculate which images are filtered
     private void recalculateFilteredImages() {
         if (allAnimalImages.isEmpty()) return;
 
@@ -201,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    // holds information about an image
     private class ImageInfo {
         private int id;
         private String imageUrl;

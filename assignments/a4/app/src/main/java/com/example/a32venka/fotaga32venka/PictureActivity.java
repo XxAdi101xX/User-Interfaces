@@ -54,6 +54,7 @@ public class PictureActivity extends AppCompatActivity {
         });
     }
 
+    // get image from url
     static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
         private DownloadImageTask(ImageView bmImage) {
@@ -77,6 +78,7 @@ public class PictureActivity extends AppCompatActivity {
         }
     }
 
+    // navigate back to our parent activity
     public void goToParentActivity() {
         Intent intent = new Intent();
         intent.putExtra("id", id);
