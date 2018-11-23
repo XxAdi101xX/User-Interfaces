@@ -14,6 +14,7 @@ import android.widget.RatingBar;
 import java.io.InputStream;
 
 public class PictureActivity extends AppCompatActivity {
+    int id;
     RatingBar ratingBar;
     ImageView image;
     float pictureRating;
@@ -30,6 +31,7 @@ public class PictureActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         // extract the intent value in int
+        id = intent.getIntExtra("id", 0);
         pictureRating = intent.getFloatExtra("rating", 0);
 
         ratingBar.setRating(pictureRating);
@@ -74,6 +76,7 @@ public class PictureActivity extends AppCompatActivity {
 
     public void goToParentActivity() {
         Intent intent = new Intent();
+        intent.putExtra("id", id);
         intent.putExtra("rating", pictureRating);
         setResult(RESULT_OK, intent);
         finish();

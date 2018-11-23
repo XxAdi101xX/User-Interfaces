@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     GridView gv;
     RatingBar filterRatingBar;
     ArrayList<ImageInfo> animalImages;
+    ArrayAdapter<ImageInfo> adapter;
     float currentFilterRating;
     final String baseUrl = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/";
     final String[] imageFileNames = {
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         gv = findViewById(R.id.gridview);
         animalImages = new ArrayList<>();
 
-        ArrayAdapter<ImageInfo> adapter = new imageArrayAdapter(this, 0, animalImages);
+        adapter = new imageArrayAdapter(this, 0, animalImages);
         gv.setAdapter(adapter);
 
         loadImages();
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadImages() {
         for (int i = 0; i < imageFileNames.length; ++i) {
-            animalImages.add(new ImageInfo(baseUrl + imageFileNames[i], 0));
+            animalImages.add(new ImageInfo(i,baseUrl + imageFileNames[i], 0));
         }
     }
 
@@ -150,15 +151,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void handleReload(View v) {
         Log.d("Icons", "clicked reload");
-        openImageActivity(currentFilterRating);
     }
 
     public void handleClear(View v) {
         Log.d("Icons", "clicked clear");
     }
 
-    public void openImageActivity(float pictureRating){
+    public void openImageActivity(int id, float pictureRating){
         Intent intent = new Intent(this, PictureActivity.class);
+        intent.putExtra("id", id);
         intent.putExtra("rating", pictureRating);
         startActivityForResult(intent, 1);
     }
@@ -167,9 +168,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK) {
+                int id = data.getIntExtra("id", 0);
                 float rating = data.getFloatExtra("rating", 5);
-                setFilterRating(rating); // TODO remove this later
-                filterRatingBar.setRating(rating); // TODO remove this later
+
+                animalImages.get(id).setRating(rating, false);
             }
         }
     }
@@ -180,12 +182,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class ImageInfo {
+        private int id;
         private String imageUrl;
         private float rating;
 
-        public ImageInfo(String imageUrl, float rating) {
+        public ImageInfo(int id, String imageUrl, float rating) {
+            this.id = id;
             this.imageUrl = imageUrl;
             this.rating = rating;
+        }
+
+        int getId() {
+            return id;
         }
 
         String getUrl() {
@@ -196,13 +204,16 @@ public class MainActivity extends AppCompatActivity {
             return rating;
         }
 
-        void setRating(float newRating) {
-            System.out.println("New rating issss" + newRating);
+        void setRating(float newRating, boolean fromUser) {
             this.rating = newRating;
+            
+            if (!fromUser) {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
-    //custom ArrayAdapter
+    // custom ArrayAdapter for images imported from the UW online directory
     class imageArrayAdapter extends ArrayAdapter<ImageInfo> {
 
         private Context context;
@@ -231,13 +242,20 @@ public class MainActivity extends AppCompatActivity {
 //            Bitmap bitmap = ((BitmapDrawable)(imageInfo.image).getDrawable()).getBitmap();
 //            imageView.setImageBitmap(bitmap);
 
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openImageActivity(imageInfo.getId(), imageInfo.getRating());
+                }
+            });
+
             RatingBar ratingBar = view.findViewById(R.id.picture_rating);
             ratingBar.setRating(imageInfo.getRating());
 
             ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    imageInfo.setRating(rating);
+                    imageInfo.setRating(rating, fromUser);
                 }
             });
 
