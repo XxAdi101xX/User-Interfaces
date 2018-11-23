@@ -25,7 +25,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     GridView gv;
     RatingBar filterRatingBar;
-    float globalFilterRating;
+    float globalFilterRating = 0;
 
     ArrayList<ImageInfo> allAnimalImages;
     ArrayList<ImageInfo> visibleAnimalImages;
@@ -48,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-
-        }
 
         setContentView(R.layout.activity_main);
 
@@ -59,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize filter values
         filterRatingBar = findViewById(R.id.main_filter_rating);
-        modifyGlobalFilterRating(0);
         filterRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -68,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // initialize images
+        // initialize imageInfo arraylists
         gv = findViewById(R.id.gridview);
         allAnimalImages = new ArrayList<>();
         visibleAnimalImages = new ArrayList<>();
@@ -76,14 +72,37 @@ public class MainActivity extends AppCompatActivity {
         // set the adapter to the gridView
         adapter = new imageArrayAdapter(this, 0, visibleAnimalImages);
         gv.setAdapter(adapter);
+
+        if (savedInstanceState != null) {
+            float[] allRatings = savedInstanceState.getFloatArray("allRatings");
+            modifyGlobalFilterRating(savedInstanceState.getFloat("globalFilterRating"));
+
+            if (allRatings.length != 0) {
+                for (int i = 0; i < imageFileNames.length; ++i) {
+                    ImageInfo newImageInfo = new ImageInfo(i,baseUrl + imageFileNames[i], allRatings[i]);
+                    allAnimalImages.add(newImageInfo);
+
+                    if (allRatings[i] >= globalFilterRating) {
+                        visibleAnimalImages.add(newImageInfo);
+                    }
+                }
+            }
+        }
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//
-//        super.onSaveInstanceState(savedInstanceState);
-//        savedInstanceState.put(STATE_USER, mUser);
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        super.onSaveInstanceState(savedInstanceState);
+        float[] allRatings = new float[allAnimalImages.size()];
+
+        for (ImageInfo info: allAnimalImages) {
+            allRatings[info.getId()] = info.getRating();
+        }
+
+        savedInstanceState.putFloatArray("allRatings", allRatings);
+        savedInstanceState.putFloat("globalFilterRating", globalFilterRating);
+    }
 
     static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
