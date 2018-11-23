@@ -8,18 +8,15 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
+        android:layout_width="575dp"
         android:layout_height="224dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="55dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="44dp"
         app:layout_constraintBottom_toTopOf="@+id/activityPictureRatingBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.445"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <RatingBar
         android:id="@+id/activityPictureRatingBar"
@@ -29,11 +26,11 @@
         android:layout_marginEnd="68dp"
         android:layout_marginBottom="50dp"
         android:numStars="5"
-        android:stepSize="1.0"
         android:rating="5"
+        android:stepSize="1.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.451"
+        app:layout_constraintHorizontal_bias="0.442"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 </android.support.constraint.ConstraintLayout>
