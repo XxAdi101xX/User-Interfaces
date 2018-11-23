@@ -30,7 +30,7 @@ public class PictureActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         // extract the intent value in int
-        pictureRating = intent.getFloatExtra("rating", 5);
+        pictureRating = intent.getFloatExtra("rating", 0);
 
         ratingBar.setRating(pictureRating);
 

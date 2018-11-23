@@ -36,20 +36,20 @@
             android:src="@drawable/ic_action_clear" />
 
         <RatingBar
-            android:id="@+id/rb_rating"
+            android:id="@+id/main_filter_rating"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:layout_marginEnd="5dp"
             android:numStars="5"
             android:stepSize="1.0"
-            android:rating="5.0" />
+            android:rating="0.0" />
 
     </android.support.v7.widget.Toolbar>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="65dp"
         android:columnWidth="300dp"

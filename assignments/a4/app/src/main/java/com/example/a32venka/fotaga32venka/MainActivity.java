@@ -1,29 +1,37 @@
 package com.example.a32venka.fotaga32venka;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     GridView gv;
     RatingBar filterRatingBar;
+    ArrayList<ImageInfo> animalImages;
     float currentFilterRating;
-
-    // Initializing a new String Array
+    final String baseUrl = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/";
     final String[] imageFileNames = {
             "bunny.jpg",
             "chinchilla.jpg",
@@ -45,24 +53,41 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        filterRatingBar = findViewById(R.id.rb_rating);
-        setFilterRating(5);
+        // initialize filter values
+        filterRatingBar = findViewById(R.id.main_filter_rating);
+        setFilterRating(0);
 
         filterRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                setFilterRating(rating);
+                if (!fromUser) {
+                    setFilterRating(rating);
+                }
             }
         });
 
+        // initialize images
         gv = findViewById(R.id.gridview);
-        gv.setAdapter(new ImageAdapter(this));
+        animalImages = new ArrayList<>();
+
+        ArrayAdapter<ImageInfo> adapter = new imageArrayAdapter(this, 0, animalImages);
+        gv.setAdapter(adapter);
+
+        loadImages();
+    }
+
+    private void loadImages() {
+        for (int i = 0; i < imageFileNames.length; ++i) {
+            animalImages.add(new ImageInfo(baseUrl + imageFileNames[i], 0));
+        }
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-        private DownloadImageTask(ImageView bmImage) {
+        Bitmap bitmap;
+        private DownloadImageTask(ImageView bmImage, Bitmap bitmap) {
             this.bmImage = bmImage;
+            this.bitmap = bitmap;
         }
 
         protected Bitmap doInBackground(String... urls) {
@@ -79,14 +104,17 @@ public class MainActivity extends AppCompatActivity {
         }
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
+            bitmap = result.copy(result.getConfig(), true);
         }
     }
 
     private class ImageAdapter extends BaseAdapter {
-        private Context mContext;
+        private Context context;
+        private LayoutInflater layoutInflater;
 
         private ImageAdapter(Context c) {
-            mContext = c;
+            context = c;
+            layoutInflater = LayoutInflater.from(c);
         }
 
         public int getCount() {
@@ -105,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView mImageView;
 
             if (convertView == null) {
-                mImageView = new ImageView(mContext);
+                mImageView = new ImageView(context);
                 mImageView.setLayoutParams(new GridView.LayoutParams(180, 180));
                 mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 mImageView.setPadding(16, 16, 16, 16);
@@ -113,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
                 mImageView = (ImageView) convertView;
             }
 
-            String url = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/" + imageFileNames[position];
-            new DownloadImageTask(mImageView).execute(url);
+//            String url = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/" + imageFileNames[position];
+//            new DownloadImageTask(mImageView).execute(url);
 
             return mImageView;
         }
@@ -148,5 +176,72 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFilterRating(float rating) {
         currentFilterRating = rating;
+        filterRatingBar.setRating(rating);
+    }
+
+    private class ImageInfo {
+        private String imageUrl;
+        private float rating;
+
+        public ImageInfo(String imageUrl, float rating) {
+            this.imageUrl = imageUrl;
+            this.rating = rating;
+        }
+
+        String getUrl() {
+            return imageUrl;
+        }
+
+        float getRating() {
+            return rating;
+        }
+
+        void setRating(float newRating) {
+            System.out.println("New rating issss" + newRating);
+            this.rating = newRating;
+        }
+    }
+
+    //custom ArrayAdapter
+    class imageArrayAdapter extends ArrayAdapter<ImageInfo> {
+
+        private Context context;
+        private List<ImageInfo> animalPictures;
+
+        //constructor, call on creation
+        private imageArrayAdapter(Context context, int resource, ArrayList<ImageInfo> objects) {
+            super(context, resource, objects);
+
+            this.context = context;
+            this.animalPictures = objects;
+        }
+
+        //called when rendering the list
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //get the inflater and inflate the XML layout for each item
+            final ImageInfo imageInfo = animalPictures.get(position);
+
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.picture_layout, null);
+
+            ImageView image = view.findViewById(R.id.grid_image);
+            Bitmap imageBitmap = null;
+            new DownloadImageTask(image, imageBitmap).execute(imageInfo.getUrl());
+//            imageView.setImageBitmap(imageInfo.bitmap);
+//            Bitmap bitmap = ((BitmapDrawable)(imageInfo.image).getDrawable()).getBitmap();
+//            imageView.setImageBitmap(bitmap);
+
+            RatingBar ratingBar = view.findViewById(R.id.picture_rating);
+            ratingBar.setRating(imageInfo.getRating());
+
+            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                    imageInfo.setRating(rating);
+                }
+            });
+
+            return view;
+        }
     }
 }
