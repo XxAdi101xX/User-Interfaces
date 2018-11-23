@@ -26,9 +26,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     GridView gv;
     RatingBar filterRatingBar;
-    float currentFilterRating;
+    float globalFilterRating;
 
-    ArrayList<ImageInfo> animalImages;
+    ArrayList<ImageInfo> allAnimalImages;
+    ArrayList<ImageInfo> visibleAnimalImages;
     ArrayAdapter<ImageInfo> adapter;
 
     final String baseUrl = "https://www.student.cs.uwaterloo.ca/~cs349/f18/assignments/images/";
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+
+        }
+
         setContentView(R.layout.activity_main);
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
@@ -55,28 +60,37 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize filter values
         filterRatingBar = findViewById(R.id.main_filter_rating);
-        setFilterRating(0);
+        modifyGlobalFilterRating(0);
 
         filterRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if (!fromUser) {
-                    setFilterRating(rating);
-                }
+                modifyGlobalFilterRating(rating);
+                recalculateFilteredImages();
             }
         });
 
         // initialize images
         gv = findViewById(R.id.gridview);
-        animalImages = new ArrayList<>();
+        allAnimalImages = new ArrayList<>();
+        visibleAnimalImages = new ArrayList<>();
 
-        adapter = new imageArrayAdapter(this, 0, animalImages);
+        adapter = new imageArrayAdapter(this, 0, visibleAnimalImages);
         gv.setAdapter(adapter);
     }
 
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//
+//        super.onSaveInstanceState(savedInstanceState);
+//        savedInstanceState.put(STATE_USER, mUser);
+//    }
+
     private void loadImages() {
         for (int i = 0; i < imageFileNames.length; ++i) {
-            animalImages.add(new ImageInfo(i,baseUrl + imageFileNames[i], 0));
+            ImageInfo newImageInfo = new ImageInfo(i,baseUrl + imageFileNames[i], 0);
+            allAnimalImages.add(newImageInfo);
+            visibleAnimalImages.add(newImageInfo);
         }
     }
 
@@ -147,17 +161,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handleReload(View v) {
-        if (!animalImages.isEmpty()) {
+        if (!visibleAnimalImages.isEmpty()) {
             handleClear(v);
         }
 
-        setFilterRating(0);
+        modifyGlobalFilterRating(0);
         loadImages();
         adapter.notifyDataSetChanged();
     }
 
     public void handleClear(View v) {
-        animalImages.clear();
+        allAnimalImages.clear();
+        visibleAnimalImages.clear();
         adapter.notifyDataSetChanged();
     }
 
@@ -175,14 +190,39 @@ public class MainActivity extends AppCompatActivity {
                 int id = data.getIntExtra("id", 0);
                 float rating = data.getFloatExtra("rating", 5);
 
-                animalImages.get(id).setRating(rating, false);
+                modifyPictureFilterRating(id, rating, true);
             }
         }
     }
 
-    private void setFilterRating(float rating) {
-        currentFilterRating = rating;
+    private void modifyGlobalFilterRating(float rating) {
+        globalFilterRating = rating;
         filterRatingBar.setRating(rating);
+    }
+
+    private void modifyPictureFilterRating(int id, float rating, boolean updateView) {
+        visibleAnimalImages.get(id).setRating(rating);
+
+        if (rating < globalFilterRating) {
+            visibleAnimalImages.remove(id);
+            updateView = true;
+        }
+
+        if (updateView) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void recalculateFilteredImages() {
+        if (allAnimalImages.isEmpty()) return;
+
+        visibleAnimalImages.clear();
+        for (ImageInfo info: allAnimalImages) {
+            if (info.getRating() >= globalFilterRating) {
+                visibleAnimalImages.add(info);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private class ImageInfo {
@@ -208,12 +248,8 @@ public class MainActivity extends AppCompatActivity {
             return rating;
         }
 
-        void setRating(float newRating, boolean fromUser) {
+        void setRating(float newRating) {
             this.rating = newRating;
-
-            if (!fromUser) {
-                adapter.notifyDataSetChanged();
-            }
         }
     }
 
@@ -232,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //called when rendering the list
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             //get the inflater and inflate the XML layout for each item
             final ImageInfo imageInfo = animalPictures.get(position);
 
@@ -259,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
             ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    imageInfo.setRating(rating, fromUser);
+                    modifyPictureFilterRating(position, rating, !fromUser);
                 }
             });
 
