@@ -3,7 +3,7 @@ Student: a32venka
 Marker: Mingkun Yu
 
 
-Total: 79 / 100 (79.00%)
+Total: 83 / 100 (83.00%)
 
 Code: 
 (CO: won’t compile, CR: crashes, FR: UI freezes/unresponsive, NS: not submitted)
@@ -80,4 +80,8 @@ Notes:
 
 ## Enhancements (10%)
 
-21. [0 /10] Enhancement implemented.
+21. [4 /10] Enhancement implemented.
+
++5 There is a second menu containing a list of at least three ragdolls (1), including the initial ragdoll (1). The two additional ragdolls have different shapes than the initial ragdoll (1) and have their own rotation constraints (2).
+-1 The old dolls should be cleared.
+
