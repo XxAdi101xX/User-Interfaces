@@ -1,5 +1,5 @@
 # JSketch
-![alt text](https://github.com/XxAdi101xX/User-Interfaces/blob/master/a2/JSketch.PNG)
+![alt text](https://github.com/XxAdi101xX/User-Interfaces/blob/master/Jsketch/JSketch.PNG)
 
 Jsketch is a drawing application created using native Java Swing components. You can draw various shapes with different colours and
 border widths and also choose to either move or delete any existing shapes. Colours can be chosen either from the colour pallette or 
