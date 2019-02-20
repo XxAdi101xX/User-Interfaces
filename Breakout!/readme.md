@@ -1,8 +1,8 @@
 # Breakout!
 ![alt text](https://github.com/XxAdi101xX/User-Interfaces/blob/master/Breakout!/Breakout.jpg)
 
-This is a simple Breakout! game created using XLib in C++. To run the game, simply run make and then './breakout [FPS] [BallSpeed]' where
-10 <= FPS <= 60 and 1 <= BallSpeed <= 10. You can use the buttons 'a' and 'd' to move the paddle left and right respectively to prevent 
+This is a simple Breakout! game created using XLib in C++. To run the game, simply run make and then `./breakout [FPS] [BallSpeed]` where
+`10 <= FPS <= 60` and `1 <= BallSpeed <= 10`. You can use the buttons 'a' and 'd' to move the paddle left and right respectively to prevent 
 the ball from hitting the bottom of the screen. You can press 'q' at anytime to quit the game. The score can be seen in the bottom right
 hand side of the screen. 
 
