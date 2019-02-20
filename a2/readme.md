@@ -13,8 +13,8 @@ the canvas according to the window size.
 Canvases can also be saved and loaded appropriately using the menu options. As a demo, you can load in the jPanelDrawing.txt to try this
 out or just go right ahead and save your own images. Shortcuts to these menu items have been added for convenience.
 
-You can run `make run` with Java installed to run the application locally. The application was created in a Linux environment and was 
-tested thoroughly with Java 10.0.3.
+You can run `make run` with Java installed to run the application locally. The application was tested thoroughly on a Windows and Linux 
+environment with Java 10.0.3 installed.
 
 ## Fair Use Disclaimer for Images
 All icons were found on www.shareicon.net.
